@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { last12Months, lastMonth } from "utils/dateFns";
+import { formatISODate, last12Months, lastMonth } from "utils/dateFns";
 import { resolveTransactionSearch } from "./transactionSearch";
 
 const store = (key: string, value: unknown) => localStorage.setItem(key, JSON.stringify(value));
@@ -28,17 +28,26 @@ describe("resolveTransactionSearch", () => {
         expect(result.netZero).toBeUndefined();
         expect(result.type).toBeUndefined();
         expect(result.description).toBeUndefined();
-        expect(result.start).toBe(lastMonth().startDate.toISOString());
-        expect(result.end).toBe(lastMonth().endDate.toISOString());
+        expect(result.start).toBe(formatISODate(lastMonth().startDate));
+        expect(result.end).toBe(formatISODate(lastMonth().endDate));
     });
 
-    it("uses the stored period-id for the date range", () => {
-        store("period-id", "5"); // Last 12 months
+    it("uses the stored preset for the date range", () => {
+        store("date-range", { preset: "5" }); // Last 12 months
 
         const result = resolveTransactionSearch({});
 
-        expect(result.start).toBe(last12Months().startDate.toISOString());
-        expect(result.end).toBe(last12Months().endDate.toISOString());
+        expect(result.start).toBe(formatISODate(last12Months().startDate));
+        expect(result.end).toBe(formatISODate(last12Months().endDate));
+    });
+
+    it("uses a stored custom month range for the date range", () => {
+        store("date-range", { startMonth: "2026-02", endMonth: "2026-04" });
+
+        const result = resolveTransactionSearch({});
+
+        expect(result.start).toBe("2026-02-01");
+        expect(result.end).toBe("2026-04-30");
     });
 
     it("applies persisted localStorage filters when the URL is silent", () => {
@@ -79,14 +88,14 @@ describe("resolveTransactionSearch", () => {
         expect(result.description).toBeUndefined();
     });
 
-    it("keeps an explicit start/end from the URL instead of the default period", () => {
+    it("keeps an explicit start/end from the URL, normalising a legacy ISO instant to its local day", () => {
         const result = resolveTransactionSearch({
             start: "2025-01-01T00:00:00.000Z",
             end: "2025-01-31T00:00:00.000Z",
         });
 
-        expect(result.start).toBe("2025-01-01T00:00:00.000Z");
-        expect(result.end).toBe("2025-01-31T00:00:00.000Z");
+        expect(result.start).toBe("2025-01-01");
+        expect(result.end).toBe("2025-01-31");
     });
 
     it("omits an empty stored tag list", () => {

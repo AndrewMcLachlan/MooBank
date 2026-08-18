@@ -14,8 +14,8 @@ import type { Period } from "models/dateFns";
 import { subtractYear } from "utils/dateFns";
 import { TopTags } from "./-components/TopTags";
 import type { transactionTypeFilter } from "models/transactions";
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { getPeriod } from "hooks";
+import { DateRangeSelector } from "components/DateRangeSelector";
+import { getDateRange } from "hooks";
 import { differenceInMonths } from "date-fns";
 
 
@@ -30,7 +30,7 @@ function AllTagAverage() {
     const accountId = useIdParams();
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
-    const [period, setPeriod] = useState<Period>(getPeriod());
+    const [period, setPeriod] = useState<Period>(getDateRange());
 
 const difference = Math.abs(differenceInMonths(period.startDate, period.endDate));
 
@@ -38,7 +38,7 @@ const difference = Math.abs(differenceInMonths(period.startDate, period.endDate)
         <ReportsPage title="Top Tags" kind="TopTags">
             <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <MiniPeriodSelector onChange={setPeriod} />
+                <DateRangeSelector onChange={setPeriod} />
             </Section>
             <Section className="report">
                 <h3>Average per month Across Top 20 Tags</h3>

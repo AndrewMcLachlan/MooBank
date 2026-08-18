@@ -9,6 +9,7 @@
 @import "css/budget" layer(moobank);
 @import "css/rainbow" layer(moobank);
 @import "css/components" layer(moobank);
+@import "css/dateRange" layer(moobank);
 @import "css/filterPanel" layer(moobank);
 @import "css/form" layer(moobank);
 @import "css/transactions" layer(moobank);

@@ -13,8 +13,8 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import { Breakdown } from "./Breakdown";
 import type { transactionTypeFilter } from "models/transactions";
 import type { TagValue } from "api/types.gen";
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { getPeriod } from "hooks";
+import { DateRangeSelector } from "components/DateRangeSelector";
+import { getDateRange } from "hooks";
 
 
 export const BreakdownPage = () => {
@@ -25,7 +25,7 @@ export const BreakdownPage = () => {
     const navigate = useNavigate();
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
-    const [period, setPeriod] = useState<Period>(getPeriod());
+    const [period, setPeriod] = useState<Period>(getDateRange());
     const [previousTagIds, setPreviousTagIds] = useState<number[]>([]);
     const tag = useTag(tagId);
 
@@ -61,7 +61,7 @@ export const BreakdownPage = () => {
         <ReportsPage title="Breakdown" kind="Breakdown">
             <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} />
-                <MiniPeriodSelector onChange={setPeriod} />
+                <DateRangeSelector onChange={setPeriod} />
             </Section>
             <Section className="report doughnut">
                 {tag.data?.name && <h3><FontAwesomeIcon className="clickable" icon="circle-chevron-left" size="xs" onClick={goBack} /> {tag.data.name}</h3>}

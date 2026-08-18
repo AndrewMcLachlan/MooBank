@@ -8,8 +8,8 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import type { LogicalAccount } from "api/types.gen";
 import { Amount } from "components";
 import { useAccount } from "components/AccountProvider";
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { getPeriod } from "hooks";
+import { DateRangeSelector } from "components/DateRangeSelector";
+import { getDateRange } from "hooks";
 import type { Period } from "models/dateFns";
 import { useChartColours } from "utils/chartColours";
 import { useSuperContributionsReport } from "../../../-hooks/useSuperContributionsReport";
@@ -25,7 +25,7 @@ export const SuperContributions: React.FC = () => {
     const personalTagId = account?.tagPurposes?.find(t => t.purpose === "PersonalContribution")?.tagId;
     const anyConfigured = !!employerTagId || !!personalTagId;
 
-    const [period, setPeriod] = useState<Period>(getPeriod());
+    const [period, setPeriod] = useState<Period>(getDateRange());
     const report = useSuperContributionsReport(account?.id ?? "", period?.startDate, period?.endDate, anyConfigured);
 
     const months = new Set<string>();
@@ -55,7 +55,7 @@ export const SuperContributions: React.FC = () => {
     return (
         <ReportsPage title="Contributions" kind="SuperContributions">
             <Section className="mini-filter-panel">
-                <MiniPeriodSelector onChange={setPeriod} instant />
+                <DateRangeSelector onChange={setPeriod} />
             </Section>
             {!anyConfigured &&
                 <Section className="report" header="Contributions" headerSize={3}>

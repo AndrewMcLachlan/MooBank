@@ -1,7 +1,8 @@
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
 
 import type { TransactionsFilter, transactionTypeFilter } from "models/transactions";
-import { getPeriod } from "hooks/period";
+import { getDateRange } from "hooks/dateRange";
+import { endOfDayISO, formatISODate, startOfDayISO, toDateParam } from "utils/dateFns";
 
 // Typed, URL-driven state for the transaction list. Replaces the former Redux slice: filter,
 // sort and page live in the route search params so the view is shareable/bookmarkable. pageSize
@@ -58,8 +59,8 @@ export const validateTransactionSearch = (search: Record<string, unknown>): Tran
     const tags = parseTags(search.tags ?? search.tag);
     if (tags) result.tags = tags;
 
-    if (typeof search.start === "string" && search.start) result.start = search.start;
-    if (typeof search.end === "string" && search.end) result.end = search.end;
+    if (typeof search.start === "string" && search.start) result.start = toDateParam(search.start);
+    if (typeof search.end === "string" && search.end) result.end = toDateParam(search.end);
 
     if (typeof search.sortField === "string" && search.sortField) result.sortField = search.sortField;
     if (search.sortDirection === "Ascending" || search.sortDirection === "Descending") result.sortDirection = search.sortDirection;
@@ -82,7 +83,7 @@ const readStored = <T>(key: string, fallback: T): T => {
 export const getStoredPageSize = (): number => readStored<number>("transactions-page-size", 50);
 
 // Fills a validated search with the same defaults the filter panel seeds from — persisted
-// localStorage filters, and the default period (getPeriod: URL ?period → stored period-id →
+// localStorage filters, and the default period (getDateRange: URL ?period → the stored date range →
 // last month). This lets the transaction query be built synchronously (with a date range, so it
 // is enabled) on the first render and warmed by the route loader, instead of only after the
 // panel's post-mount effect writes the params to the URL. It mirrors useFilterPanel's
@@ -103,7 +104,7 @@ export const resolveTransactionSearch = (rawSearch: Record<string, unknown>): Tr
     const type = search.type ?? (readStored<transactionTypeFilter>("filter-type", "") || undefined);
     const description = hasWidgetFilter ? undefined : (readStored("filter-description", "") || undefined);
 
-    const period = getPeriod();
+    const period = getDateRange();
 
     return {
         ...search,
@@ -112,8 +113,8 @@ export const resolveTransactionSearch = (rawSearch: Record<string, unknown>): Tr
         netZero,
         type,
         description,
-        start: search.start ?? period.startDate.toISOString(),
-        end: search.end ?? period.endDate.toISOString(),
+        start: search.start ?? formatISODate(period.startDate),
+        end: search.end ?? formatISODate(period.endDate),
     };
 };
 
@@ -124,6 +125,6 @@ export const searchToFilter = (search: TransactionSearch): TransactionsFilter =>
     filterNetZero: search.netZero ?? false,
     transactionType: search.type ?? "",
     tags: search.tags ?? null,
-    start: search.start,
-    end: search.end,
+    start: search.start && startOfDayISO(search.start),
+    end: search.end && endOfDayISO(search.end),
 });

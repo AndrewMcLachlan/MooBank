@@ -15,8 +15,8 @@ import type { Period } from "models/dateFns";
 import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { chartColours } from "utils/chartColours";
 import type { transactionTypeFilter } from "models/transactions";
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { getPeriod } from "hooks";
+import { DateRangeSelector } from "components/DateRangeSelector";
+import { getDateRange } from "hooks";
 
 
 export const Route = createFileRoute("/accounts/$id/reports/by-tag")({
@@ -30,7 +30,7 @@ function ByTag() {
     const accountId = useIdParams();
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
-    const [period, setPeriod] = useState<Period>(getPeriod());
+    const [period, setPeriod] = useState<Period>(getDateRange());
 
     const report = useByTagReport(accountId!, period?.startDate, period?.endDate, reportType);
 
@@ -53,7 +53,7 @@ function ByTag() {
         <ReportsPage title="All Tags" kind="AllTags">
             <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <MiniPeriodSelector onChange={setPeriod} />
+                <DateRangeSelector onChange={setPeriod} />
             </Section>
             <section className="report doughnut">
                 <h3>All Tags</h3>
