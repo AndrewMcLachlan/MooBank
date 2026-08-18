@@ -38,10 +38,7 @@ export const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({ onChange, 
                 </Popover.Body>
             </Popover>
         )}>
-            <button type="button" id={id} className={classNames("date-range-trigger", className)} aria-haspopup="dialog" aria-label={`Period: ${label}. Change the period`}>
-                <span className="date-range-value">{label}</span>
-                <span className="date-range-caret" aria-hidden="true">▾</span>
-            </button>
+            <button type="button" id={id} className={classNames("form-select", "date-range-trigger", className)} aria-haspopup="dialog" aria-label={`Period: ${label}. Change the period`}>{label}</button>
         </OverlayTrigger>
     );
 };

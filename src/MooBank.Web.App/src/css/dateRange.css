@@ -1,40 +1,22 @@
-/* Date range selector: a trigger of fixed width, and the presets + month grid popover behind it.
-   Metrics on the trigger mirror moo-ds's .form-select so it lines up with the inputs it sits
-   beside in a filter bar. */
+/* Date range selector: a trigger of fixed width, and the presets + month grid popover behind it. */
 
-/* Sized to the longest label the control can ever show — a cross-year custom range, e.g.
-   "May 2028 – May 2028" — so the width never depends on which period is selected. Measured at
-   190px against the app's 14px root; the ellipsis below is the backstop, not the plan. */
+/* The trigger IS a moo-ds .form-select — same chevron, padding, border, focus ring and theme
+   switching as every other dropdown in the app, because it is the same rule rather than a copy of
+   it. (The chevron data URIs are declared inside .form-select itself, not on :root, so they cannot
+   be borrowed by another class.) Only what a button-instead-of-a-select needs is set here.
+
+   The width is fixed to the longest label the control can ever show — a cross-year custom range,
+   e.g. "May 2028 – May 2028" — so it never depends on which period is selected. The ellipsis is
+   the backstop, not the plan. */
 .date-range-trigger {
     box-sizing: border-box;
     inline-size: 14.5rem;
     flex: 0 0 auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-
-    padding: var(--input-padding-v, 0.375rem) var(--input-padding-h, 0.75rem);
-    font: inherit;
-    line-height: 1.5;
     text-align: left;
-    color: var(--body-colour);
-    background-color: var(--body-bg);
-    border: var(--border-width, 1px) solid var(--border-colour);
-    border-radius: var(--border-radius, 0.375rem);
     cursor: pointer;
-}
-
-.date-range-trigger .date-range-value {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.date-range-trigger .date-range-caret {
-    color: var(--body-colour-dim);
-    line-height: 1;
 }
 
 /* .popover caps itself at 276px (inherited from Bootstrap). The presets column and the month grid
