@@ -100,10 +100,14 @@
 /* Fixed tracks, not 1fr. `1fr` is `minmax(auto, 1fr)`, so every track has a min-content floor and
    equal tracks take the widest one: bolding the range end changed that floor and the whole popover
    jumped ~2.6px. It only showed on May, because May is the widest abbreviation — bold May (28.5px)
-   is the only one that beats plain May (27.9px). Tracks need >= 48px for bold May plus padding. */
+   is the only one that beats plain May (27.9px).
+
+   The track must fit the widest abbreviation at weight 600 plus the button padding and border --
+   58.1px at the current 1rem padding, hence 4.5rem. Raise it if that padding grows: an undersized
+   fixed track does not clip, it squeezes the text, which is easy to miss. */
 .date-range-panel .date-range-months {
     display: grid;
-    grid-template-columns: repeat(4, 4rem);
+    grid-template-columns: repeat(4, 4.5rem);
     gap: 0.25rem;
 }
 
@@ -113,7 +117,7 @@
     color: inherit;
     font: inherit;
     cursor: pointer;
-    padding: 0.3rem 0.6rem;
+    padding: 1rem 1rem;
     border-radius: 0.25rem;
 }
 
