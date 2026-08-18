@@ -4,7 +4,7 @@ import { Input } from "@andrewmclachlan/moo-ds";
 
 import { TagSelector } from "components";
 
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
+import { DateRangeSelector } from "components/DateRangeSelector";
 import { useFilterPanel } from "../hooks/useFilterPanel";
 import type { transactionTypeFilter } from "models/transactions";
 
@@ -21,7 +21,7 @@ export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
                 <option id="filter-income">Income</option>
                 <option id="filter-expense">Expense</option>
             </Input.Select>
-            <MiniPeriodSelector instant onChange={setPeriod} />
+            <DateRangeSelector onChange={setPeriod} />
             <Input.Switch id="filter-tagged" label="Untagged" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
                 <Input.Switch id="filter-netzero" label="Exclude offset" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
         </Section>

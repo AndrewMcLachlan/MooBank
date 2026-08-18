@@ -18,8 +18,8 @@ import { InOutTrend } from "./-components/InOutTrend";
 import { useInOutAverageReport } from "../../-hooks/useInOutAverageReport";
 import { useInOutReport } from "hooks/useInOutReport";
 import { Col, Row } from "@andrewmclachlan/moo-ds";
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { getPeriod } from "hooks";
+import { DateRangeSelector } from "components/DateRangeSelector";
+import { getDateRange } from "hooks";
 
 
 export const Route = createFileRoute("/accounts/$id/reports/in-out")({
@@ -31,7 +31,7 @@ function InOutPage() {
 
     const accountId = useIdParams();
 
-    const [period, setPeriod] = useState<Period>(getPeriod());
+    const [period, setPeriod] = useState<Period>(getDateRange());
 
     const difference = Math.abs(differenceInMonths(period.startDate, period.endDate));
     const col = difference > 12 ? 12 : 6;
@@ -39,7 +39,7 @@ function InOutPage() {
     return (
         <ReportsPage title="Income vs Expenses" kind="InOut">
             <Section className="mini-filter-panel">
-                <MiniPeriodSelector onChange={setPeriod} />
+                <DateRangeSelector onChange={setPeriod} />
             </Section>
             <Row>
                 <Col xxl={col} xl={12}>

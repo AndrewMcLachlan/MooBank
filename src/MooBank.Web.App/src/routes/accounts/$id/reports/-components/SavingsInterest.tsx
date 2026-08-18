@@ -8,8 +8,8 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import type { LogicalAccount } from "api/types.gen";
 import { Amount } from "components";
 import { useAccount } from "components/AccountProvider";
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { getPeriod } from "hooks";
+import { DateRangeSelector } from "components/DateRangeSelector";
+import { getDateRange } from "hooks";
 import type { Period } from "models/dateFns";
 import { useChartColours } from "utils/chartColours";
 import { useSavingsInterestReport } from "../../../-hooks/useSavingsInterestReport";
@@ -23,7 +23,7 @@ export const SavingsInterest: React.FC = () => {
     const account = useAccount() as LogicalAccount;
     const interestTagId = account?.tagPurposes?.find(t => t.purpose === "Interest")?.tagId;
 
-    const [period, setPeriod] = useState<Period>(getPeriod());
+    const [period, setPeriod] = useState<Period>(getDateRange());
 
     const report = useSavingsInterestReport(account?.id ?? "", period?.startDate, period?.endDate, !!interestTagId);
 
@@ -39,7 +39,7 @@ export const SavingsInterest: React.FC = () => {
     return (
         <ReportsPage title="Interest Received" kind="SavingsInterest">
             <Section className="mini-filter-panel">
-                <MiniPeriodSelector onChange={setPeriod} instant />
+                <DateRangeSelector onChange={setPeriod} />
             </Section>
             {!interestTagId &&
                 <Section className="report" header="Interest Received" headerSize={3}>

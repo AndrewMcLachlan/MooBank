@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useParams } from "@tanstack/react-router";
 
-import { PeriodSelector } from "components/PeriodSelector";
+import { DateRangeSelector } from "components/DateRangeSelector";
 import { formatDate } from "date-fns/format";
 import type { Period } from "models/dateFns";
 import { useStockValueReport } from "routes/shares/-hooks/useStockValueReport";
@@ -52,7 +52,7 @@ function StockValueReport() {
         <ReportsPage title="Value Trend">
             <Section>
                 <div>
-                    <PeriodSelector onChange={setPeriod} instant />
+                    <DateRangeSelector onChange={setPeriod} />
                     <Input.Check type="checkbox" label="Y Axis from 0" onChange={e => setYAxisFromZero(e.currentTarget.checked)} />
                 </div>
             </Section>

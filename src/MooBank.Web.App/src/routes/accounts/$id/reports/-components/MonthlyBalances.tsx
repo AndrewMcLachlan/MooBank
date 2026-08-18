@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { useParams } from "@tanstack/react-router";
 
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
+import { DateRangeSelector } from "components/DateRangeSelector";
 import type { Period } from "models/dateFns";
-import { getPeriod } from "hooks";
+import { getDateRange } from "hooks";
 import { useMonthlyBalancesReport } from "../../../-hooks/useMonthlyBalancesReport";
 import { useChartColours } from "utils/chartColours";
 import { getStepSize } from "utils/charts";
@@ -19,7 +19,7 @@ export const MonthlyBalances: React.FC = () => {
 
     const { id: accountId  } = useParams({ strict: false });
 
-    const [period, setPeriod] = useState<Period>(getPeriod());
+    const [period, setPeriod] = useState<Period>(getDateRange());
     const report = useMonthlyBalancesReport(accountId!, period?.startDate, period?.endDate);
 
         const dataset: ChartData<"line", number[], string> = {
@@ -43,7 +43,7 @@ export const MonthlyBalances: React.FC = () => {
     return (
         <ReportsPage title="Monthly Balances" kind="MonthlyBalances">
             <Section className="mini-filter-panel">
-                <MiniPeriodSelector onChange={setPeriod} instant />
+                <DateRangeSelector onChange={setPeriod} />
             </Section>
             <Section className="report" header="Monthly Balances" headerSize={3}>
                 <Line id="inout" data={dataset} options={{

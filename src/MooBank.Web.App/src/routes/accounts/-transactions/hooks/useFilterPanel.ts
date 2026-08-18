@@ -2,6 +2,7 @@ import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { useEffect, useMemo, useState } from "react";
 
 import type { Period } from "models/dateFns";
+import { formatISODate } from "utils/dateFns";
 import type { transactionTypeFilter } from "models/transactions";
 import { useTransactionSearch } from "./useTransactionSearch";
 
@@ -57,8 +58,8 @@ export const useFilterPanel = () => {
             netZero: filterNetZero || undefined,
             tags: filterTags?.length ? filterTags : undefined,
             type: filterType || undefined,
-            start: period?.startDate?.toISOString(),
-            end: period?.endDate?.toISOString(),
+            start: period?.startDate && formatISODate(period.startDate),
+            end: period?.endDate && formatISODate(period.endDate),
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [period, filterDescription, filterTagged, filterNetZero, filterTags, filterType]);

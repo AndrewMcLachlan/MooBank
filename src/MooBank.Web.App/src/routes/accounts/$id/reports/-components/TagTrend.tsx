@@ -17,8 +17,8 @@ import { getStepSize } from "utils/charts";
 import { ReportsPage } from "./ReportsPage";
 import { TagSettingsPanel } from "./TagSettingsPanel";
 import type { transactionTypeFilter } from "models/transactions";
-import { MiniPeriodSelector } from "components/MiniPeriodSelector";
-import { getPeriod } from "hooks";
+import { DateRangeSelector } from "components/DateRangeSelector";
+import { getDateRange } from "hooks";
 
 
 export const TagTrend: React.FC = () => {
@@ -29,7 +29,7 @@ export const TagTrend: React.FC = () => {
     const { id: accountId, tagId } = useParams({ strict: false });
 
     const [reportType, setReportType] = useState<transactionTypeFilter>("Debit");
-    const [period, setPeriod] = useState<Period>(getPeriod());
+    const [period, setPeriod] = useState<Period>(getDateRange());
     const [selectedTagId, setSelectedTagId] = useState<number>(tagId ? Number(tagId) : 1);
     const [settings, setSettings] = useState<TrendReportSettings>(defaultSettings);
     const report = useTagTrendReport(accountId!, period?.startDate, period?.endDate, reportType, selectedTagId, settings);
@@ -77,7 +77,7 @@ export const TagTrend: React.FC = () => {
         <ReportsPage title="Tag Trend" kind="TagTrend">
             <Section className="mini-filter-panel">
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
-                <MiniPeriodSelector onChange={setPeriod} instant />
+                <DateRangeSelector onChange={setPeriod} />
                 <TagSelector value={selectedTagId} onChange={tagChanged} id="filter-tags" />
                 <TagSettingsPanel tag={selectedTag} onChange={settingsChanged} />
             </Section>

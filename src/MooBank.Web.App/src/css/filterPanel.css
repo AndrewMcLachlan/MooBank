@@ -60,16 +60,8 @@
         flex: 1.5 1 175px;
     }
 
-    #period {
-        flex: 0 1 175px;
-    }
-
     #filter-type {
         flex: 0 1 125px;
-    }
-
-    #custom-start, #custom-end {
-        flex: 0 1 175px;
     }
 
     .filter-reset {

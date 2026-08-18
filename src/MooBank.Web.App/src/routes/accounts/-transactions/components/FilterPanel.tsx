@@ -2,7 +2,7 @@ import { Section, Tooltip } from "@andrewmclachlan/moo-ds";
 import React from "react";
 import { Button, ButtonGroup, Col, Form, Input, Row } from "@andrewmclachlan/moo-ds";
 
-import { PeriodSelector, TagSelector } from "components";
+import { DateRangeSelector, TagSelector } from "components";
 import { useFilterPanel } from "../hooks/useFilterPanel";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
@@ -29,7 +29,12 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
                     </ButtonGroup>
                 </Col>
             </Row>
-            <PeriodSelector instant onChange={setPeriod} />
+            <Row>
+                <Col lg={4}>
+                    <Form.Label htmlFor="filter-period">Period</Form.Label>
+                    <DateRangeSelector id="filter-period" onChange={setPeriod} />
+                </Col>
+            </Row>
             <Row>
                 <Col lg={6} xl={4}>
                     <Input.Switch id="filter-tagged" label="Only show transactions without tags" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
