@@ -97,7 +97,9 @@ internal static class TestEntities
         DateTime? periodEnd = null,
         decimal? chargePerDay = null,
         decimal? pricePerUnit = null,
-        int? totalUsage = null)
+        int? totalUsage = null,
+        int chargeTypeId = 1,
+        string chargeTypeName = "Supply")
     {
         var start = periodStart ?? DateTime.UtcNow.AddMonths(-1);
         var end = periodEnd ?? DateTime.UtcNow;
@@ -107,10 +109,15 @@ internal static class TestEntities
             Id = id,
             PeriodStart = start,
             PeriodEnd = end,
-            ServiceCharge = new ServiceCharge
-            {
-                ChargePerDay = chargePerDay ?? Faker.Random.Decimal(0.5m, 2m),
-            },
+            ServiceCharges =
+            [
+                new ServiceCharge
+                {
+                    ChargeTypeId = chargeTypeId,
+                    ChargeType = new ChargeType { Id = chargeTypeId, Name = chargeTypeName },
+                    ChargePerDay = chargePerDay ?? Faker.Random.Decimal(0.5m, 2m),
+                },
+            ],
             Usage = new Usage
             {
                 PricePerUnit = pricePerUnit ?? Faker.Random.Decimal(0.1m, 0.5m),
@@ -222,13 +229,14 @@ internal static class TestEntities
         DateTime? periodEnd = null,
         decimal chargePerDay = 1.0m,
         decimal pricePerUnit = 0.25m,
-        int totalUsage = 500)
+        int totalUsage = 500,
+        int chargeTypeId = 1)
     {
         return new BillModels.Period
         {
             PeriodStart = periodStart ?? DateTime.UtcNow.AddMonths(-1),
             PeriodEnd = periodEnd ?? DateTime.UtcNow,
-            ChargePerDay = chargePerDay,
+            ServiceCharges = [new BillModels.ServiceCharge { ChargeTypeId = chargeTypeId, ChargePerDay = chargePerDay }],
             PricePerUnit = pricePerUnit,
             TotalUsage = totalUsage,
         };

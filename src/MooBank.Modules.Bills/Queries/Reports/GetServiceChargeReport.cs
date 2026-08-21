@@ -24,7 +24,8 @@ internal class GetServiceChargeReportHandler(IQueryable<Domain.Entities.Utility.
             .SelectMany(a => a.Bills)
             .Include(b => b.Account)
             .Include(b => b.Periods)
-            .ThenInclude(p => p.ServiceCharge)
+            .ThenInclude(p => p.ServiceCharges)
+            .ThenInclude(sc => sc.ChargeType)
             .Where(b => b.IssueDate >= query.Start && b.IssueDate <= query.End)
             .AsQueryable();
 
@@ -42,22 +43,30 @@ internal class GetServiceChargeReportHandler(IQueryable<Domain.Entities.Utility.
             .OrderBy(b => b.IssueDate)
             .ToListAsync(cancellationToken);
 
+        // A point per charge type, not per account: water and sewerage are separate charges on the
+        // same bill and trend independently. Averaged within a group because a bill spanning a price
+        // change has a period either side of it.
         var dataPoints = bills
-            .SelectMany(b => b.Periods.Select(p => new
+            .SelectMany(b => b.Periods.SelectMany(p => p.ServiceCharges.Select(sc => new
             {
                 Date = DateOnly.FromDateTime(p.PeriodEnd),
                 AccountName = b.Account?.Name ?? String.Empty,
-                ChargePerDay = p.ServiceCharge?.ChargePerDay ?? 0
-            }))
-            .GroupBy(x => new { x.Date, x.AccountName })
+                sc.ChargeTypeId,
+                ChargeTypeName = sc.ChargeType?.Name ?? String.Empty,
+                sc.ChargePerDay,
+            })))
+            .GroupBy(x => new { x.Date, x.AccountName, x.ChargeTypeId, x.ChargeTypeName })
             .Select(g => new ServiceChargeDataPoint
             {
                 Date = g.Key.Date,
                 AccountName = g.Key.AccountName,
+                ChargeTypeId = g.Key.ChargeTypeId,
+                ChargeTypeName = g.Key.ChargeTypeName,
                 AverageChargePerDay = g.Average(x => x.ChargePerDay)
             })
             .OrderBy(x => x.Date)
             .ThenBy(x => x.AccountName)
+            .ThenBy(x => x.ChargeTypeName)
             .ToList();
 
         return new ServiceChargeReport

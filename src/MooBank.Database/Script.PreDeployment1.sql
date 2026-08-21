@@ -203,3 +203,29 @@ BEGIN
 
     PRINT 'Backfilled CurrencyCode on forecast plans that had none.';
 END
+
+/*
+ Creates and seeds utilities.ChargeType ahead of the schema changes that add
+ ServiceCharge.ChargeTypeId. That column is NOT NULL defaulting to 1, so the schema phase stamps
+ every existing row with 1 and then validates the new foreign key -- which fails unless row 1 is
+ already there. Post-deployment runs after the constraint is checked, so it cannot do this.
+
+ Only the columns and key: the schema phase adds the foreign key to UtilityType. Guarded on
+ ServiceCharge existing, since a database being created from scratch has no rows to stamp, and the
+ utilities schema does not exist yet at this point.
+*/
+IF OBJECT_ID('utilities.ServiceCharge', 'U') IS NOT NULL
+   AND OBJECT_ID('utilities.ChargeType', 'U') IS NULL
+BEGIN
+    CREATE TABLE [utilities].[ChargeType](
+        [Id] INT NOT NULL,
+        [Name] NVARCHAR(50) NOT NULL,
+        [UtilityTypeId] INT NULL,
+        CONSTRAINT [PK_ChargeType] PRIMARY KEY CLUSTERED ([Id] ASC)
+    );
+
+    INSERT INTO [utilities].[ChargeType] ([Id], [Name], [UtilityTypeId])
+    VALUES (1, 'Supply', NULL), (2, 'Water Service', 3), (3, 'Sewerage Service', 3);
+
+    PRINT 'Created and seeded utilities.ChargeType ahead of ServiceCharge.ChargeTypeId.';
+END

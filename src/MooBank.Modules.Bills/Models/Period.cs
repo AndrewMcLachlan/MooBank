@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Modules.Bills.Models;
+namespace Asm.MooBank.Modules.Bills.Models;
 
 public record Period
 {
@@ -16,6 +16,15 @@ public record Period
 
     public decimal? Cost { get; set; }
 
+    public IEnumerable<ServiceCharge> ServiceCharges { get; set; } = [];
+}
+
+public record ServiceCharge
+{
+    public int ChargeTypeId { get; set; }
+
+    public string? ChargeTypeName { get; set; }
+
     public decimal ChargePerDay { get; set; }
 }
 
@@ -24,7 +33,7 @@ public static class PeriodExtensions
     public static Period ToModel(this Domain.Entities.Utility.Period period) =>
         new()
         {
-            ChargePerDay = period.ServiceCharge?.ChargePerDay ?? 0,
+            ServiceCharges = period.ServiceCharges.Select(sc => sc.ToModel()).ToList(),
             Cost = period.Usage?.Cost,
             Days = period.Days,
             DaysInclusive = period.DaysInclusive,
@@ -36,4 +45,12 @@ public static class PeriodExtensions
 
     public static IEnumerable<Period> ToModel(this IEnumerable<Domain.Entities.Utility.Period> periods) =>
         periods.Select(p => p.ToModel());
+
+    public static ServiceCharge ToModel(this Domain.Entities.Utility.ServiceCharge serviceCharge) =>
+        new()
+        {
+            ChargeTypeId = serviceCharge.ChargeTypeId,
+            ChargeTypeName = serviceCharge.ChargeType?.Name,
+            ChargePerDay = serviceCharge.ChargePerDay,
+        };
 }

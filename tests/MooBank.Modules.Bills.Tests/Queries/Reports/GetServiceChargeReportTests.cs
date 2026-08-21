@@ -149,6 +149,34 @@ public class GetServiceChargeReportTests
     }
 
     [Fact]
+    public async Task Handle_PeriodWithSeveralServiceCharges_ReturnsAPointPerChargeType()
+    {
+        // Arrange
+        var userId = _mocks.User.Id;
+        var period = TestEntities.CreatePeriod(periodEnd: new DateTime(2024, 1, 31), chargePerDay: 0.90m);
+        period.ServiceCharges.Add(new Domain.Entities.Utility.ServiceCharge
+        {
+            ChargeTypeId = 3,
+            ChargeType = new Domain.Entities.Utility.ChargeType { Id = 3, Name = "Sewerage Service" },
+            ChargePerDay = 2.10m,
+        });
+        var bill = TestEntities.CreateBill(id: 1, issueDate: new DateOnly(2024, 2, 1), periods: [period]);
+        var account = TestEntities.CreateAccountWithOwner(name: "Water", ownerId: userId, bills: [bill]);
+
+        var handler = new GetServiceChargeReportHandler(TestEntities.CreateAccountQueryable(account), _mocks.User);
+        var query = new GetServiceChargeReport { Start = new DateOnly(2024, 1, 1), End = new DateOnly(2024, 12, 31) };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        // Water and sewerage are separate charges on the one bill; they are not averaged together.
+        Assert.Equal(2, result.DataPoints.Count());
+        Assert.Equal(0.90m, result.DataPoints.Single(dp => dp.ChargeTypeName == "Supply").AverageChargePerDay);
+        Assert.Equal(2.10m, result.DataPoints.Single(dp => dp.ChargeTypeName == "Sewerage Service").AverageChargePerDay);
+    }
+
+    [Fact]
     public async Task Handle_DataPointsGroupedByDateAndAccount()
     {
         // Arrange

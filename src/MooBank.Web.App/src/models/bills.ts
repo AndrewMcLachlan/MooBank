@@ -2,12 +2,17 @@ import type { UtilityType } from "api/types.gen";
 
 export const UtilityTypes: UtilityType[] = ["Electricity", "Gas", "Water", "Phone", "Internet", "Other"];
 
+export interface CreateServiceCharge {
+    chargeTypeId: number;
+    chargePerDay: number;
+}
+
 export interface CreatePeriod {
     periodStart: string;
     periodEnd: string;
     pricePerUnit: number;
     totalUsage: number;
-    chargePerDay: number;
+    serviceCharges: CreateServiceCharge[];
 }
 
 export interface CreateDiscount {

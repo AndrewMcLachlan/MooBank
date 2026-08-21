@@ -15,5 +15,9 @@ public record ServiceChargeDataPoint
 
     public string AccountName { get; init; } = String.Empty;
 
+    public int ChargeTypeId { get; init; }
+
+    public string ChargeTypeName { get; init; } = String.Empty;
+
     public decimal AverageChargePerDay { get; init; }
 }

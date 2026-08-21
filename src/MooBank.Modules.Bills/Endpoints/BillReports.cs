@@ -24,3 +24,16 @@ internal class BillReports : EndpointGroupBase
             .WithNames("Get Usage Report");
     }
 }
+
+internal class ChargeTypes : EndpointGroupBase
+{
+    public override string Path => "/bills/charge-types";
+
+    public override string? Tag => "Bills";
+
+    protected override void MapEndpoints(IEndpointRouteBuilder builder)
+    {
+        builder.MapQuery<Queries.ChargeTypes.GetAll, IEnumerable<Models.ChargeType>>("/")
+            .WithNames("Get Charge Types");
+    }
+}

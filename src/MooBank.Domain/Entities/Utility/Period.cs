@@ -24,8 +24,7 @@ public class Period : Entity
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public int? Days { get; set; }
 
-    [AllowNull]
-    public virtual ServiceCharge ServiceCharge { get; set; }
+    public virtual ICollection<ServiceCharge> ServiceCharges { get; set; } = [];
 
     [AllowNull]
     public virtual Usage Usage { get; set; }

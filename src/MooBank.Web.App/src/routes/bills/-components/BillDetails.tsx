@@ -1,3 +1,5 @@
+import React from "react";
+
 import type { Bill, Account } from "api/types.gen";
 import { Drawer } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
@@ -71,14 +73,18 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                                         <span></span>
                                         <span className="summary-value"><Amount amount={period.cost} currencyCode="AUD" /></span>
                                     </div>
-                                    <div className="period-line">
-                                        <span className="period-line-label">Service Charge</span>
-                                        <span>{period.days} days @ <Amount amount={period.chargePerDay} currencyCode="AUD" />/day</span>
-                                    </div>
-                                    <div className="period-line">
-                                        <span></span>
-                                        <span className="summary-value"><Amount amount={period.days * period.chargePerDay} currencyCode="AUD" /></span>
-                                    </div>
+                                    {period.serviceCharges?.map(charge => (
+                                        <React.Fragment key={charge.chargeTypeId}>
+                                            <div className="period-line">
+                                                <span className="period-line-label">{charge.chargeTypeName ?? "Service Charge"}</span>
+                                                <span>{period.daysInclusive} days @ <Amount amount={charge.chargePerDay} currencyCode="AUD" />/day</span>
+                                            </div>
+                                            <div className="period-line">
+                                                <span></span>
+                                                <span className="summary-value"><Amount amount={period.daysInclusive * charge.chargePerDay} currencyCode="AUD" /></span>
+                                            </div>
+                                        </React.Fragment>
+                                    ))}
                                 </div>
                             </div>
                         ))}
@@ -90,7 +96,8 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                         <div className="period-total">
                             <span>Period Total</span>
                             <span>
-                                <Amount amount={bill.periods.reduce((sum, p) => sum + p.cost + (p.days * p.chargePerDay), 0)} currencyCode="AUD" />
+                                <Amount amount={bill.periods.reduce((sum, p) =>
+                                    sum + p.cost + p.serviceCharges.reduce((charges, c) => charges + (p.daysInclusive * c.chargePerDay), 0), 0)} currencyCode="AUD" />
                             </span>
                         </div>
                     </Section>

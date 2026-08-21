@@ -6,10 +6,9 @@ RETURNS DECIMAL(12,4)
 AS
 BEGIN
 DECLARE @Result DECIMAL(12,4)
-    -- SUM matters: a bill has one Period per tariff, so a bill spanning a price change has several.
-    -- Without it, `SELECT @Result = <expr>` assigns once per row and keeps only the last one, making
-    -- the bill cost whichever period happened to be read last rather than the whole bill.
-    SELECT @Result = SUM((ISNULL(s.ChargePerDay, 0) * p.Days) + ISNULL(u.Cost, 0)) FROM [utilities].[Period] p
+    -- A billing period counts both end days -- 26 Jun to 25 Jul is 30 -- which is DaysInclusive,
+    -- not the DATEDIFF in Days beside it.
+    SELECT @Result = SUM((ISNULL(s.ChargePerDay, 0) * p.DaysInclusive) + ISNULL(u.Cost, 0)) FROM [utilities].[Period] p
     LEFT JOIN [utilities].[ServiceCharge] s ON p.Id = s.PeriodId
     LEFT JOIN [utilities].[Usage] u ON p.Id = u.PeriodId
     WHERE p.BillId = @BillId

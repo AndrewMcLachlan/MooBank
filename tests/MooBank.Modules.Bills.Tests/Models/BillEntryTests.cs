@@ -91,7 +91,7 @@ public class BillEntryTests
                     PeriodEnd = new DateOnly(2026, 1, 31),
                     PricePerUnit = 0.28m,
                     TotalUsage = 412.5m,
-                    ChargePerDay = 1.15m,
+                    ServiceCharges = [new BillEntryServiceCharge { ChargeTypeId = 1, ChargePerDay = 1.15m }],
                 },
             ],
         };
@@ -105,7 +105,9 @@ public class BillEntryTests
         Assert.Equal(new DateTime(2026, 1, 31, 0, 0, 0), period.PeriodEnd);
         Assert.Equal(0.28m, period.PricePerUnit);
         Assert.Equal(412.5m, period.TotalUsage);
-        Assert.Equal(1.15m, period.ChargePerDay);
+        var serviceCharge = Assert.Single(period.ServiceCharges);
+        Assert.Equal(1, serviceCharge.ChargeTypeId);
+        Assert.Equal(1.15m, serviceCharge.ChargePerDay);
     }
 
     /// <summary>
