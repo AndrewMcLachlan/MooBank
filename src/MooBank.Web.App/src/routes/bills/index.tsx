@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Tab, Tabs } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
 
-import { IconButton, Section } from "@andrewmclachlan/moo-ds";
+import { IconButton, Section, Skeleton } from "@andrewmclachlan/moo-ds";
 
 import type { UtilityType } from "api/types.gen";
 import { UtilityTypes } from "models/bills";
@@ -16,9 +16,25 @@ export const Route = createFileRoute("/bills/")({
     component: BillAccountSummaries,
 });
 
+const BillsLoading: React.FC = () => (
+    <>
+        <div className="bills-loading-tabs">
+            <Skeleton.Rect />
+            <Skeleton.Rect />
+            <Skeleton.Rect />
+        </div>
+        <Section className="bill-chart">
+            <Skeleton.Chart variant="bar" count={8} />
+        </Section>
+        <Section className="bill-chart">
+            <Skeleton.Chart variant="line" count={2} />
+        </Section>
+    </>
+);
+
 function BillAccountSummaries() {
     const navigate = useNavigate();
-    const { data: summaries } = useBillAccountSummaries();
+    const { data: summaries, isLoading } = useBillAccountSummaries();
 
     const availableTypes = summaries?.map(s => s.utilityType) ?? [];
     const [activeTab, setActiveTab] = useState<UtilityType | undefined>(
@@ -40,7 +56,9 @@ function BillAccountSummaries() {
             ] : []}
         >
             <AddBill show={showAddBill} onHide={() => setShowAddBill(false)} />
-            {availableTypes.length === 0 ? (
+            {isLoading ? (
+                <BillsLoading />
+            ) : availableTypes.length === 0 ? (
                 <Section>
                     <p className="empty-state">No utility accounts found. Create an account to get started.</p>
                     <IconButton badge onClick={() => navigate({ to: "/bills/accounts/create" })} icon="plus">Add Account</IconButton>

@@ -93,7 +93,10 @@ public static class IServiceCollectionExtensions
                 .AddQueryable<Asm.MooBank.Domain.Entities.Instrument.InstrumentOwner, MooBankContext>()
                 // Age Pension rates are national reference data, read by the retirement projection
                 // and edited in settings. Not an aggregate root — nothing owns them.
-                .AddQueryable<Asm.MooBank.Domain.Entities.ReferenceData.PensionRate, MooBankContext>();
+                .AddQueryable<Asm.MooBank.Domain.Entities.ReferenceData.PensionRate, MooBankContext>()
+                // The kinds of service charge a bill can carry: seeded reference data, offered to
+                // the bill form and the import tool. Not an aggregate root — nothing owns them.
+                .AddQueryable<Asm.MooBank.Domain.Entities.Utility.ChargeType, MooBankContext>();
 
     public static IServiceCollection AddImporterFactory(this IServiceCollection services) =>
         services.AddTransient<IImporterFactory, ImporterFactory>();
