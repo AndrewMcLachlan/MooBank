@@ -251,18 +251,6 @@ WHEN MATCHED AND (TARGET.[Name] <> SOURCE.[Name] OR ISNULL(TARGET.UtilityTypeId,
     THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.UtilityTypeId = SOURCE.UtilityTypeId
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.UtilityTypeId);
 
--- Apply the importer-type → institution migration captured in the pre-deployment script.
-IF OBJECT_ID('dbo.__InstitutionImporterMigration', 'U') IS NOT NULL
-BEGIN
-    UPDATE i
-    SET i.ImporterTypeId = m.ImporterTypeId
-    FROM dbo.Institution i
-    INNER JOIN dbo.__InstitutionImporterMigration m ON m.InstitutionId = i.Id
-    WHERE i.ImporterTypeId IS NULL;
-
-    DROP TABLE dbo.__InstitutionImporterMigration;
-END
-
 -- Ensure the default institutions are linked to their importer type for fresh databases
 -- and any environment that previously had no institution-level mapping.
 DECLARE @IngImporterTypeId INT = (SELECT ImporterTypeId FROM ImporterType WHERE [Name] = 'ING');
@@ -619,41 +607,6 @@ WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
 GO
 
 /*
- Puts the retirement plan members back, now that the table carries UserId.
-
- The pre-deployment script moved them out and emptied the table so SSDT could rebuild it — see the
- note there for why a backfill in place does not survive. Anything it could not match to a person is
- staged with a null UserId and fails here on the NOT NULL, which is deliberate: a member whose
- identity cannot be derived should stop the deployment rather than be invented or dropped.
-
- The staging tables are removed once their rows are restored, so a later deployment does nothing.
-*/
-IF OBJECT_ID('dbo.__RetirementPlanMemberMigration', 'U') IS NOT NULL
-BEGIN
-    DECLARE @unresolved INT = (SELECT COUNT(*) FROM dbo.__RetirementPlanMemberMigration WHERE UserId IS NULL);
-
-    IF @unresolved > 0
-    BEGIN
-        RAISERROR (N'%d retirement plan member(s) could not be matched to a person from their linked accounts. Resolve dbo.__RetirementPlanMemberMigration before retrying.', 16, 127, @unresolved) WITH NOWAIT;
-    END
-
-    INSERT INTO dbo.RetirementPlanMember
-        (Id, RetirementPlanId, UserId, CurrentAge, CurrentIncome, SalarySacrifice, RetirementAge, GrowthStrategyId, AnnualFees, InsurancePremium)
-    SELECT
-        Id, RetirementPlanId, UserId, CurrentAge, CurrentIncome, SalarySacrifice, RetirementAge, GrowthStrategyId, AnnualFees, InsurancePremium
-    FROM dbo.__RetirementPlanMemberMigration;
-
-    INSERT INTO dbo.RetirementPlanMemberAccount (Id, RetirementPlanMemberId, InstrumentId)
-    SELECT Id, RetirementPlanMemberId, InstrumentId
-    FROM dbo.__RetirementPlanMemberAccountMigration;
-
-    DROP TABLE dbo.__RetirementPlanMemberAccountMigration;
-    DROP TABLE dbo.__RetirementPlanMemberMigration;
-END
-
-GO
-
-/*
  A starting set of Age Pension rates, so a projection has something to work with before anyone
  visits the settings screen.
 
@@ -672,36 +625,6 @@ BEGIN
 END
 
 GO
-
-/*
- Checks the income migration came out right, then clears its staging table.
-
- A plan whose fixed income figure was present and positive must have had an item created for it.
- The count comes from the migration itself rather than from whether the plan has any income item,
- because a plan may have had its own income items all along — checking for those would pass a plan
- whose figure was silently dropped. Failing the deployment is deliberate: a plan that silently lost its income would forecast a
- household living on nothing, and the balance line would be wrong in the alarming direction without
- anything on screen saying why.
-
- Plans that never had a figure, or had it set to nought, are expected to come out with nothing.
-*/
-IF OBJECT_ID('dbo.__ForecastIncomeStrategyMigration', 'U') IS NOT NULL
-BEGIN
-    DECLARE @lostIncome INT =
-    (
-        SELECT COUNT(*)
-        FROM dbo.__ForecastIncomeStrategyMigration m
-        WHERE TRY_CONVERT(decimal(18,2), JSON_VALUE(m.IncomeStrategy, '$.manualRecurring.amount')) > 0
-          AND m.ItemsCreated = 0
-    );
-
-    IF @lostIncome > 0
-    BEGIN
-        RAISERROR (N'%d forecast plan(s) had a monthly income figure but came out with no income item. Inspect dbo.__ForecastIncomeStrategyMigration before retrying.', 16, 127, @lostIncome) WITH NOWAIT;
-    END
-
-    DROP TABLE dbo.__ForecastIncomeStrategyMigration;
-END
 
 /*
  Seeds a starting order for groups that predate the SortOrder column.
