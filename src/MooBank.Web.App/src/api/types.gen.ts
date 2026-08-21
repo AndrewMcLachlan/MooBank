@@ -144,6 +144,21 @@ export type ByTagReport = {
     end: string;
 };
 
+/**
+ * A kind of service charge that can appear on a bill.
+ */
+export type ChargeType = {
+    /**
+     * The ID of the charge type.
+     */
+    id: number;
+    /**
+     * The name of the charge type.
+     */
+    name: string;
+    utilityType?: null | UtilityType;
+};
+
 export type Controller = 'Manual' | 'Virtual' | 'Import';
 
 export type CostDataPoint = {
@@ -531,7 +546,7 @@ export type Period = {
     pricePerUnit: number;
     totalUsage: number;
     cost?: null | number;
-    chargePerDay: number;
+    serviceCharges: Array<ServiceCharge>;
 };
 
 export type PlannedItem = {
@@ -771,9 +786,17 @@ export type SeasonalitySettings = {
     enabled: boolean;
 };
 
+export type ServiceCharge = {
+    chargeTypeId: number;
+    chargeTypeName?: null | string;
+    chargePerDay: number;
+};
+
 export type ServiceChargeDataPoint = {
     date: string;
     accountName: string;
+    chargeTypeId: number;
+    chargeTypeName: string;
     averageChargePerDay: number;
 };
 
@@ -1775,6 +1798,29 @@ export type GetUsageReportResponses = {
 };
 
 export type GetUsageReportResponse = GetUsageReportResponses[keyof GetUsageReportResponses];
+
+export type GetChargeTypesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/bills/charge-types';
+};
+
+export type GetChargeTypesErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetChargeTypesResponses = {
+    /**
+     * OK
+     */
+    200: Array<ChargeType>;
+};
+
+export type GetChargeTypesResponse = GetChargeTypesResponses[keyof GetChargeTypesResponses];
 
 export type GetAllBudgetYearsData = {
     body?: never;

@@ -71,10 +71,11 @@ internal class ImportHandler(
                 {
                     PeriodEnd = p.PeriodEnd,
                     PeriodStart = p.PeriodStart,
-                    ServiceCharge = new()
+                    ServiceCharges = p.ServiceCharges.Select(sc => new Domain.Entities.Utility.ServiceCharge
                     {
-                        ChargePerDay = p.ChargePerDay,
-                    },
+                        ChargeTypeId = sc.ChargeTypeId,
+                        ChargePerDay = sc.ChargePerDay,
+                    }).ToList(),
                     Usage = new()
                     {
                         PricePerUnit = p.PricePerUnit,

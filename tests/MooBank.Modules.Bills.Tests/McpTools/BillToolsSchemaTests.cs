@@ -120,4 +120,26 @@ public class BillToolsSchemaTests
         Assert.Contains("accountName", schema);
         Assert.Contains("periods", schema);
     }
+
+    /// <summary>
+    /// Given the import-bills tool
+    /// When its schema is published
+    /// Then a period's service charges should be described down to the charge type
+    /// </summary>
+    /// <remarks>
+    /// A caller that cannot see chargeTypeId has no way to tell a water service charge from a
+    /// sewerage one, and the nesting is deep enough that the schema generator dropping it would go
+    /// unnoticed.
+    /// </remarks>
+    [Fact]
+    public void ImportBillsDescribesServiceCharges()
+    {
+        var (_, tool) = Tools().Single(t => t.Tool.ProtocolTool.Name == "import-bills");
+
+        var schema = tool.ProtocolTool.InputSchema.GetRawText();
+
+        Assert.Contains("serviceCharges", schema);
+        Assert.Contains("chargeTypeId", schema);
+        Assert.Contains("chargePerDay", schema);
+    }
 }

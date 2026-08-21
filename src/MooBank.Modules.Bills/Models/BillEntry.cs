@@ -84,7 +84,19 @@ public record BillEntryPeriod
     [Description("The total units consumed during the period.")]
     public decimal TotalUsage { get; set; }
 
-    [Description("The daily supply or service charge.")]
+    [Description("The daily service charges. Electricity and gas carry one supply charge; a water bill carries a water service charge and a sewerage service charge.")]
+    public IEnumerable<BillEntryServiceCharge> ServiceCharges { get; set; } = [];
+}
+
+/// <summary>
+/// A daily service charge within a <see cref="BillEntryPeriod"/>.
+/// </summary>
+public record BillEntryServiceCharge
+{
+    [Description("The kind of service charge, as returned by get-charge-types. Use 1 (Supply) for electricity and gas.")]
+    public required int ChargeTypeId { get; set; }
+
+    [Description("The amount charged per day.")]
     public decimal ChargePerDay { get; set; }
 }
 
@@ -108,7 +120,11 @@ public static class BillEntryExtensions
                 PeriodEnd = p.PeriodEnd.ToDateTime(TimeOnly.MinValue),
                 PricePerUnit = p.PricePerUnit,
                 TotalUsage = p.TotalUsage,
-                ChargePerDay = p.ChargePerDay,
+                ServiceCharges = p.ServiceCharges.Select(sc => new ServiceCharge
+                {
+                    ChargeTypeId = sc.ChargeTypeId,
+                    ChargePerDay = sc.ChargePerDay,
+                }).ToList(),
             }).ToList(),
             Discounts = entry.Discounts.ToList(),
         };

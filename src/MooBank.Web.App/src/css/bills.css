@@ -177,3 +177,16 @@
         margin-top: 1.5rem;
     }
 }
+
+/* Stands in for the tab strip while the account summaries load: one block per tab, sized to a
+   utility name. */
+.bills-loading-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+
+    > * {
+        inline-size: 7rem;
+        block-size: 2.25rem;
+    }
+}

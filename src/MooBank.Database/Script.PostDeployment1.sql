@@ -232,6 +232,27 @@ ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
 
+-- Charge Type. Id 1 is the default on ServiceCharge.ChargeTypeId, so it must not be renumbered.
+MERGE [utilities].ChargeType AS TARGET USING (SELECT 1 as Id, 'Supply' as [Name], CAST(NULL as INT) as UtilityTypeId) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND (TARGET.[Name] <> SOURCE.[Name] OR ISNULL(TARGET.UtilityTypeId, -1) <> ISNULL(SOURCE.UtilityTypeId, -1))
+    THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.UtilityTypeId = SOURCE.UtilityTypeId
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.UtilityTypeId);
+
+MERGE [utilities].ChargeType AS TARGET USING (SELECT 2 as Id, 'Water Service' as [Name], CAST(3 as INT) as UtilityTypeId) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND (TARGET.[Name] <> SOURCE.[Name] OR ISNULL(TARGET.UtilityTypeId, -1) <> ISNULL(SOURCE.UtilityTypeId, -1))
+    THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.UtilityTypeId = SOURCE.UtilityTypeId
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.UtilityTypeId);
+
+MERGE [utilities].ChargeType AS TARGET USING (SELECT 3 as Id, 'Sewerage Service' as [Name], CAST(3 as INT) as UtilityTypeId) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND (TARGET.[Name] <> SOURCE.[Name] OR ISNULL(TARGET.UtilityTypeId, -1) <> ISNULL(SOURCE.UtilityTypeId, -1))
+    THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.UtilityTypeId = SOURCE.UtilityTypeId
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.UtilityTypeId);
+
+UPDATE [utilities].[ServiceCharge] SET [ChargeTypeId] = 1 WHERE [ChargeTypeId] IS NULL;
+
 -- Apply the importer-type → institution migration captured in the pre-deployment script.
 IF OBJECT_ID('dbo.__InstitutionImporterMigration', 'U') IS NOT NULL
 BEGIN

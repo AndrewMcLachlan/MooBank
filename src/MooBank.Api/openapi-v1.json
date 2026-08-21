@@ -1116,6 +1116,32 @@
         }
       }
     },
+    "/bills/charge-types": {
+      "get": {
+        "tags": [
+          "Bills"
+        ],
+        "operationId": "get-charge-types",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChargeType"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/budget": {
       "get": {
         "tags": [
@@ -6649,6 +6675,36 @@
           }
         }
       },
+      "ChargeType": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the charge type.",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the charge type."
+          },
+          "utilityType": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "description": "The utility this charge applies to, or null where it applies to any.",
+                "$ref": "#/components/schemas/UtilityType"
+              }
+            ]
+          }
+        },
+        "description": "A kind of service charge that can appear on a bill."
+      },
       "Controller": {
         "enum": [
           "Manual",
@@ -8311,7 +8367,7 @@
           "periodEnd",
           "pricePerUnit",
           "totalUsage",
-          "chargePerDay"
+          "serviceCharges"
         ],
         "type": "object",
         "properties": {
@@ -8352,9 +8408,11 @@
             ],
             "format": "double"
           },
-          "chargePerDay": {
-            "type": "number",
-            "format": "double"
+          "serviceCharges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceCharge"
+            }
           }
         }
       },
@@ -9433,10 +9491,35 @@
           }
         }
       },
+      "ServiceCharge": {
+        "required": [
+          "chargeTypeId",
+          "chargePerDay"
+        ],
+        "type": "object",
+        "properties": {
+          "chargeTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "chargeTypeName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "chargePerDay": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
       "ServiceChargeDataPoint": {
         "required": [
           "date",
           "accountName",
+          "chargeTypeId",
+          "chargeTypeName",
           "averageChargePerDay"
         ],
         "type": "object",
@@ -9446,6 +9529,13 @@
             "format": "date"
           },
           "accountName": {
+            "type": "string"
+          },
+          "chargeTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "chargeTypeName": {
             "type": "string"
           },
           "averageChargePerDay": {

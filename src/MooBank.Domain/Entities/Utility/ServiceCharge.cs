@@ -1,4 +1,4 @@
-﻿namespace Asm.MooBank.Domain.Entities.Utility;
+namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("ServiceCharge", Schema = "utilities")]
 public class ServiceCharge
@@ -11,9 +11,15 @@ public class ServiceCharge
     public int PeriodId { get; set; }
 
     [Required]
+    public int ChargeTypeId { get; set; }
+
+    [Required]
     [Column(TypeName = "decimal(12, 5)")]
     public decimal ChargePerDay { get; set; }
 
     [ForeignKey("PeriodId")]
     public virtual Period? Period { get; set; }
+
+    [ForeignKey("ChargeTypeId")]
+    public virtual ChargeType? ChargeType { get; set; }
 }

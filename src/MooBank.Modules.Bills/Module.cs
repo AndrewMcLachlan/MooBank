@@ -17,6 +17,7 @@ public class Module : IModule
         new Endpoints.Bills().MapGroup(endpoints).RequireAuthorization();
         new Endpoints.BillAccounts().MapGroup(endpoints).RequireAuthorization(Policies.GetInstrumentViewerPolicy());
         new Endpoints.BillReports().MapGroup(endpoints).RequireAuthorization();
+        new Endpoints.ChargeTypes().MapGroup(endpoints).RequireAuthorization();
 
         return endpoints;
     }

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "@andrewmclachlan/moo-ds";
+import type { Control } from "react-hook-form";
 import { useFieldArray, useForm } from "react-hook-form";
 import { format } from "date-fns";
 
 import { Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
 
-import type { CreateBill } from "models/bills";
+import type { ChargeType } from "api/types.gen";
+import type { CreateBill, CreatePeriod, CreateServiceCharge } from "models/bills";
 import { useCreateBill } from "../-hooks/useCreateBill";
 import { useBillAccounts } from "../-hooks/useBillAccounts";
+import { useChargeTypes } from "../-hooks/useChargeTypes";
 import { amountStep } from "utils/currency";
 
 export interface AddBillProps {
@@ -16,10 +19,51 @@ export interface AddBillProps {
     onHide: () => void;
 }
 
+const defaultServiceCharge: CreateServiceCharge = { chargeTypeId: 1, chargePerDay: 0 };
+
+const emptyPeriod = (): CreatePeriod => ({ periodStart: "", periodEnd: "", pricePerUnit: 0, totalUsage: 0, serviceCharges: [{ ...defaultServiceCharge }] });
+
+interface ServiceChargesProps {
+    control: Control<CreateBill>;
+    periodIndex: number;
+    chargeTypes: ChargeType[];
+}
+
+const ServiceCharges: React.FC<ServiceChargesProps> = ({ control, periodIndex, chargeTypes }) => {
+
+    const { fields, append, remove } = useFieldArray({ control, name: `periods.${periodIndex}.serviceCharges` });
+
+    return (
+        <div className="service-charges">
+            {fields.map((field, index) => (
+                <div key={field.id} className="form-row">
+                    <Form.Group groupId={`periods.${periodIndex}.serviceCharges.${index}.chargeTypeId`}>
+                        <Form.Label>Service Charge</Form.Label>
+                        <Form.Select>
+                            {chargeTypes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        </Form.Select>
+                    </Form.Group>
+                    <Form.Group groupId={`periods.${periodIndex}.serviceCharges.${index}.chargePerDay`}>
+                        <Form.Label>Charge/Day</Form.Label>
+                        <Form.Input type="number" step="0.00001" required />
+                    </Form.Group>
+                    {fields.length > 1 && (
+                        <Button variant="outline-danger" size="sm" onClick={() => remove(index)} type="button" className="remove-button">
+                            Remove
+                        </Button>
+                    )}
+                </div>
+            ))}
+            <Button variant="outline-primary" size="sm" onClick={() => append({ ...defaultServiceCharge })} type="button">Add Service Charge</Button>
+        </div>
+    );
+};
+
 export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => {
 
     const createBill = useCreateBill();
     const { data: accounts } = useBillAccounts();
+    const { data: chargeTypes } = useChargeTypes();
     const [selectedAccountId, setSelectedAccountId] = useState<string>(accountId ?? "");
 
     useEffect(() => {
@@ -36,7 +80,7 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
             total: 0,
             cost: 0,
             costsIncludeGST: true,
-            periods: [{ periodStart: "", periodEnd: "", pricePerUnit: 0, totalUsage: 0, chargePerDay: 0 }],
+            periods: [emptyPeriod()],
             discounts: [],
         }
     });
@@ -64,7 +108,7 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
     };
 
     const addPeriod = () => {
-        appendPeriod({ periodStart: "", periodEnd: "", pricePerUnit: 0, totalUsage: 0, chargePerDay: 0 });
+        appendPeriod(emptyPeriod());
     };
 
     const addDiscount = () => {
@@ -143,11 +187,7 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
                                         <Form.Input type="date" required />
                                     </Form.Group>
                                 </div>
-                                <div className="form-row-3">
-                                    <Form.Group groupId={`periods.${index}.chargePerDay`}>
-                                        <Form.Label>Service Charge/Day</Form.Label>
-                                        <Form.Input type="number" step="0.00001" required />
-                                    </Form.Group>
+                                <div className="form-row">
                                     <Form.Group groupId={`periods.${index}.pricePerUnit`}>
                                         <Form.Label>Price/Unit</Form.Label>
                                         <Form.Input type="number" step="0.00001" required />
@@ -157,6 +197,7 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
                                         <Form.Input type="number" step="0.001" required />
                                     </Form.Group>
                                 </div>
+                                <ServiceCharges control={form.control} periodIndex={index} chargeTypes={chargeTypes ?? []} />
                                 {periodFields.length > 1 && (
                                     <Button variant="outline-danger" size="sm" onClick={() => removePeriod(index)} type="button" className="remove-button">
                                         Remove Period
