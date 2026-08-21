@@ -251,8 +251,6 @@ WHEN MATCHED AND (TARGET.[Name] <> SOURCE.[Name] OR ISNULL(TARGET.UtilityTypeId,
     THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.UtilityTypeId = SOURCE.UtilityTypeId
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.UtilityTypeId);
 
-UPDATE [utilities].[ServiceCharge] SET [ChargeTypeId] = 1 WHERE [ChargeTypeId] IS NULL;
-
 -- Apply the importer-type → institution migration captured in the pre-deployment script.
 IF OBJECT_ID('dbo.__InstitutionImporterMigration', 'U') IS NOT NULL
 BEGIN
