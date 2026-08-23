@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { byTagReportOptions } from "api/@tanstack/react-query.gen";
 import { warmReport } from "./-utils/warmReport";
@@ -7,7 +7,7 @@ import { ReportsPage } from "./-components/ReportsPage";
 import { useByTagReport } from "../../-hooks/useByTagReport";
 
 import { Doughnut } from "react-chartjs-2";
-import type { ChartData } from "chart.js";
+import type { ChartData, ChartOptions } from "chart.js";
 import { useIdParams } from "@andrewmclachlan/moo-app";
 import { Section} from "@andrewmclachlan/moo-ds";
 
@@ -16,7 +16,8 @@ import { ReportTypeSelector } from "components/ReportTypeSelector";
 import { chartColours } from "utils/chartColours";
 import type { transactionTypeFilter } from "models/transactions";
 import { DateRangeSelector } from "components/DateRangeSelector";
-import { getDateRange } from "hooks";
+import { getDateRange, useElementWidth } from "hooks";
+import { doughnutLegendPosition } from "./-utils/legendPosition";
 
 
 export const Route = createFileRoute("/accounts/$id/reports/by-tag")({
@@ -35,8 +36,11 @@ function ByTag() {
     const report = useByTagReport(accountId!, period?.startDate, period?.endDate, reportType);
 
     const chartRef = useRef(null);
+    const [containerRef, containerWidth] = useElementWidth<HTMLElement>();
 
-    const dataset: ChartData<"doughnut", number[], string> = {
+    // Both memoised because react-chartjs-2 keys its update effect on the identity of data and
+    // options: fresh literals redraw the chart, animation and all, on any re-render.
+    const dataset = useMemo<ChartData<"doughnut", number[], string>>(() => ({
         labels: report.data?.tags.map(t => t.tagName) ?? [],
         datasets: [{
             label: "",
@@ -45,9 +49,26 @@ function ByTag() {
             borderRadius: 10,
             spacing: 10,
             borderColor: "transparent",
-            //categoryPercentage: 1,
         }],
-    };
+    }), [report.data]);
+
+    const legendPosition = doughnutLegendPosition(containerWidth);
+
+    const options = useMemo<ChartOptions<"doughnut">>(() => ({
+        plugins: {
+            legend: {
+                position: legendPosition,
+            },
+            tooltip: {
+                mode: "point",
+                intersect: false,
+            } as any,
+        },
+        hover: {
+            mode: "point",
+            intersect: true,
+        },
+    }), [legendPosition]);
 
     return (
         <ReportsPage title="All Tags" kind="AllTags">
@@ -55,24 +76,12 @@ function ByTag() {
                 <ReportTypeSelector value={reportType} onChange={setReportType} hidden />
                 <DateRangeSelector onChange={setPeriod} />
             </Section>
-            <section className="report doughnut">
+            <section className="report doughnut" ref={containerRef}>
                 <h3>All Tags</h3>
-                <Doughnut id="bytag" ref={chartRef} data={dataset} options={{
-                    plugins: {
-                        legend: {
-                            position: "right"
-                        },
-                        tooltip: {
-                            mode: "point",
-                            intersect: false,
-                        } as any,
-                    },
-                    hover: {
-                        mode: "point",
-                        intersect: true,
-                    },
-                }}
-                />
+                {/* Withheld until measured, so the legend is never placed and then moved -- see
+                    the note in -components/Breakdown.tsx. */}
+                {containerWidth !== null &&
+                    <Doughnut id="bytag" ref={chartRef} data={dataset} options={options} />}
             </section>
         </ReportsPage>
     );
