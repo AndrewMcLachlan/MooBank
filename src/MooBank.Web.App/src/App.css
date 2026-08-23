@@ -143,6 +143,16 @@
         max-width: 100%;
     }
 
+    /* Holds the box a doughnut's legend position is measured against. Transparent to layout: on a
+       report page the surrounding .section is an ordinary block and only the width applies, while
+       inside a dashboard widget it is a flex column on a fixed row, where the chart has to grow the
+       way the bare canvas did. */
+    .doughnut-container {
+        inline-size: 100%;
+        flex: 1;
+        min-block-size: 0;
+    }
+
     .net-worth.key-value {
         font-size: 1.2em;
 
