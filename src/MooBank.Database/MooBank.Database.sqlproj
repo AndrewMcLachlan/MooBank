@@ -28,6 +28,9 @@
     <None Include="Scripts\DemoUtilities.sql" />
     <None Include="Scripts\DemoCarLoan.sql" />
     <None Include="Scripts\DemoSavings.sql" />
+    <None Include="Scripts\DemoMortgageTopUp.sql" />
+    <None Include="Scripts\DemoSuperTopUp.sql" />
+    <None Include="Scripts\DemoUtilitiesTopUp.sql" />
     <PreDeploy Include="Script.PreDeployment1.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
