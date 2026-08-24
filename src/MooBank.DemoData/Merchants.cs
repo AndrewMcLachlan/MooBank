@@ -1,4 +1,4 @@
-namespace Asm.MooBank.Tools.TransactionGenerator;
+namespace Asm.MooBank.DemoData;
 
 /// <summary>
 /// Australian merchant data organized by category.

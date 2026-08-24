@@ -7,4 +7,8 @@
     <AssemblyName>trangen</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MooBank.DemoData\MooBank.DemoData.csproj" />
+  </ItemGroup>
+
 </Project>

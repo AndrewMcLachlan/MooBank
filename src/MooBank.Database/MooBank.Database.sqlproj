@@ -11,7 +11,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Build Remove="Scripts\.sql" />
-    <Build Remove="Scripts\UpdateTransactionTypes.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\BackfillTransactionRaw.sql" />
@@ -22,13 +21,21 @@
     <None Include="Scripts\LogicalAccount.sql" />
     <None Include="Scripts\RollbackLogicalAccount.sql" />
     <None Include="Scripts\UpdateOutgoingStrategy.sql" />
+    <None Include="Scripts\DemoTagPurposes.sql" />
+    <None Include="Scripts\DemoMortgage.sql" />
+    <None Include="Scripts\DemoSuper.sql" />
+    <None Include="Scripts\DemoUtilities.sql" />
+    <None Include="Scripts\DemoCarLoan.sql" />
+    <None Include="Scripts\DemoSavings.sql" />
+    <None Include="Scripts\DemoMortgageTopUp.sql" />
+    <None Include="Scripts\DemoSuperTopUp.sql" />
+    <None Include="Scripts\DemoUtilitiesTopUp.sql" />
+    <None Include="Scripts\DemoCarLoanAdvance.sql" />
     <PreDeploy Include="Script.PreDeployment1.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Local.publish.xml" />
-    <None Include="Azure.publish.xml" />
-    <None Include="Azure.Test.publish.xml" />
+    <None Include="*.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="MooBank.Database.refactorlog" />

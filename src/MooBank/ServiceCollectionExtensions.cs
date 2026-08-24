@@ -3,6 +3,7 @@ using Asm.MooBank.Audit;
 using Asm.MooBank.Models;
 using Asm.MooBank.Services;
 using Asm.MooBank.Services.Background;
+using Asm.MooBank.Services.DemoData;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IRunRulesService, RunRulesService>()
             .AddScoped<IReprocessTransactionsService, ReprocessTransactionsService>()
             .AddScoped<IImportTransactionsService, ImportTransactionsService>()
+            .AddScoped<IDemoDataService, DemoDataService>()
+            .AddScoped<IDemoDataWriter, DemoDataWriter>()
             .AddHostedService<PrecacheService>()
             .AddHostedService<RunRulesBackgroundService>()
             .AddHostedService<ReprocessTransactionsBackgroundService>()
@@ -25,6 +28,10 @@ public static class ServiceCollectionExtensions
             .AddBackgroundWorkQueue<Guid>()
             .AddBackgroundWorkQueue<ReprocessWorkItem>()
             .AddBackgroundWorkQueue<ImportWorkItem>();
+
+        // Bound whether or not the section exists: an absent section leaves every id null, which is
+        // how the demo data job is switched off.
+        services.AddOptions<DemoDataOptions>().BindConfiguration(DemoDataOptions.SectionName);
 
         services.AddHybridCache();
 

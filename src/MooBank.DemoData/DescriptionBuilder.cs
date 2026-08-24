@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Asm.MooBank.Tools.TransactionGenerator;
+namespace Asm.MooBank.DemoData;
 
 /// <summary>
 /// Generates transaction descriptions in ING-compatible formats.
