@@ -31,8 +31,10 @@ DECLARE @FamilyId UNIQUEIDENTIFIER = 'B0DDD93D-827F-4716-B4E2-D1922FAF7E27';
 -- rate, produces prices like 0.28137 that no retailer would print.
 DECLARE @ElectricitySupplyPerDay DECIMAL(12, 5) = 1.10000;
 DECLARE @ElectricityPricePerUnit DECIMAL(7, 5) = 0.30000;   -- per kWh
-DECLARE @WaterServicePerDay DECIMAL(12, 5) = 0.55000;
-DECLARE @SeweragePerDay DECIMAL(12, 5) = 0.75000;
+-- Water periods run to about ninety days, so its daily charges are set low enough that the service
+-- charges stay a modest share of a typical bill and the period-shortening below stays unused.
+DECLARE @WaterServicePerDay DECIMAL(12, 5) = 0.32000;
+DECLARE @SeweragePerDay DECIMAL(12, 5) = 0.42000;
 DECLARE @WaterPricePerUnit DECIMAL(7, 5) = 2.95000;         -- per kL
 
 DECLARE @CheckingId UNIQUEIDENTIFIER, @OwnerId UNIQUEIDENTIFIER;
@@ -88,38 +90,81 @@ DECLARE @Bills TABLE (
 );
 
 ;WITH Payments AS (
+    -- CROSS APPLY rather than a join to the tags: a transaction split across two tagged splits
+    -- would otherwise appear once per split, each time carrying the whole amount.
     SELECT
-        CASE WHEN tg.[Name] = N'Electricity' THEN 'E' ELSE 'W' END AS Utility,
+        CASE WHEN u.[Name] = N'Electricity' THEN 'E' ELSE 'W' END AS Utility,
         CAST(t.TransactionTime AS DATE) AS PaidOn,
-        ABS(t.Amount) AS AmountPaid,
-        LAG(CAST(t.TransactionTime AS DATE)) OVER (
-            PARTITION BY tg.[Name] ORDER BY t.TransactionTime, t.TransactionId) AS PreviousPaidOn
+        ABS(t.Amount) AS AmountPaid
     FROM dbo.[Transaction] t
-    INNER JOIN dbo.TransactionSplit ts ON ts.TransactionId = t.TransactionId
-    INNER JOIN dbo.TransactionSplitTag tst ON tst.TransactionSplitId = ts.Id
-    INNER JOIN dbo.Tag tg ON tg.Id = tst.TagId
+    CROSS APPLY (
+        SELECT TOP 1 tg.[Name]
+        FROM dbo.TransactionSplit ts
+        INNER JOIN dbo.TransactionSplitTag tst ON tst.TransactionSplitId = ts.Id
+        INNER JOIN dbo.Tag tg ON tg.Id = tst.TagId
+        WHERE ts.TransactionId = t.TransactionId
+          AND tg.FamilyId = @FamilyId
+          AND tg.[Name] IN (N'Electricity', N'Water')
+        ORDER BY tg.[Name]
+    ) u
     WHERE t.AccountId = @CheckingId
-      AND tg.FamilyId = @FamilyId
-      AND tg.[Name] IN (N'Electricity', N'Water')
+),
+Daily AS (
+    -- More than one payment can fall on the same day, and the demo account has such a pair. They
+    -- become a single bill: the second bill of a day would have to cover a period beginning the
+    -- day after it ended, because a period runs from the previous payment date.
+    SELECT p.Utility, p.PaidOn, SUM(p.AmountPaid) AS AmountPaid
+    FROM Payments p
+    GROUP BY p.Utility, p.PaidOn
+),
+Sequenced AS (
+    SELECT
+        d.Utility,
+        d.PaidOn,
+        d.AmountPaid,
+        LAG(d.PaidOn) OVER (PARTITION BY d.Utility ORDER BY d.PaidOn) AS PreviousPaidOn
+    FROM Daily d
 ),
 Periods AS (
     SELECT
-        p.Utility,
-        p.PaidOn,
-        p.AmountPaid,
+        s.Utility,
+        s.PaidOn,
+        s.AmountPaid,
         -- The first bill has no predecessor, so it is given a period typical of its utility.
-        ISNULL(DATEADD(DAY, 1, p.PreviousPaidOn), DATEADD(DAY, CASE WHEN p.Utility = 'E' THEN -42 ELSE -90 END, p.PaidOn)) AS PeriodStart
-    FROM Payments p
+        ISNULL(DATEADD(DAY, 1, s.PreviousPaidOn), DATEADD(DAY, CASE WHEN s.Utility = 'E' THEN -42 ELSE -90 END, s.PaidOn)) AS PeriodStart
+    FROM Sequenced s
+),
+Rated AS (
+    SELECT
+        pe.Utility,
+        pe.PaidOn,
+        pe.AmountPaid,
+        CASE WHEN pe.Utility = 'E' THEN @ElectricitySupplyPerDay ELSE @WaterServicePerDay + @SeweragePerDay END AS ServicePerDay,
+        DATEDIFF(DAY, pe.PeriodStart, pe.PaidOn) + 1 AS NaturalDays
+    FROM Periods pe
 ),
 Costed AS (
     SELECT
-        pe.*,
-        DATEDIFF(DAY, pe.PeriodStart, pe.PaidOn) + 1 AS Days,
-        CASE WHEN pe.Utility = 'E'
-             THEN @ElectricitySupplyPerDay * (DATEDIFF(DAY, pe.PeriodStart, pe.PaidOn) + 1)
-             ELSE (@WaterServicePerDay + @SeweragePerDay) * (DATEDIFF(DAY, pe.PeriodStart, pe.PaidOn) + 1)
-        END AS ServiceTotal
-    FROM Periods pe
+        r.Utility,
+        r.PaidOn,
+        r.AmountPaid,
+        d.Days,
+        DATEADD(DAY, -(d.Days - 1), r.PaidOn) AS PeriodStart,
+        r.ServicePerDay * d.Days AS ServiceTotal
+    FROM Rated r
+    CROSS APPLY (
+        /*
+            A period is shortened when its service charges would otherwise swallow most of the
+            bill, which keeps the solved consumption positive without letting the rates wander.
+            Only an unusually long gap between payments, or an unusually small payment, is affected;
+            the resulting bill simply does not reach back to the previous one.
+        */
+        SELECT CASE
+            WHEN r.NaturalDays < 1 THEN 1
+            WHEN r.ServicePerDay * r.NaturalDays <= r.AmountPaid * 0.6 THEN r.NaturalDays
+            ELSE GREATEST(CAST(FLOOR(r.AmountPaid * 0.6 / r.ServicePerDay) AS INT), 1)
+        END AS Days
+    ) d
 )
 INSERT INTO @Bills (InvoiceNumber, AccountId, Utility, IssueDate, PeriodStart, PeriodEnd, Days, AmountPaid, ServiceTotal, Usage, PreviousReading, CurrentReading)
 SELECT

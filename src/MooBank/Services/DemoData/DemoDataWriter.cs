@@ -54,8 +54,8 @@ internal class DemoDataWriter(
     // Utility rates, matching DemoUtilities.sql so a new bill sits alongside the old ones.
     private const decimal ElectricitySupplyPerDay = 1.10000m;
     private const decimal ElectricityPricePerUnit = 0.30000m;
-    private const decimal WaterServicePerDay = 0.55000m;
-    private const decimal SeweragePerDay = 0.75000m;
+    private const decimal WaterServicePerDay = 0.32000m;
+    private const decimal SeweragePerDay = 0.42000m;
     private const decimal WaterPricePerUnit = 2.95000m;
 
     // The gross-up from the net salary on checking, as used by DemoSuper.sql.
@@ -294,7 +294,14 @@ internal class DemoDataWriter(
             return;
         }
 
-        var payments = await TaggedAmounts(checkingId, tagName, month, monthEnd, cancellationToken);
+        // Payments falling on the same day become one bill. A period runs from the previous payment
+        // date, so a second bill issued the same day would have to cover one that begins the day
+        // after it ends.
+        var payments = (await TaggedAmounts(checkingId, tagName, month, monthEnd, cancellationToken))
+            .GroupBy(p => DateOnly.FromDateTime(p.When))
+            .Select(g => (Issued: g.Key, Amount: g.Sum(p => p.Amount)))
+            .OrderBy(p => p.Issued)
+            .ToList();
 
         if (payments.Count == 0) return;
 
@@ -305,17 +312,23 @@ internal class DemoDataWriter(
         var periodStart = last is null ? month : last.IssueDate.AddDays(1);
         var reading = last?.CurrentReading ?? 0;
 
-        foreach (var (when, amount) in payments)
+        foreach (var (issued, amount) in payments)
         {
-            var issued = DateOnly.FromDateTime(when);
-
             if (periodStart > issued) periodStart = issued.AddDays(-30);
 
-            var days = issued.DayNumber - periodStart.DayNumber + 1;
-            var serviceTotal = tagName == "Electricity"
-                ? ElectricitySupplyPerDay * days
-                : (WaterServicePerDay + SeweragePerDay) * days;
+            var servicePerDay = tagName == "Electricity" ? ElectricitySupplyPerDay : WaterServicePerDay + SeweragePerDay;
+            var days = Math.Max(issued.DayNumber - periodStart.DayNumber + 1, 1);
 
+            // A period is shortened when its service charges would otherwise swallow most of the
+            // bill, which keeps the solved consumption positive without letting the rates wander.
+            // Only an unusually long gap between payments, or an unusually small payment, is
+            // affected; the resulting bill simply does not reach back to the previous one.
+            var affordableDays = Math.Max((int)Math.Floor(amount * 0.6m / servicePerDay), 1);
+            if (days > affordableDays) days = affordableDays;
+
+            periodStart = issued.AddDays(-(days - 1));
+
+            var serviceTotal = servicePerDay * days;
             var pricePerUnit = tagName == "Electricity" ? ElectricityPricePerUnit : WaterPricePerUnit;
             var usage = Math.Round((amount - serviceTotal) / pricePerUnit, 3, MidpointRounding.AwayFromZero);
 
