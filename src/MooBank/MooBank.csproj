@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <InternalsVisibleTo Include="Asm.MooBank.Core.Tests" />
+    <!-- Moq proxies internal interfaces (IDemoDataWriter) through its own dynamic assembly. -->
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -11,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MooBank.DemoData\MooBank.DemoData.csproj" />
     <ProjectReference Include="..\MooBank.Domain\MooBank.Domain.csproj" />
     <ProjectReference Include="..\MooBank.Models\MooBank.Models.csproj" />
   </ItemGroup>

@@ -134,6 +134,7 @@
   <Project Path="src/MooBank.Database/MooBank.Database.sqlproj" Id="692a95bf-a4d2-4f37-af63-a3b5a2c04fc7">
     <Build />
   </Project>
+  <Project Path="src/MooBank.DemoData/MooBank.DemoData.csproj" />
   <Project Path="src/MooBank.Domain/MooBank.Domain.csproj" />
   <Project Path="src/MooBank.Infrastructure/MooBank.Infrastructure.csproj" />
   <Project Path="src/MooBank.Models/MooBank.Models.csproj" />

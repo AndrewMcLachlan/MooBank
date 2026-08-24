@@ -80,8 +80,16 @@ Smallest script, and a prerequisite for 2 and 3 being visible anywhere.
 ### 2. `DemoMortgage.sql`
 
 Re-dates the opening balance to 2014-01-01, immediately before the first repayment, and sets it so
-that amortising the 148 known repayments produces a plausible balance today. Proposed figures, and
-the main thing to review in this script:
+that amortising the 148 known repayments produces a plausible balance today.
+
+**The ledger runs positive-owing**, which is the opposite sign to the balance the account holds
+today, and the direction is forced rather than chosen. Principal vs Interest derives principal as
+(monthly debit total − interest-tagged splits) on the mortgage account, so the whole repayment has
+to be a debit there; the balance view subtracts every debit, so the month's interest has to be
+credited back or the balance runs away from zero instead of toward it. No code negates a balance by
+account type, so the mortgage will read as a positive balance on the dashboard.
+
+Proposed figures, and the main thing to review in this script:
 
 - Principal **387,500** at **5.5%** nominal annual, monthly rest — the standard 30-year loan that a
   2,200 monthly repayment services.
@@ -124,7 +132,13 @@ Bills are shaped so `utilities.TotalCost` reproduces the amount actually paid fr
 readings run monotonically upward across bills so the usage reports have a sensible series.
 
 Depends on the charge types seeded by the current schema (`Supply`, `Water Service`,
-`Sewerage Service`) and on `Usage.UsageTypeId`, both of which are already in production.
+`Sewerage Service`).
+
+It also depends on a **fix to `utilities.TotalCost`**, included in this branch. The version on main
+joins service charges to usages, so a water bill carrying two service charges counts its
+consumption twice and the bill totals wrongly. The fix sums the two sets separately. It is the same
+change already sitting on the feed-in branch, lifted byte-identical so the two merge without
+conflict; it does not depend on anything else there.
 
 ### 5. `DemoCarLoan.sql`
 

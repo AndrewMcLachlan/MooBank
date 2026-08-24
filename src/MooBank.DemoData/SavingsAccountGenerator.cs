@@ -1,4 +1,4 @@
-namespace Asm.MooBank.Tools.TransactionGenerator;
+namespace Asm.MooBank.DemoData;
 
 /// <summary>
 /// Generates realistic transaction data for a savings account.

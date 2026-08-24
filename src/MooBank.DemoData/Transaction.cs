@@ -1,4 +1,4 @@
-namespace Asm.MooBank.Tools.TransactionGenerator;
+namespace Asm.MooBank.DemoData;
 
 /// <summary>
 /// Represents a generated transaction for CSV output.

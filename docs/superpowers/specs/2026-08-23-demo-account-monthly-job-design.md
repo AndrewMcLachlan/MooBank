@@ -10,7 +10,18 @@ been amended to close the savings gap it previously deferred to here.
 
 ## Shape
 
-A `TimerTrigger` job beside the existing four, delegating to a service, as they all do:
+A `TimerTrigger` job beside the existing four, delegating to a service, as they all do. The service
+is in two parts, and the split is forced rather than stylistic:
+
+- `DemoDataService` decides whether to run and as whom. It reads only what can be read without a
+  current user, resolves the demo family from the configured checking account's owner, opens a
+  fresh scope and sets the identity on it.
+- `DemoDataWriter` does the work, resolved from that scope.
+
+They cannot be one class. The account repositories take the current user in their own constructors
+and the tag query filter reads the current family, so the identity has to be in place before those
+are *resolved*, not merely before they are used — the same ordering the background import service
+observes when it sets the user before resolving the importer.
 
 ```csharp
 [FunctionName("DemoData")]
@@ -113,6 +124,14 @@ quarter.
 **6. Car loan.** One repayment row per checking `Car Loan` payment in the month. The loan matures
 mid-2027, after which this piece has nothing to do and stops.
 
+Unlike the mortgage, the car loan's repayment is **originated** rather than derived. The generator
+has a home loan template, so the mortgage payment appears on checking every month and the account's
+rules tag it; it has no car loan template and the backfill wrote both sides of that loan directly,
+so nothing would ever produce the payment and the demo would show a loan nobody is paying. The job
+therefore writes the checking repayment itself when the month has none and the loan still owes,
+tagging it directly, then derives the ledger from it as usual. The final instalment clears the
+balance rather than overpaying.
+
 **7. Utilities.** A bill per checking electricity or water payment in the month, shaped so
 `utilities.TotalCost` reproduces the amount paid, with meter readings continuing upward from the
 last bill.
@@ -157,3 +176,9 @@ continue the amortisation the script ended on, not restart it.
 | Bills for the month | `TotalCost` equals the checking payment |
 | Re-running the job | writes nothing |
 | Every non-demo account | untouched |
+
+One check belongs to the first run in particular: **that a rule tags the generated home loan
+payment**. The mortgage is derived from checking's tagged `Mortgage` transactions, so if no rule
+matches the generator's `HOME LOAN` description the payment lands untagged and the mortgage stops
+being paid, silently. The history is 99% tagged by rules, so such a rule almost certainly exists,
+but it has not been confirmed against the database and it is cheap to check.

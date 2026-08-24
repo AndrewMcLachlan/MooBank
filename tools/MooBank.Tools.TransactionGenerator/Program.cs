@@ -1,4 +1,4 @@
-using Asm.MooBank.Tools.TransactionGenerator;
+using Asm.MooBank.DemoData;
 
 // Parse command line arguments
 decimal transactionBalance = 5000m;

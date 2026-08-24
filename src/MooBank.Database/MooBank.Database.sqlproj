@@ -22,6 +22,12 @@
     <None Include="Scripts\LogicalAccount.sql" />
     <None Include="Scripts\RollbackLogicalAccount.sql" />
     <None Include="Scripts\UpdateOutgoingStrategy.sql" />
+    <None Include="Scripts\DemoTagPurposes.sql" />
+    <None Include="Scripts\DemoMortgage.sql" />
+    <None Include="Scripts\DemoSuper.sql" />
+    <None Include="Scripts\DemoUtilities.sql" />
+    <None Include="Scripts\DemoCarLoan.sql" />
+    <None Include="Scripts\DemoSavings.sql" />
     <PreDeploy Include="Script.PreDeployment1.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>

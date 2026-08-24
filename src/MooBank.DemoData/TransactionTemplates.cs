@@ -1,4 +1,4 @@
-namespace Asm.MooBank.Tools.TransactionGenerator;
+namespace Asm.MooBank.DemoData;
 
 /// <summary>
 /// Payment method types that determine how the description is formatted.
