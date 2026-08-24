@@ -183,7 +183,9 @@ DECLARE @Earnings TABLE (
     UNION ALL
     SELECT
         n.q, n.QuarterEnd, n.Contributions, n.Rate, n.TxId, n.SplitId,
-        b.BalanceBefore + b.Contributions + b.Earnings,
+        -- Cast, not decoration: adding two DECIMAL(18,6) values yields DECIMAL(20,6), and a
+        -- recursive member whose column type differs from the anchor's will not compile.
+        CAST(b.BalanceBefore + b.Contributions + b.Earnings AS DECIMAL(18, 6)),
         CAST(ROUND(((b.BalanceBefore + b.Contributions + b.Earnings) + n.Contributions / 2.0) * n.Rate / 4.0, 2) AS DECIMAL(18, 6))
     FROM Balances b
     INNER JOIN @Quarters n ON n.q = b.q + 1

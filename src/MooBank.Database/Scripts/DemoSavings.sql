@@ -103,7 +103,9 @@ DECLARE @Months TABLE (
     SELECT
         p.m + 1,
         DATEADD(MONTH, 1, p.MonthStart),
-        p.BalanceBefore + @MonthlyTransfer + p.Interest,
+        -- Cast, not decoration: adding a DECIMAL(18,6) to a DECIMAL(12,4) widens the result, and a
+        -- recursive member whose column type differs from the anchor's will not compile.
+        CAST(p.BalanceBefore + @MonthlyTransfer + p.Interest AS DECIMAL(18, 6)),
         CAST(ROUND((p.BalanceBefore + @MonthlyTransfer + p.Interest + @MonthlyTransfer) * @AnnualRate / 12.0, 2) AS DECIMAL(18, 6))
     FROM Months p
     WHERE DATEADD(MONTH, 1, p.MonthStart) <= @To
