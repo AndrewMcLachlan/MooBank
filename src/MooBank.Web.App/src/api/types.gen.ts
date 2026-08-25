@@ -1090,6 +1090,18 @@ export type UpdateBalance = {
     balance: number;
 };
 
+export type UpdateBill = {
+    invoiceNumber?: null | string;
+    issueDate: string;
+    currentReading?: null | number;
+    previousReading?: null | number;
+    total?: null | number;
+    costsIncludeGST?: null | boolean;
+    cost?: null | number;
+    periods: Array<Period>;
+    discounts: Array<Discount>;
+};
+
 export type UpdateFamily = {
     name: string;
 };
@@ -1723,6 +1735,25 @@ export type GetBillResponses = {
 };
 
 export type GetBillResponse = GetBillResponses[keyof GetBillResponses];
+
+export type UpdateBillData = {
+    body: UpdateBill;
+    path: {
+        instrumentId: string;
+        id: number;
+    };
+    query?: never;
+    url: '/bills/accounts/{instrumentId}/bills/{id}';
+};
+
+export type UpdateBillResponses = {
+    /**
+     * OK
+     */
+    200: Bill;
+};
+
+export type UpdateBillResponse = UpdateBillResponses[keyof UpdateBillResponses];
 
 export type GetCostPerUnitReportData = {
     body?: never;

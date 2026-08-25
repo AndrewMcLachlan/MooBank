@@ -28,14 +28,18 @@ export interface CreateDiscount {
     reason?: string;
 }
 
+/**
+ * The values a bill form edits. Creating and updating take the same shape.
+ *
+ * There is no cost or total: the database derives the cost from the periods and the total from the
+ * readings, so both are ignored on the way in.
+ */
 export interface CreateBill {
     invoiceNumber?: string;
     issueDate: string;
     currentReading?: number;
     previousReading?: number;
-    total: number;
     costsIncludeGST?: boolean;
-    cost: number;
     periods: CreatePeriod[];
     discounts: CreateDiscount[];
 }

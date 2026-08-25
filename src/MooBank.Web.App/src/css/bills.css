@@ -9,6 +9,11 @@
         flex-direction: column;
     }
 
+    .bill-details-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+
     .summary-row {
         display: flex;
         justify-content: space-between;
