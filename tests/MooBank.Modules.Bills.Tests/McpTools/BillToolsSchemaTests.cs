@@ -142,4 +142,27 @@ public class BillToolsSchemaTests
         Assert.Contains("chargeTypeId", schema);
         Assert.Contains("chargePerDay", schema);
     }
+
+    /// <summary>
+    /// Given the import-bills tool
+    /// When its schema is published
+    /// Then a period should describe its metered quantities, including the export type
+    /// </summary>
+    /// <remarks>
+    /// Without the usage type in the schema a caller cannot record solar export at all, and has no
+    /// way of knowing the option exists.
+    /// </remarks>
+    [Fact]
+    public void ImportBillsDescribesUsages()
+    {
+        var (_, tool) = Tools().Single(t => t.Tool.ProtocolTool.Name == "import-bills");
+
+        var schema = tool.ProtocolTool.InputSchema.GetRawText();
+
+        Assert.Contains("usages", schema);
+        Assert.Contains("usageType", schema);
+        Assert.Contains("Export", schema);
+        Assert.Contains("pricePerUnit", schema);
+        Assert.Contains("totalUsage", schema);
+    }
 }

@@ -24,7 +24,7 @@ internal class GetUsageReportHandler(IQueryable<Domain.Entities.Utility.Account>
             .SelectMany(a => a.Bills)
             .Include(b => b.Account)
             .Include(b => b.Periods)
-            .ThenInclude(p => p.Usage)
+            .ThenInclude(p => p.Usages)
             .Where(b => b.IssueDate >= query.Start && b.IssueDate <= query.End)
             .AsQueryable();
 
@@ -42,25 +42,30 @@ internal class GetUsageReportHandler(IQueryable<Domain.Entities.Utility.Account>
             .OrderBy(b => b.IssueDate)
             .ToListAsync(cancellationToken);
 
+        // A point per usage type, so solar export trends alongside consumption rather than being
+        // added to it. Days come from the period, so a period contributes its length once per type.
         var dataPoints = bills
-            .SelectMany(b => b.Periods.Select(p => new
+            .SelectMany(b => b.Periods.SelectMany(p => p.Usages.Select(u => new
             {
                 Date = DateOnly.FromDateTime(p.PeriodEnd),
                 AccountName = b.Account?.Name ?? String.Empty,
-                TotalUsage = p.Usage?.TotalUsage ?? 0,
+                u.UsageType,
+                u.TotalUsage,
                 // Billing periods are inclusive of both start and end dates.
                 Days = p.DaysInclusive ?? (p.PeriodEnd - p.PeriodStart).Days + 1
-            }))
+            })))
             .Where(x => x.Days > 0)
-            .GroupBy(x => new { x.Date, x.AccountName })
+            .GroupBy(x => new { x.Date, x.AccountName, x.UsageType })
             .Select(g => new UsageDataPoint
             {
                 Date = g.Key.Date,
                 AccountName = g.Key.AccountName,
+                UsageType = g.Key.UsageType,
                 UsagePerDay = g.Sum(x => x.TotalUsage) / g.Sum(x => x.Days)
             })
             .OrderBy(x => x.Date)
             .ThenBy(x => x.AccountName)
+            .ThenBy(x => x.UsageType)
             .ToList();
 
         return new UsageReport

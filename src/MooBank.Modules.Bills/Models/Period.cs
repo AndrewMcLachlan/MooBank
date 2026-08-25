@@ -1,3 +1,5 @@
+using Asm.MooBank.Models;
+
 namespace Asm.MooBank.Modules.Bills.Models;
 
 public record Period
@@ -10,13 +12,23 @@ public record Period
 
     public int? Days { get; set; }
 
+    public IEnumerable<Usage> Usages { get; set; } = [];
+
+    public IEnumerable<ServiceCharge> ServiceCharges { get; set; } = [];
+}
+
+public record Usage
+{
+    public UsageType UsageType { get; set; } = UsageType.Consumption;
+
     public decimal PricePerUnit { get; set; }
 
     public decimal TotalUsage { get; set; }
 
+    /// <summary>
+    /// Negative for export, which the retailer credits.
+    /// </summary>
     public decimal? Cost { get; set; }
-
-    public IEnumerable<ServiceCharge> ServiceCharges { get; set; } = [];
 }
 
 public record ServiceCharge
@@ -34,13 +46,11 @@ public static class PeriodExtensions
         new()
         {
             ServiceCharges = period.ServiceCharges.Select(sc => sc.ToModel()).ToList(),
-            Cost = period.Usage?.Cost,
+            Usages = period.Usages.Select(u => u.ToModel()).ToList(),
             Days = period.Days,
             DaysInclusive = period.DaysInclusive,
             PeriodStart = period.PeriodStart,
             PeriodEnd = period.PeriodEnd,
-            PricePerUnit = period.Usage?.PricePerUnit ?? 0,
-            TotalUsage = period.Usage?.TotalUsage ?? 0,
         };
 
     public static IEnumerable<Period> ToModel(this IEnumerable<Domain.Entities.Utility.Period> periods) =>
@@ -52,5 +62,14 @@ public static class PeriodExtensions
             ChargeTypeId = serviceCharge.ChargeTypeId,
             ChargeTypeName = serviceCharge.ChargeType?.Name,
             ChargePerDay = serviceCharge.ChargePerDay,
+        };
+
+    public static Usage ToModel(this Domain.Entities.Utility.Usage usage) =>
+        new()
+        {
+            UsageType = usage.UsageType,
+            PricePerUnit = usage.PricePerUnit,
+            TotalUsage = usage.TotalUsage,
+            Cost = usage.Cost,
         };
 }

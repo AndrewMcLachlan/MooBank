@@ -7,6 +7,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import type { BillFilter } from "../-hooks/types";
 import { useUsageReport } from "../-hooks/useUsageReport";
 import { chartColours, useChartColours } from "utils/chartColours";
+import { rollingAverage, usageChartData } from "../-utils/billCharts";
 
 
 export interface UsageChartProps {
@@ -14,15 +15,6 @@ export interface UsageChartProps {
     filter: BillFilter;
     rollingWindowSize?: number;
 }
-
-const calculateRollingAverage = (data: (number | null)[], windowSize: number): (number | null)[] => {
-    return data.map((_, index) => {
-        const start = Math.max(0, index - windowSize + 1);
-        const window = data.slice(start, index + 1).filter((v): v is number => v !== null);
-        if (window.length === 0) return null;
-        return window.reduce((sum, v) => sum + v, 0) / window.length;
-    });
-};
 
 export const UsageChart: React.FC<UsageChartProps> = ({ utilityType, filter, rollingWindowSize = 3 }) => {
     const colours = useChartColours();
@@ -34,21 +26,18 @@ export const UsageChart: React.FC<UsageChartProps> = ({ utilityType, filter, rol
         utilityType
     );
 
-    const allDates = usageReport?.dataPoints.map(d => d.date).sort() ?? [];
+    const { dates: allDates, consumption: rawData, export: exportData, hasExport } = useMemo(
+        () => usageChartData(usageReport?.dataPoints ?? []),
+        [usageReport?.dataPoints]);
 
-    const rawData = useMemo(() => {
-        return allDates.map(date => {
-            const point = usageReport?.dataPoints.find(d => d.date === date);
-            return point?.usagePerDay ?? null;
-        });
-    }, [usageReport?.dataPoints, allDates]);
+    const consumptionPoints = usageReport?.dataPoints.filter(d => d.usageType === "Consumption") ?? [];
 
     const rollingAverageData = useMemo(() => {
-        return calculateRollingAverage(rawData, rollingWindowSize);
+        return rollingAverage(rawData, rollingWindowSize);
     }, [rawData, rollingWindowSize]);
 
     const accountChangeAnnotations = useMemo(() => {
-        const dataPoints = usageReport?.dataPoints ?? [];
+        const dataPoints = consumptionPoints;
         if (dataPoints.length < 2) return {};
 
         const annotations: Record<string, AnnotationOptions<"line">> = {};
@@ -82,7 +71,7 @@ export const UsageChart: React.FC<UsageChartProps> = ({ utilityType, filter, rol
         labels: allDates,
         datasets: [
             {
-                label: "Usage/Day",
+                label: hasExport ? "Consumption/Day" : "Usage/Day",
                 data: rawData,
                 backgroundColor: chartColours[2],
                 borderColor: chartColours[2],
@@ -91,6 +80,16 @@ export const UsageChart: React.FC<UsageChartProps> = ({ utilityType, filter, rol
                 tension: 0,
                 yAxisID: "y",
             },
+            ...(hasExport ? [{
+                label: "Export/Day",
+                data: exportData,
+                backgroundColor: chartColours[4],
+                borderColor: chartColours[4],
+                borderWidth: 1,
+                pointRadius: 3,
+                tension: 0,
+                yAxisID: "y",
+            }] : []),
             {
                 label: `${rollingWindowSize}-Period Average`,
                 data: rollingAverageData,

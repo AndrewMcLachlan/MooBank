@@ -26,8 +26,7 @@ public class Period : Entity
 
     public virtual ICollection<ServiceCharge> ServiceCharges { get; set; } = [];
 
-    [AllowNull]
-    public virtual Usage Usage { get; set; }
+    public virtual ICollection<Usage> Usages { get; set; } = [];
 
     [AllowNull]
     [ForeignKey("BillId")]

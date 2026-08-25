@@ -336,4 +336,41 @@ public class GetUsageReportTests
         Assert.Equal(2, dataPoints.Count);
         Assert.True(dataPoints[0].Date <= dataPoints[1].Date);
     }
+
+    /// <summary>
+    /// Given a period carrying consumption and export
+    /// When the report is run
+    /// Then each should have its own per-day figure over the period's length
+    /// </summary>
+    [Fact]
+    public async Task Handle_PeriodWithExport_ReturnsAPointPerUsageType()
+    {
+        // Arrange
+        var userId = _mocks.User.Id;
+        var period = TestEntities.CreatePeriod(
+            periodStart: new DateTime(2024, 1, 1),
+            periodEnd: new DateTime(2024, 1, 10),
+            totalUsage: 200);
+        period.Usages.Add(new Domain.Entities.Utility.Usage
+        {
+            UsageType = UsageType.Export,
+            PricePerUnit = 0.08m,
+            TotalUsage = 100,
+        });
+        var bill = TestEntities.CreateBill(id: 1, issueDate: new DateOnly(2024, 2, 1), periods: [period]);
+        var account = TestEntities.CreateAccountWithOwner(name: "Electricity", ownerId: userId, bills: [bill]);
+
+        var handler = new GetUsageReportHandler(TestEntities.CreateAccountQueryable(account), _mocks.User);
+        var query = new GetUsageReport { Start = new DateOnly(2024, 1, 1), End = new DateOnly(2024, 12, 31) };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        // 1 to 10 January inclusive is ten days; each type is divided by the period, not by the sum
+        // of both types' lengths.
+        Assert.Equal(2, result.DataPoints.Count());
+        Assert.Equal(20m, result.DataPoints.Single(d => d.UsageType == UsageType.Consumption).UsagePerDay);
+        Assert.Equal(10m, result.DataPoints.Single(d => d.UsageType == UsageType.Export).UsagePerDay);
+    }
 }

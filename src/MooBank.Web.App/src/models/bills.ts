@@ -1,4 +1,6 @@
-import type { UtilityType } from "api/types.gen";
+import type { UtilityType, UsageType } from "api/types.gen";
+
+export const UsageTypes: UsageType[] = ["Consumption", "Export"];
 
 export const UtilityTypes: UtilityType[] = ["Electricity", "Gas", "Water", "Phone", "Internet", "Other"];
 
@@ -7,11 +9,16 @@ export interface CreateServiceCharge {
     chargePerDay: number;
 }
 
+export interface CreateUsage {
+    usageType: UsageType;
+    pricePerUnit: number;
+    totalUsage: number;
+}
+
 export interface CreatePeriod {
     periodStart: string;
     periodEnd: string;
-    pricePerUnit: number;
-    totalUsage: number;
+    usages: CreateUsage[];
     serviceCharges: CreateServiceCharge[];
 }
 

@@ -342,7 +342,11 @@ internal class DemoDataWriter(
             {
                 PeriodStart = periodStart.ToDateTime(TimeOnly.MinValue),
                 PeriodEnd = issued.ToDateTime(TimeOnly.MinValue),
-                Usage = new Usage { PricePerUnit = pricePerUnit, TotalUsage = usage },
+                // Consumption only: the demo's electricity account has no solar, so it never
+                // exports. A period can now carry several usages, and the type has to be stated --
+                // the column is nullable until the follow-up tightens it, and a null read back
+                // through the non-nullable UsageType would throw.
+                Usages = [new Usage { PricePerUnit = pricePerUnit, TotalUsage = usage, UsageType = UsageType.Consumption }],
             };
 
             foreach (var (chargeTypeId, chargePerDay) in ServiceChargesFor(tagName))

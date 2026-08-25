@@ -24,7 +24,7 @@ internal class GetCostPerUnitReportHandler(IQueryable<Domain.Entities.Utility.Ac
             .SelectMany(a => a.Bills)
             .Include(b => b.Account)
             .Include(b => b.Periods)
-            .ThenInclude(p => p.Usage)
+            .ThenInclude(p => p.Usages)
             .Where(b => b.IssueDate >= query.Start && b.IssueDate <= query.End)
             .AsQueryable();
 
@@ -42,24 +42,29 @@ internal class GetCostPerUnitReportHandler(IQueryable<Domain.Entities.Utility.Ac
             .OrderBy(b => b.IssueDate)
             .ToListAsync(cancellationToken);
 
+        // A point per usage type, so a solar bill's feed-in tariff trends as its own series rather
+        // than being averaged against what the same bill charges for consumption.
         var dataPoints = bills
-            .SelectMany(b => b.Periods.Select(p => new
+            .SelectMany(b => b.Periods.SelectMany(p => p.Usages.Select(u => new
             {
                 Date = DateOnly.FromDateTime(p.PeriodEnd),
                 AccountName = b.Account?.Name ?? String.Empty,
-                PricePerUnit = p.Usage?.PricePerUnit ?? 0,
-                TotalUsage = p.Usage?.TotalUsage ?? 0
-            }))
-            .GroupBy(x => new { x.Date, x.AccountName })
+                u.UsageType,
+                u.PricePerUnit,
+                u.TotalUsage,
+            })))
+            .GroupBy(x => new { x.Date, x.AccountName, x.UsageType })
             .Select(g => new CostDataPoint
             {
                 Date = g.Key.Date,
                 AccountName = g.Key.AccountName,
+                UsageType = g.Key.UsageType,
                 AveragePricePerUnit = g.Average(x => x.PricePerUnit),
                 TotalUsage = g.Sum(x => x.TotalUsage)
             })
             .OrderBy(x => x.Date)
             .ThenBy(x => x.AccountName)
+            .ThenBy(x => x.UsageType)
             .ToList();
 
         return new CostPerUnitReport

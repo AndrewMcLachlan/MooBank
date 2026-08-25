@@ -176,16 +176,14 @@ public class CreateTests()
                     PeriodStart = new DateTime(2024, 4, 1),
                     PeriodEnd = new DateTime(2024, 4, 30),
                     ServiceCharges = [new ServiceCharge { ChargeTypeId = 1, ChargePerDay = 1.5m }],
-                    PricePerUnit = 0.25m,
-                    TotalUsage = 450,
+                    Usages = [new Usage { PricePerUnit = 0.25m, TotalUsage = 450 }],
                 },
                 new Period
                 {
                     PeriodStart = new DateTime(2024, 5, 1),
                     PeriodEnd = new DateTime(2024, 5, 31),
                     ServiceCharges = [new ServiceCharge { ChargeTypeId = 1, ChargePerDay = 1.5m }],
-                    PricePerUnit = 0.28m,
-                    TotalUsage = 520,
+                    Usages = [new Usage { PricePerUnit = 0.28m, TotalUsage = 520 }],
                 },
             ],
             Discounts = [],
@@ -277,8 +275,7 @@ public class CreateTests()
                     PeriodStart = new DateTime(2024, 5, 15),
                     PeriodEnd = new DateTime(2024, 6, 14),
                     ServiceCharges = [new ServiceCharge { ChargeTypeId = 1, ChargePerDay = 1.25m }],
-                    PricePerUnit = 0.30m,
-                    TotalUsage = 500,
+                    Usages = [new Usage { PricePerUnit = 0.30m, TotalUsage = 500 }],
                 },
             ],
             Discounts =

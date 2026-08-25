@@ -21,7 +21,7 @@ public class BillTools(IQueryDispatcher queryDispatcher, ICommandDispatcher comm
     [Description(
         "Retrieves the utility bills already recorded, most recently issued first, as a page of bills plus the total number that matched. " +
         "Use it for questions about what has been billed and what was used: what the last electricity bill came to, how gas usage compares year on year, whether a bill for a given month has been recorded yet. " +
-        "Each bill carries its invoice number, issue date, meter readings, billing periods (usage, price per unit, and the daily service charges), discounts, and the cost and total MooBank computed from them. " +
+        "Each bill carries its invoice number, issue date, meter readings, billing periods (the metered quantities and their rates, including solar export, and the daily service charges), discounts, and the cost and total MooBank computed from them. " +
         "get-bill-accounts is the cheaper way to find out which accounts exist and which dates they already have bills for; come here for the bills themselves. " +
         "Filter by issue date range, by account id (from get-bill-accounts) or by utility type; only the current user's accounts are ever returned.")]
     public ValueTask<PagedResult<Models.Bill>> GetBills(
@@ -43,6 +43,7 @@ public class BillTools(IQueryDispatcher queryDispatcher, ICommandDispatcher comm
         "Bills whose invoice number or issue date already exists on the account are rejected rather than duplicated, so re-reading the same invoice is safe. " +
         "Each bill is accepted or rejected on its own; the result reports how many of each and why. " +
         "Each billing period carries its service charges as a list: a single supply charge for electricity and gas, a water and a sewerage charge for water. Get the ids from get-charge-types. " +
+        "It also carries its metered quantities as a list: one for what was consumed, plus an Export entry where the bill shows solar sent back to the grid. Record a feed-in tariff as a positive rate against Export; MooBank treats it as a credit. " +
         "Do not supply the bill's total cost or overall usage total (the computed Total) — MooBank calculates those from the readings, periods and discounts.")]
     public ValueTask<ImportResult> ImportBills(
         [Description("The bills to record.")] BillImport request,

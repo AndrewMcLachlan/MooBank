@@ -164,6 +164,7 @@ export type Controller = 'Manual' | 'Virtual' | 'Import';
 export type CostDataPoint = {
     date: string;
     accountName: string;
+    usageType: UsageType;
     averagePricePerUnit: number;
     totalUsage: number;
 };
@@ -543,9 +544,7 @@ export type Period = {
     periodEnd: string;
     daysInclusive?: null | number;
     days?: null | number;
-    pricePerUnit: number;
-    totalUsage: number;
-    cost?: null | number;
+    usages: Array<Usage>;
     serviceCharges: Array<ServiceCharge>;
 };
 
@@ -1152,9 +1151,17 @@ export type UpdateVirtualInstrument = {
     currentBalance: number;
 };
 
+export type Usage = {
+    usageType: UsageType;
+    pricePerUnit: number;
+    totalUsage: number;
+    cost?: null | number;
+};
+
 export type UsageDataPoint = {
     date: string;
     accountName: string;
+    usageType: UsageType;
     usagePerDay: number;
 };
 
@@ -1163,6 +1170,8 @@ export type UsageReport = {
     end: string;
     dataPoints: Array<UsageDataPoint>;
 };
+
+export type UsageType = 'Consumption' | 'Export';
 
 export type User = {
     id: string;

@@ -15,5 +15,7 @@ public record UsageDataPoint
 
     public string AccountName { get; init; } = String.Empty;
 
+    public UsageType UsageType { get; init; } = UsageType.Consumption;
+
     public decimal UsagePerDay { get; init; }
 }

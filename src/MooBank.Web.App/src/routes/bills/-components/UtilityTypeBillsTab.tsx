@@ -76,7 +76,8 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                             <td>{bill.accountName}</td>
                             <td>{formatDateShort(bill.issueDate)}</td>
                             <td><Amount amount={bill.cost} currencyCode="AUD" /></td>
-                            <td>{bill.periods?.reduce((sum, p) => sum + p.totalUsage, 0).toLocaleString() ?? "-"}</td>
+                            <td>{bill.periods?.reduce((sum, p) =>
+                                sum + p.usages.filter(u => u.usageType === "Consumption").reduce((units, u) => units + u.totalUsage, 0), 0).toLocaleString() ?? "-"}</td>
                         </tr>
                     ))}
                     {(!pagedBills || pagedBills.results.length === 0) && (

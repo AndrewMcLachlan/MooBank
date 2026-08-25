@@ -6,6 +6,7 @@ import { Section } from "@andrewmclachlan/moo-ds";
 import type { BillFilter } from "../-hooks/types";
 import { useCostPerUnitReport } from "../-hooks/useCostPerUnitReport";
 import { chartColours, useChartColours } from "utils/chartColours";
+import { costPerUnitChartData } from "../-utils/billCharts";
 
 
 export interface CostPerUnitChartProps {
@@ -23,13 +24,13 @@ export const CostPerUnitChart: React.FC<CostPerUnitChartProps> = ({ utilityType,
         utilityType
     );
 
-    const accountNames = [...new Set(report?.dataPoints.map(d => d.accountName) ?? [])];
+    const { dates, series } = costPerUnitChartData(report?.dataPoints ?? []);
 
-    const dataset: ChartData<"line", number[], string> = {
-        labels: [...new Set(report?.dataPoints.map(d => d.date) ?? [])],
-        datasets: accountNames.map((name, index) => ({
-            label: name,
-            data: report?.dataPoints.filter(d => d.accountName === name).map(d => d.averagePricePerUnit) ?? [],
+    const dataset: ChartData<"line", (number | null)[], string> = {
+        labels: dates,
+        datasets: series.map((s, index) => ({
+            label: s.label,
+            data: s.data,
             backgroundColor: chartColours[index % chartColours.length],
             borderColor: chartColours[index % chartColours.length],
             tension: 0.1,
@@ -62,7 +63,7 @@ export const CostPerUnitChart: React.FC<CostPerUnitChartProps> = ({ utilityType,
                         },
                         plugins: {
                             legend: {
-                                display: accountNames.length > 1
+                                display: series.length > 1
                             }
                         }
                     }}

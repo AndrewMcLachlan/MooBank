@@ -232,7 +232,7 @@ ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
 
--- Charge Type. Id 1 is the default on ServiceCharge.ChargeTypeId, so it must not be renumbered.
+-- Utility Charge Type
 MERGE [utilities].ChargeType AS TARGET USING (SELECT 1 as Id, 'Supply' as [Name], CAST(NULL as INT) as UtilityTypeId) AS SOURCE
 ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND (TARGET.[Name] <> SOURCE.[Name] OR ISNULL(TARGET.UtilityTypeId, -1) <> ISNULL(SOURCE.UtilityTypeId, -1))
@@ -250,6 +250,19 @@ ON (TARGET.Id = SOURCE.Id)
 WHEN MATCHED AND (TARGET.[Name] <> SOURCE.[Name] OR ISNULL(TARGET.UtilityTypeId, -1) <> ISNULL(SOURCE.UtilityTypeId, -1))
     THEN UPDATE SET Target.[Name] = SOURCE.[Name], Target.UtilityTypeId = SOURCE.UtilityTypeId
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name], SOURCE.UtilityTypeId);
+
+-- Utility Usage Type
+MERGE [utilities].UsageType AS TARGET USING (SELECT 1 as Id, 'Consumption' as [Name]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
+
+MERGE [utilities].UsageType AS TARGET USING (SELECT 2 as Id, 'Export' as [Name]) AS SOURCE
+ON (TARGET.Id = SOURCE.Id)
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name] THEN UPDATE SET Target.[Name] = SOURCE.[Name]
+WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.[Id], SOURCE.[Name]);
+
+UPDATE [utilities].[Usage] SET [UsageTypeId] = 1 WHERE [UsageTypeId] IS NULL;
 
 -- Ensure the default institutions are linked to their importer type for fresh databases
 -- and any environment that previously had no institution-level mapping.
@@ -553,30 +566,6 @@ MERGE [PlannedItemDateMode] AS TARGET USING (SELECT 1 as Id, 'Schedule' as [Desc
 ON (TARGET.[Id] = SOURCE.Id)
 WHEN MATCHED AND TARGET.[Description] <> SOURCE.[Description] THEN UPDATE SET Target.[Description] = SOURCE.[Description]
 WHEN NOT MATCHED BY TARGET THEN INSERT VALUES (SOURCE.Id, SOURCE.[Description]);
-
--- The flexible-window date mode was removed: it was never reachable from the UI, and its two
--- allocation modes asked the author to make a modelling decision rather than state a fact. Linking
--- payments to a fixed-date item covers the same ground using real dates.
---
--- Dropped here rather than by leaving the table files out of the project, because
--- DropObjectsNotInSource is False on every publish profile -- removing the files alone would leave
--- both tables orphaned in the database.
---
--- The whole block is guarded on nothing actually using the mode. It never could through the UI, and
--- no environment has a row, but a guard costs nothing and the alternative is silently discarding
--- someone's planned item. If the guard ever does hold something back it says so rather than passing
--- quietly, and the deployment still succeeds.
-IF NOT EXISTS (SELECT 1 FROM [ForecastPlannedItem] WHERE [DateMode] = 2)
-BEGIN
-    DROP TABLE IF EXISTS [dbo].[PlannedItemFlexibleWindow];  -- references AllocationMode, so goes first
-    DROP TABLE IF EXISTS [dbo].[AllocationMode];
-
-    DELETE FROM [PlannedItemDateMode] WHERE [Id] = 2;
-END
-ELSE
-BEGIN
-    PRINT 'Skipped removing the FlexibleWindow date mode: planned items still use it.';
-END
 
 -- Schedule Frequency (for Forecast Plans - Schedule)
 MERGE [ScheduleFrequency] AS TARGET USING (SELECT 1 as Id, 'Daily' as [Description]) AS SOURCE

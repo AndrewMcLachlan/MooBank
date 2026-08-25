@@ -15,6 +15,8 @@ public record CostDataPoint
 
     public string AccountName { get; init; } = String.Empty;
 
+    public UsageType UsageType { get; init; } = UsageType.Consumption;
+
     public decimal AveragePricePerUnit { get; init; }
 
     public decimal TotalUsage { get; init; }

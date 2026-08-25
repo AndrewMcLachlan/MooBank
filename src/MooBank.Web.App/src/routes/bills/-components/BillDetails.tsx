@@ -65,14 +65,18 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                                     <span className="badge bg-secondary">{period.daysInclusive} days</span>
                                 </div>
                                 <div className="period-details">
-                                    <div className="period-line">
-                                        <span className="period-line-label">Usage</span>
-                                        <span>{formatNumber(period.totalUsage, 3)} {getUnit(account?.utilityType)} @ <Amount amount={period.pricePerUnit} currencyCode="AUD" />/{getUnit(account?.utilityType)}</span>
-                                    </div>
-                                    <div className="period-line">
-                                        <span></span>
-                                        <span className="summary-value"><Amount amount={period.cost} currencyCode="AUD" /></span>
-                                    </div>
+                                    {period.usages?.map(usage => (
+                                        <React.Fragment key={usage.usageType}>
+                                            <div className="period-line">
+                                                <span className="period-line-label">{usage.usageType === "Export" ? "Export (feed-in)" : "Usage"}</span>
+                                                <span>{formatNumber(usage.totalUsage, 3)} {getUnit(account?.utilityType)} @ <Amount amount={usage.pricePerUnit} currencyCode="AUD" />/{getUnit(account?.utilityType)}</span>
+                                            </div>
+                                            <div className="period-line">
+                                                <span></span>
+                                                <span className="summary-value"><Amount amount={usage.cost} currencyCode="AUD" /></span>
+                                            </div>
+                                        </React.Fragment>
+                                    ))}
                                     {period.serviceCharges?.map(charge => (
                                         <React.Fragment key={charge.chargeTypeId}>
                                             <div className="period-line">
@@ -97,7 +101,9 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
                             <span>Period Total</span>
                             <span>
                                 <Amount amount={bill.periods.reduce((sum, p) =>
-                                    sum + p.cost + p.serviceCharges.reduce((charges, c) => charges + (p.daysInclusive * c.chargePerDay), 0), 0)} currencyCode="AUD" />
+                                    sum
+                                    + p.usages.reduce((usage, u) => usage + (u.cost ?? 0), 0)
+                                    + p.serviceCharges.reduce((charges, c) => charges + (p.daysInclusive * c.chargePerDay), 0), 0)} currencyCode="AUD" />
                             </span>
                         </div>
                     </Section>

@@ -32,7 +32,7 @@ internal class GetByUtilityTypeHandler(IQueryable<Domain.Entities.Utility.Accoun
             .ThenInclude(p => p.ServiceCharges)
             .ThenInclude(sc => sc.ChargeType)
             .Include(b => b.Periods)
-            .ThenInclude(p => p.Usage)
+            .ThenInclude(p => p.Usages)
             .Include(b => b.Discounts)
             .AsQueryable();
 
