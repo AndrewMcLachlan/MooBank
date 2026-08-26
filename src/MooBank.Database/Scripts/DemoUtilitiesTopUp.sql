@@ -1,9 +1,9 @@
 /*
     Demo account top-up, part 3 of 3. Run after new transactions land on the checking account.
 
-    DemoUtilities.sql creates the two utility accounts and a bill per payment, and then refuses to
-    run again. This adds a bill for every electricity or water payment on checking that has none,
-    picking up each account's period and meter reading where its last bill left off.
+    Adds bills for the electricity and water payments made since each account's last bill, picking
+    up its period, meter reading and tariff where that bill left off. Use it when the monthly job
+    has missed a month; DemoUtilitiesRebuild.sql is the one that lays down the history.
 
     Run it as often as you like: with nothing new on checking it writes nothing.
 
@@ -19,12 +19,13 @@ SET XACT_ABORT ON;
 
 DECLARE @FamilyId UNIQUEIDENTIFIER = 'B0DDD93D-827F-4716-B4E2-D1922FAF7E27';
 
--- All match DemoUtilities.sql, so a topped-up account continues the series rather than stepping.
-DECLARE @ElectricitySupplyPerDay DECIMAL(12, 5) = 1.05000;
-DECLARE @ElectricityPricePerUnit DECIMAL(7, 5) = 0.29800;
-DECLARE @WaterServicePerDay DECIMAL(12, 5) = 0.36000;
-DECLARE @SeweragePerDay DECIMAL(12, 5) = 0.47000;
-DECLARE @WaterPricePerUnit DECIMAL(7, 5) = 3.35000;
+/*
+    The tariff is not declared here. It is read back off each account's most recent bill, below, so
+    a top-up continues whatever the data already says -- including a retailer change or a price rise
+    that this script knows nothing about.
+*/
+DECLARE @ElectricitySupplyPerDay DECIMAL(12, 5), @ElectricityPricePerUnit DECIMAL(7, 5);
+DECLARE @WaterServicePerDay DECIMAL(12, 5), @SeweragePerDay DECIMAL(12, 5), @WaterPricePerUnit DECIMAL(7, 5);
 
 DECLARE @CheckingId UNIQUEIDENTIFIER, @ElectricityId UNIQUEIDENTIFIER, @WaterId UNIQUEIDENTIFIER;
 
@@ -65,15 +66,63 @@ ORDER BY i.[Name];
 IF @ElectricityId IS NULL OR @WaterId IS NULL
     THROW 50000, 'No open demo electricity or water account. Run DemoUtilitiesRebuild.sql first.', 1;
 
+DECLARE @ClusterDays INT = 21;
+
 /*
-    Payments falling on the same day become one bill: a period runs from the previous bill, so a
-    second bill issued the same day would have to cover one that begins the day after it ends.
+    The tariff comes off each account's most recent bill: its service charges, and the price of its
+    consumption. Nothing here needs to know what a kilowatt hour costs this year.
+*/
+DECLARE @LastElectricity DATE, @LastWater DATE, @ReadingElectricity INT, @ReadingWater INT;
+
+SELECT TOP 1 @LastElectricity = b.IssueDate, @ReadingElectricity = b.CurrentReading
+FROM utilities.Bill b WHERE b.AccountId = @ElectricityId ORDER BY b.IssueDate DESC, b.Id DESC;
+
+SELECT TOP 1 @LastWater = b.IssueDate, @ReadingWater = b.CurrentReading
+FROM utilities.Bill b WHERE b.AccountId = @WaterId ORDER BY b.IssueDate DESC, b.Id DESC;
+
+IF @LastElectricity IS NULL OR @LastWater IS NULL
+    THROW 50000, 'A demo utility account has no bills to take a tariff from. Run DemoUtilitiesRebuild.sql first.', 1;
+
+SELECT @ElectricitySupplyPerDay = SUM(sc.ChargePerDay)
+FROM utilities.Bill b
+INNER JOIN utilities.Period p ON p.BillId = b.Id
+INNER JOIN utilities.ServiceCharge sc ON sc.PeriodId = p.Id
+WHERE b.AccountId = @ElectricityId AND b.IssueDate = @LastElectricity;
+
+SELECT TOP 1 @ElectricityPricePerUnit = u.PricePerUnit
+FROM utilities.Bill b
+INNER JOIN utilities.Period p ON p.BillId = b.Id
+INNER JOIN utilities.[Usage] u ON u.PeriodId = p.Id
+WHERE b.AccountId = @ElectricityId AND b.IssueDate = @LastElectricity AND ISNULL(u.UsageTypeId, 1) = 1;
+
+SELECT
+    @WaterServicePerDay = SUM(CASE WHEN sc.ChargeTypeId = 3 THEN 0 ELSE sc.ChargePerDay END),
+    @SeweragePerDay = SUM(CASE WHEN sc.ChargeTypeId = 3 THEN sc.ChargePerDay ELSE 0 END)
+FROM utilities.Bill b
+INNER JOIN utilities.Period p ON p.BillId = b.Id
+INNER JOIN utilities.ServiceCharge sc ON sc.PeriodId = p.Id
+WHERE b.AccountId = @WaterId AND b.IssueDate = @LastWater;
+
+SELECT TOP 1 @WaterPricePerUnit = u.PricePerUnit
+FROM utilities.Bill b
+INNER JOIN utilities.Period p ON p.BillId = b.Id
+INNER JOIN utilities.[Usage] u ON u.PeriodId = p.Id
+WHERE b.AccountId = @WaterId AND b.IssueDate = @LastWater AND ISNULL(u.UsageTypeId, 1) = 1;
+
+IF @ElectricityPricePerUnit IS NULL OR @WaterPricePerUnit IS NULL
+    THROW 50000, 'The last demo utility bill has no priced consumption to copy.', 1;
+
+/*
+    One bill per cluster of payments, not one per payment date. The generator pays electricity in
+    bursts, and billing each of them separately gives a bill covering a day or two while carrying a
+    whole cycle's consumption.
 
     CROSS APPLY rather than a join to the tags: a transaction split across two tagged splits would
     otherwise appear once per split, each time carrying the whole amount.
 */
 DECLARE @Bills TABLE (
     Utility CHAR(1) NOT NULL,
+    BillNo INT NOT NULL,
     IssueDate DATE NOT NULL,
     AccountId UNIQUEIDENTIFIER NOT NULL,
     AmountPaid DECIMAL(12, 4) NOT NULL,
@@ -83,8 +132,8 @@ DECLARE @Bills TABLE (
     Usage DECIMAL(7, 3) NULL,
     PreviousReading INT NULL,
     CurrentReading INT NULL,
-    InvoiceNumber VARCHAR(15) NOT NULL,
-    PRIMARY KEY (Utility, IssueDate)
+    InvoiceNumber AS Utility + CONVERT(VARCHAR(8), IssueDate, 112),
+    PRIMARY KEY (Utility, BillNo)
 );
 
 ;WITH Payments AS (
@@ -104,20 +153,30 @@ DECLARE @Bills TABLE (
         ORDER BY tg.[Name]
     ) u
     WHERE t.AccountId = @CheckingId
+),
+Unbilled AS (
+    SELECT Utility, PaidOn, SUM(AmountPaid) AS AmountPaid
+    FROM Payments p
+    WHERE p.PaidOn > CASE WHEN p.Utility = 'E' THEN @LastElectricity ELSE @LastWater END
+    GROUP BY Utility, PaidOn
+),
+Marked AS (
+    SELECT
+        Utility, PaidOn, AmountPaid,
+        CASE WHEN DATEDIFF(DAY, LAG(PaidOn) OVER (PARTITION BY Utility ORDER BY PaidOn), PaidOn) > @ClusterDays
+               OR LAG(PaidOn) OVER (PARTITION BY Utility ORDER BY PaidOn) IS NULL
+             THEN 1 ELSE 0 END AS StartsBill
+    FROM Unbilled
+),
+Grouped AS (
+    SELECT Utility, PaidOn, AmountPaid,
+           SUM(StartsBill) OVER (PARTITION BY Utility ORDER BY PaidOn ROWS UNBOUNDED PRECEDING) AS BillNo
+    FROM Marked
 )
-INSERT INTO @Bills (Utility, IssueDate, AccountId, AmountPaid, InvoiceNumber)
-SELECT
-    p.Utility,
-    p.PaidOn,
-    CASE WHEN p.Utility = 'E' THEN @ElectricityId ELSE @WaterId END,
-    SUM(p.AmountPaid),
-    p.Utility + CONVERT(VARCHAR(8), p.PaidOn, 112)
-FROM Payments p
-WHERE NOT EXISTS (
-    SELECT 1 FROM utilities.Bill b
-    WHERE b.AccountId = CASE WHEN p.Utility = 'E' THEN @ElectricityId ELSE @WaterId END
-      AND b.IssueDate = p.PaidOn)
-GROUP BY p.Utility, p.PaidOn;
+INSERT INTO @Bills (Utility, BillNo, IssueDate, AccountId, AmountPaid)
+SELECT Utility, BillNo, MAX(PaidOn), CASE WHEN Utility = 'E' THEN @ElectricityId ELSE @WaterId END, SUM(AmountPaid)
+FROM Grouped
+GROUP BY Utility, BillNo;
 
 IF NOT EXISTS (SELECT 1 FROM @Bills)
 BEGIN
@@ -125,50 +184,25 @@ BEGIN
     RETURN;
 END
 
-/*
-    Each account carries on from its own last bill: the next period opens the day after that bill
-    was issued, and the meter continues from its closing reading.
-*/
-DECLARE @LastElectricity DATE, @LastWater DATE, @ReadingElectricity INT, @ReadingWater INT;
-
-SELECT TOP 1 @LastElectricity = b.IssueDate, @ReadingElectricity = b.CurrentReading
-FROM utilities.Bill b WHERE b.AccountId = @ElectricityId ORDER BY b.IssueDate DESC;
-
-SELECT TOP 1 @LastWater = b.IssueDate, @ReadingWater = b.CurrentReading
-FROM utilities.Bill b WHERE b.AccountId = @WaterId ORDER BY b.IssueDate DESC;
-
+-- A period opens the day after the bill before it, the first carrying on from the account's own
+-- last bill.
 UPDATE b
-SET PeriodStart = ISNULL(DATEADD(DAY, 1, prev.PreviousIssue), DATEADD(DAY, CASE WHEN b.Utility = 'E' THEN -42 ELSE -90 END, b.IssueDate))
+SET PeriodStart = DATEADD(DAY, 1, COALESCE(prev.IssueDate, CASE WHEN b.Utility = 'E' THEN @LastElectricity ELSE @LastWater END))
 FROM @Bills b
-CROSS APPLY (
-    SELECT COALESCE(
-        (SELECT MAX(e.IssueDate) FROM @Bills e WHERE e.Utility = b.Utility AND e.IssueDate < b.IssueDate),
-        CASE WHEN b.Utility = 'E' THEN @LastElectricity ELSE @LastWater END) AS PreviousIssue
-) prev;
+OUTER APPLY (SELECT MAX(p.IssueDate) AS IssueDate FROM @Bills p WHERE p.Utility = b.Utility AND p.BillNo = b.BillNo - 1) prev;
 
-/*
-    A period is shortened when its service charges would otherwise swallow most of the bill, which
-    keeps the solved consumption positive without letting the rates wander. Only an unusually long
-    gap between payments, or an unusually small payment, is affected.
-*/
 UPDATE b
-SET Days = d.Days,
-    PeriodStart = DATEADD(DAY, -(d.Days - 1), b.IssueDate),
-    ServiceTotal = r.ServicePerDay * d.Days,
-    Usage = CAST(ROUND((b.AmountPaid - r.ServicePerDay * d.Days) /
+SET Days = DATEDIFF(DAY, b.PeriodStart, b.IssueDate) + 1,
+    ServiceTotal = r.ServicePerDay * (DATEDIFF(DAY, b.PeriodStart, b.IssueDate) + 1),
+    Usage = CAST(ROUND((b.AmountPaid - r.ServicePerDay * (DATEDIFF(DAY, b.PeriodStart, b.IssueDate) + 1)) /
         CASE WHEN b.Utility = 'E' THEN @ElectricityPricePerUnit ELSE @WaterPricePerUnit END, 3) AS DECIMAL(7, 3))
 FROM @Bills b
 CROSS APPLY (
-    SELECT CASE WHEN b.Utility = 'E' THEN @ElectricitySupplyPerDay ELSE @WaterServicePerDay + @SeweragePerDay END AS ServicePerDay,
-           DATEDIFF(DAY, b.PeriodStart, b.IssueDate) + 1 AS NaturalDays
-) r
-CROSS APPLY (
-    SELECT CASE
-        WHEN r.NaturalDays < 1 THEN 1
-        WHEN r.ServicePerDay * r.NaturalDays <= b.AmountPaid * 0.6 THEN r.NaturalDays
-        ELSE GREATEST(CAST(FLOOR(b.AmountPaid * 0.6 / r.ServicePerDay) AS INT), 1)
-    END AS Days
-) d;
+    SELECT CASE WHEN b.Utility = 'E' THEN @ElectricitySupplyPerDay ELSE @WaterServicePerDay + @SeweragePerDay END AS ServicePerDay
+) r;
+
+IF EXISTS (SELECT 1 FROM @Bills WHERE Days < 1)
+    THROW 50000, 'A bill period came out shorter than a day. Check @ClusterDays.', 1;
 
 IF EXISTS (SELECT 1 FROM @Bills WHERE Usage <= 0)
     THROW 50000, 'A bill period produced non-positive consumption. Check the service charge rates.', 1;

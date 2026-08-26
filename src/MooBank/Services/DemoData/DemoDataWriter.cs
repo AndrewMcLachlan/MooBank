@@ -51,14 +51,9 @@ internal class DemoDataWriter(
     private const decimal CarLoanRate = 0.075m;
     private const decimal CarLoanRepayment = 701.35m;
 
-    // The tariff currently in force, matching the newest rows of the schedule in
-    // DemoUtilitiesRebuild.sql so a new bill continues the series rather than stepping off it.
-    // These need revisiting whenever that schedule gains a later price.
-    private const decimal ElectricitySupplyPerDay = 1.05000m;
-    private const decimal ElectricityPricePerUnit = 0.29800m;
-    private const decimal WaterServicePerDay = 0.36000m;
-    private const decimal SeweragePerDay = 0.47000m;
-    private const decimal WaterPricePerUnit = 3.35000m;
+    // Utility bills are quarterly. The tariff is not held here at all -- it is read back off the
+    // account's last bill, so it stays whatever the data says.
+    private const int MinimumBillingDays = 75;
 
     // The gross-up from the net salary on checking, as used by DemoSuper.sql.
     private const decimal SalaryGrossUp = 1.309524m;
@@ -77,7 +72,7 @@ internal class DemoDataWriter(
         await Step("mortgage", () => ExtendLoan(settings.MortgageAccountId, checkingId, "Mortgage", MortgageRate, month, monthEnd, cancellationToken));
         await Step("car loan", () => ExtendLoan(settings.LoanAccountId, checkingId, "Car Loan", CarLoanRate, month, monthEnd, cancellationToken, CarLoanRepayment));
         await Step("superannuation", () => ExtendSuper(settings, checkingId, month, monthEnd, cancellationToken));
-        await Step("utility bills", () => ExtendBills(settings, checkingId, month, monthEnd, cancellationToken));
+        await Step("utility bills", () => ExtendBills(settings, checkingId, monthEnd, cancellationToken));
     }
 
     /// <summary>
@@ -278,100 +273,109 @@ internal class DemoDataWriter(
         logger.LogInformation("Added {Count} contributions totalling {Total:N2} to the demo super account.", salaries.Count, contributed);
     }
 
-    private async Task ExtendBills(DemoDataOptions settings, Guid checkingId, DateOnly month, DateOnly monthEnd, CancellationToken cancellationToken)
+    private async Task ExtendBills(DemoDataOptions settings, Guid checkingId, DateOnly monthEnd, CancellationToken cancellationToken)
     {
-        await ExtendBills(settings.ElectricityAccountId, checkingId, "Electricity", month, monthEnd, cancellationToken);
-        await ExtendBills(settings.WaterAccountId, checkingId, "Water", month, monthEnd, cancellationToken);
+        await ExtendBills(settings.ElectricityAccountId, checkingId, "Electricity", monthEnd, cancellationToken);
+        await ExtendBills(settings.WaterAccountId, checkingId, "Water", monthEnd, cancellationToken);
     }
 
-    private async Task ExtendBills(Guid? utilityAccountId, Guid checkingId, string tagName, DateOnly month, DateOnly monthEnd, CancellationToken cancellationToken)
+    /// <summary>
+    /// Adds a bill once a billing cycle's worth of payments has accumulated.
+    /// </summary>
+    /// <remarks>
+    /// The tariff is taken from the account's most recent bill rather than held here. A demo
+    /// household changes electricity retailer every few years and prices rise in between, so a rate
+    /// written into this class would be wrong within the year and wrong in a way nobody would
+    /// notice. Reading it back means the job inherits whatever the data already says -- including a
+    /// rate corrected by hand through the bill editor.
+    /// </remarks>
+    private async Task ExtendBills(Guid? utilityAccountId, Guid checkingId, string tagName, DateOnly monthEnd, CancellationToken cancellationToken)
     {
         if (utilityAccountId is not Guid accountId) return;
 
-        var account = await utilityAccounts.Get(accountId, cancellationToken);
+        var summary = await utilityAccounts.Get(accountId, cancellationToken);
 
-        if (account is null)
+        if (summary is null)
         {
             logger.LogWarning("The configured demo {TagName} account {InstrumentId} does not exist.", tagName, accountId);
             return;
         }
 
-        // Payments falling on the same day become one bill. A period runs from the previous payment
-        // date, so a second bill issued the same day would have to cover one that begins the day
-        // after it ends.
-        var payments = (await TaggedAmounts(checkingId, tagName, month, monthEnd, cancellationToken))
-            .GroupBy(p => DateOnly.FromDateTime(p.When))
-            .Select(g => (Issued: g.Key, Amount: g.Sum(p => p.Amount)))
-            .OrderBy(p => p.Issued)
-            .ToList();
+        var lastBillId = summary.Bills.OrderByDescending(b => b.IssueDate).ThenByDescending(b => b.Id).FirstOrDefault()?.Id;
+
+        if (lastBillId is null)
+        {
+            logger.LogWarning("The demo {TagName} account has no bills to take a tariff from. Run DemoUtilitiesRebuild.sql first.", tagName);
+            return;
+        }
+
+        // Reloaded through the filtered include so the last bill arrives with the periods, charges
+        // and usages this one is modelled on.
+        var account = await utilityAccounts.GetWithBill(accountId, lastBillId.Value, cancellationToken);
+        var last = account?.Bills.SingleOrDefault();
+        var lastPeriod = last?.Periods.OrderByDescending(p => p.PeriodEnd).FirstOrDefault();
+        var lastUsage = lastPeriod?.Usages.FirstOrDefault(u => u.UsageType == UsageType.Consumption);
+
+        if (account is null || last is null || lastPeriod is null || lastUsage is null)
+        {
+            logger.LogWarning("The last demo {TagName} bill has no priced consumption to copy. Skipping.", tagName);
+            return;
+        }
+
+        var periodStart = last.IssueDate.AddDays(1);
+
+        var payments = await TaggedAmounts(checkingId, tagName, periodStart, monthEnd, cancellationToken);
 
         if (payments.Count == 0) return;
 
-        var last = account.Bills.OrderByDescending(b => b.IssueDate).FirstOrDefault();
+        var issued = DateOnly.FromDateTime(payments.Max(p => p.When));
+        var days = issued.DayNumber - periodStart.DayNumber + 1;
 
-        // Each bill's period runs from the day after the last one ended, and its readings continue
-        // from where the last one left off, so the usage series stays continuous.
-        var periodStart = last is null ? month : last.IssueDate.AddDays(1);
-        var reading = last?.CurrentReading ?? 0;
-
-        foreach (var (issued, amount) in payments)
+        // Bills are quarterly, so most months add nothing and the payments simply accumulate until
+        // a cycle's worth has passed. Without this the job would issue a bill a month, each one
+        // covering a few weeks, and the series would step from quarterly to monthly overnight.
+        if (days < MinimumBillingDays)
         {
-            if (periodStart > issued) periodStart = issued.AddDays(-30);
-
-            var servicePerDay = tagName == "Electricity" ? ElectricitySupplyPerDay : WaterServicePerDay + SeweragePerDay;
-            var days = Math.Max(issued.DayNumber - periodStart.DayNumber + 1, 1);
-
-            // A period is shortened when its service charges would otherwise swallow most of the
-            // bill, which keeps the solved consumption positive without letting the rates wander.
-            // Only an unusually long gap between payments, or an unusually small payment, is
-            // affected; the resulting bill simply does not reach back to the previous one.
-            var affordableDays = Math.Max((int)Math.Floor(amount * 0.6m / servicePerDay), 1);
-            if (days > affordableDays) days = affordableDays;
-
-            periodStart = issued.AddDays(-(days - 1));
-
-            var serviceTotal = servicePerDay * days;
-            var pricePerUnit = tagName == "Electricity" ? ElectricityPricePerUnit : WaterPricePerUnit;
-            var usage = Math.Round((amount - serviceTotal) / pricePerUnit, 3, MidpointRounding.AwayFromZero);
-
-            if (usage <= 0)
-            {
-                logger.LogWarning("A demo {TagName} bill for {Issued} would need non-positive consumption. Skipping it.", tagName, issued);
-                continue;
-            }
-
-            var period = new Period
-            {
-                PeriodStart = periodStart.ToDateTime(TimeOnly.MinValue),
-                PeriodEnd = issued.ToDateTime(TimeOnly.MinValue),
-                // Consumption only: the demo's electricity account has no solar, so it never
-                // exports. A period can now carry several usages, and the type has to be stated --
-                // the column is nullable until the follow-up tightens it, and a null read back
-                // through the non-nullable UsageType would throw.
-                Usages = [new Usage { PricePerUnit = pricePerUnit, TotalUsage = usage, UsageType = UsageType.Consumption }],
-            };
-
-            foreach (var (chargeTypeId, chargePerDay) in ServiceChargesFor(tagName))
-            {
-                period.ServiceCharges.Add(new ServiceCharge { ChargeTypeId = chargeTypeId, ChargePerDay = chargePerDay });
-            }
-
-            var previousReading = reading;
-            reading += (int)Math.Round(usage, 0, MidpointRounding.AwayFromZero);
-
-            account.Bills.Add(new Bill
-            {
-                AccountId = accountId,
-                InvoiceNumber = $"{tagName[0]}{issued:yyyyMMdd}",
-                IssueDate = issued,
-                PreviousReading = previousReading,
-                CurrentReading = reading,
-                CostsIncludeGST = true,
-                Periods = [period],
-            });
-
-            periodStart = issued.AddDays(1);
+            logger.LogInformation("Only {Days} days since the last demo {TagName} bill. Waiting for a full cycle.", days, tagName);
+            return;
         }
+
+        var cost = payments.Sum(p => p.Amount);
+        var serviceTotal = lastPeriod.ServiceCharges.Sum(sc => sc.ChargePerDay) * days;
+        var usage = Math.Round((cost - serviceTotal) / lastUsage.PricePerUnit, 3, MidpointRounding.AwayFromZero);
+
+        if (usage <= 0)
+        {
+            logger.LogWarning("A demo {TagName} bill for {Issued} would need non-positive consumption. Skipping it.", tagName, issued);
+            return;
+        }
+
+        var period = new Period
+        {
+            PeriodStart = periodStart.ToDateTime(TimeOnly.MinValue),
+            PeriodEnd = issued.ToDateTime(TimeOnly.MinValue),
+            // Consumption only: the demo's electricity account has no solar, so it never exports. A
+            // period can carry several usages, and the type has to be stated -- the column is
+            // nullable until the follow-up tightens it, and a null read back through the
+            // non-nullable UsageType would throw.
+            Usages = [new Usage { PricePerUnit = lastUsage.PricePerUnit, TotalUsage = usage, UsageType = UsageType.Consumption }],
+        };
+
+        foreach (var charge in lastPeriod.ServiceCharges)
+        {
+            period.ServiceCharges.Add(new ServiceCharge { ChargeTypeId = charge.ChargeTypeId, ChargePerDay = charge.ChargePerDay });
+        }
+
+        account.Bills.Add(new Bill
+        {
+            AccountId = accountId,
+            InvoiceNumber = $"{tagName[0]}{issued:yyyyMMdd}",
+            IssueDate = issued,
+            PreviousReading = last.CurrentReading,
+            CurrentReading = (last.CurrentReading ?? 0) + (int)Math.Round(usage, 0, MidpointRounding.AwayFromZero),
+            CostsIncludeGST = true,
+            Periods = [period],
+        });
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -442,11 +446,6 @@ internal class DemoDataWriter(
             new TransactionSplit(Guid.CreateVersion7()) { Amount = principal },
         ]);
     }
-
-    private static IEnumerable<(int ChargeTypeId, decimal ChargePerDay)> ServiceChargesFor(string tagName) =>
-        tagName == "Electricity"
-            ? [(1, ElectricitySupplyPerDay)]                             // Supply
-            : [(2, WaterServicePerDay), (3, SeweragePerDay)];            // Water Service, Sewerage Service
 
     /// <summary>
     /// The dated amounts of the transactions carrying a named tag, as positive magnitudes.
