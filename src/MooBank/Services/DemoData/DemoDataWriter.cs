@@ -51,12 +51,14 @@ internal class DemoDataWriter(
     private const decimal CarLoanRate = 0.075m;
     private const decimal CarLoanRepayment = 701.35m;
 
-    // Utility rates, matching DemoUtilities.sql so a new bill sits alongside the old ones.
-    private const decimal ElectricitySupplyPerDay = 1.10000m;
-    private const decimal ElectricityPricePerUnit = 0.30000m;
-    private const decimal WaterServicePerDay = 0.32000m;
-    private const decimal SeweragePerDay = 0.42000m;
-    private const decimal WaterPricePerUnit = 2.95000m;
+    // The tariff currently in force, matching the newest rows of the schedule in
+    // DemoUtilitiesRebuild.sql so a new bill continues the series rather than stepping off it.
+    // These need revisiting whenever that schedule gains a later price.
+    private const decimal ElectricitySupplyPerDay = 1.05000m;
+    private const decimal ElectricityPricePerUnit = 0.29800m;
+    private const decimal WaterServicePerDay = 0.36000m;
+    private const decimal SeweragePerDay = 0.47000m;
+    private const decimal WaterPricePerUnit = 3.35000m;
 
     // The gross-up from the net salary on checking, as used by DemoSuper.sql.
     private const decimal SalaryGrossUp = 1.309524m;

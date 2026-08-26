@@ -20,11 +20,11 @@ SET XACT_ABORT ON;
 DECLARE @FamilyId UNIQUEIDENTIFIER = 'B0DDD93D-827F-4716-B4E2-D1922FAF7E27';
 
 -- All match DemoUtilities.sql, so a topped-up account continues the series rather than stepping.
-DECLARE @ElectricitySupplyPerDay DECIMAL(12, 5) = 1.10000;
-DECLARE @ElectricityPricePerUnit DECIMAL(7, 5) = 0.30000;
-DECLARE @WaterServicePerDay DECIMAL(12, 5) = 0.32000;
-DECLARE @SeweragePerDay DECIMAL(12, 5) = 0.42000;
-DECLARE @WaterPricePerUnit DECIMAL(7, 5) = 2.95000;
+DECLARE @ElectricitySupplyPerDay DECIMAL(12, 5) = 1.05000;
+DECLARE @ElectricityPricePerUnit DECIMAL(7, 5) = 0.29800;
+DECLARE @WaterServicePerDay DECIMAL(12, 5) = 0.36000;
+DECLARE @SeweragePerDay DECIMAL(12, 5) = 0.47000;
+DECLARE @WaterPricePerUnit DECIMAL(7, 5) = 3.35000;
 
 DECLARE @CheckingId UNIQUEIDENTIFIER, @ElectricityId UNIQUEIDENTIFIER, @WaterId UNIQUEIDENTIFIER;
 
@@ -41,22 +41,29 @@ FROM (
 
 IF @CheckingId IS NULL THROW 50000, 'Demo checking account not found, or matched more than once.', 1;
 
-SELECT @ElectricityId = a.InstrumentId
+/*
+    The accounts are named after their retailer and the household changes electricity retailer every
+    few years, so they are found by what they are rather than what they are called: the open account
+    of each utility type. A closed one is a retailer they have left.
+*/
+SELECT TOP 1 @ElectricityId = a.InstrumentId
 FROM utilities.Account a
 INNER JOIN dbo.Instrument i ON i.Id = a.InstrumentId
-WHERE i.[Name] = N'Electricity'
+WHERE a.UtilityTypeId = 1 AND i.ClosedDate IS NULL
   AND EXISTS (SELECT 1 FROM dbo.InstrumentOwner io INNER JOIN dbo.[User] u ON u.Id = io.UserId
-              WHERE io.InstrumentId = i.Id AND u.FamilyId = @FamilyId);
+              WHERE io.InstrumentId = i.Id AND u.FamilyId = @FamilyId)
+ORDER BY i.[Name];
 
-SELECT @WaterId = a.InstrumentId
+SELECT TOP 1 @WaterId = a.InstrumentId
 FROM utilities.Account a
 INNER JOIN dbo.Instrument i ON i.Id = a.InstrumentId
-WHERE i.[Name] = N'Water'
+WHERE a.UtilityTypeId = 3 AND i.ClosedDate IS NULL
   AND EXISTS (SELECT 1 FROM dbo.InstrumentOwner io INNER JOIN dbo.[User] u ON u.Id = io.UserId
-              WHERE io.InstrumentId = i.Id AND u.FamilyId = @FamilyId);
+              WHERE io.InstrumentId = i.Id AND u.FamilyId = @FamilyId)
+ORDER BY i.[Name];
 
 IF @ElectricityId IS NULL OR @WaterId IS NULL
-    THROW 50000, 'The demo utility accounts do not exist. Run DemoUtilities.sql first.', 1;
+    THROW 50000, 'No open demo electricity or water account. Run DemoUtilitiesRebuild.sql first.', 1;
 
 /*
     Payments falling on the same day become one bill: a period runs from the previous bill, so a

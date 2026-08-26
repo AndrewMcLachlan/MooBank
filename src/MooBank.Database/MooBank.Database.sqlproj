@@ -31,6 +31,7 @@
     <None Include="Scripts\DemoSuperTopUp.sql" />
     <None Include="Scripts\DemoUtilitiesTopUp.sql" />
     <None Include="Scripts\DemoCarLoanAdvance.sql" />
+    <None Include="Scripts\DemoUtilitiesRebuild.sql" />
     <PreDeploy Include="Script.PreDeployment1.sql" />
     <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
