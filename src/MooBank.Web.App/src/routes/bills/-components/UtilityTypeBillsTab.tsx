@@ -80,7 +80,7 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                         <th>Date</th>
                         <th>Cost</th>
                         <th>Usage ({getUnit(utilityType)})</th>
-                        <th className="row-action"></th>
+                        <th className="row-action column-5"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,7 +91,7 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                             <td><Amount amount={bill.cost} currencyCode="AUD" /></td>
                             <td>{bill.periods?.reduce((sum, p) =>
                                 sum + p.usages.filter(u => u.usageType === "Consumption").reduce((units, u) => units + u.totalUsage, 0), 0).toLocaleString() ?? "-"}</td>
-                            <td className="row-action">
+                            <td className="row-action column-5">
                                 {/* The row opens the drawer, so the edit icon has to keep its click to itself. */}
                                 <Icon icon="pen-to-square" title="Edit Bill" onClick={e => { e.stopPropagation(); editBill(bill); }} />
                             </td>

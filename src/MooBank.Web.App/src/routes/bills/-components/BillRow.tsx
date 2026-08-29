@@ -8,7 +8,7 @@ export const BillRow: React.FC<BillRowProps> = ({ account, bill, onClick, onEdit
         <td>{account.name}</td>
         <td>{formatDateShort(bill.issueDate)}</td>
         <td><Amount amount={bill.cost} currencyCode="AUD" /></td>
-        <td className="row-action">
+        <td className="row-action column-5">
             {/* The row opens the drawer, so the edit icon has to keep its click to itself. */}
             <Icon icon="pen-to-square" title="Edit Bill" onClick={e => { e.stopPropagation(); onEdit(bill); }} />
         </td>

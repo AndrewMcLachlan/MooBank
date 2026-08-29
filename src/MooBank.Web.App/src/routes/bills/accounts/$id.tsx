@@ -51,7 +51,7 @@ function Bills() {
                         <th>Account</th>
                         <th>Date</th>
                         <th>Cost</th>
-                        <th className="row-action"></th>
+                        <th className="row-action column-5"></th>
                     </tr>
                 </thead>
                 <tbody>
