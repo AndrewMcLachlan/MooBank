@@ -11,6 +11,7 @@ import { Table } from "@andrewmclachlan/moo-ds";
 import { AddBill } from "../-components/AddBill";
 import { BillDetails } from "../-components/BillDetails";
 import { BillRow } from "../-components/BillRow";
+import { EditBill } from "../-components/EditBill";
 
 export const Route = createFileRoute("/bills/accounts/$id")({
     component: Bills,
@@ -24,6 +25,7 @@ function Bills() {
     const [pageSize, _setPageSize] = useState<number>(20);
     const [showDetails, setShowDetails] = useState(false);
     const [showAddBill, setShowAddBill] = useState(false);
+    const [editingBill, setEditingBill] = useState<Bill>(undefined);
     const [selectedBill, setSelectedBill] = useState<Bill>(undefined);
 
     const { data: billAccount } = useBillAccount(id);
@@ -42,16 +44,18 @@ function Bills() {
         <Page title="Bills" actions={[<IconButton badge key="add" onClick={() => setShowAddBill(true)} icon="plus">Add Bill</IconButton>]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
             <AddBill accountId={id} show={showAddBill} onHide={() => setShowAddBill(false)} />
             <BillDetails account={billAccount} bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} />
+            {editingBill && <EditBill accountId={id} bill={editingBill} show onHide={() => setEditingBill(undefined)} />}
             <Table striped className="section">
                 <thead>
                     <tr>
                         <th>Account</th>
                         <th>Date</th>
                         <th>Cost</th>
+                        <th className="row-action"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {pagedBills.data.results.map(b => <BillRow key={b.id} account={billAccount} bill={b} onClick={rowClick} />)}
+                    {pagedBills.data.results.map(b => <BillRow key={b.id} account={billAccount} bill={b} onClick={rowClick} onEdit={setEditingBill} />)}
                 </tbody>
                 <tfoot>
                     <tr>

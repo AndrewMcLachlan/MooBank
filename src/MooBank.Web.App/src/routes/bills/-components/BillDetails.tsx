@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
 import type { Bill, Account } from "api/types.gen";
-import { Button, Drawer } from "@andrewmclachlan/moo-ds";
+import { Drawer } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { getUnit } from "utils/units";
 import { Amount } from "components";
 import { formatDateShort, formatDateRange } from "utils/dateFns";
-import { EditBill } from "./EditBill";
 
 const formatNumber = (value: number | undefined, decimals = 2) => {
     if (value === undefined || value === null) return "-";
@@ -14,8 +13,6 @@ const formatNumber = (value: number | undefined, decimals = 2) => {
 };
 
 export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, onHide }) => {
-
-    const [editing, setEditing] = useState(false);
 
     if (!bill) return null;
 
@@ -27,11 +24,6 @@ export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, o
 
             </Drawer.Header>
             <Drawer.Body>
-                <div className="bill-details-actions">
-                    <Button variant="outline-primary" size="sm" onClick={() => setEditing(true)}>Edit Bill</Button>
-                </div>
-
-                {editing && <EditBill accountId={account.id} bill={bill} show={editing} onHide={() => setEditing(false)} />}
 
                 <Section header="Summary">
                     <div className="summary-row">
