@@ -1,20 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, DeleteIcon, Form, Icon, Modal, Section } from "@andrewmclachlan/moo-ds";
 import type { Control, UseFormReturn } from "react-hook-form";
-import { useFieldArray } from "react-hook-form";
+import { useFieldArray, useWatch } from "react-hook-form";
 
 import type { ChargeType } from "api/types.gen";
 import type { CreateBill, CreatePeriod, CreateServiceCharge, CreateUsage } from "models/bills";
 import { UsageTypes } from "models/bills";
 import { amountStep } from "utils/currency";
+import { DayRangeSelector } from "components/DayRangeSelector";
+import type { Period as DateRange } from "models/dateFns";
+import { formatISODate } from "utils/dateFns";
+import { parseISO } from "date-fns";
 
 const defaultServiceCharge: CreateServiceCharge = { chargeTypeId: 1, chargePerDay: 0 };
 
 const defaultUsage: CreateUsage = { usageType: "Consumption", pricePerUnit: 0, totalUsage: 0 };
 
 export const emptyPeriod = (): CreatePeriod => ({
-    periodStart: "",
-    periodEnd: "",
+    // Dated today rather than left blank, so the range control has something to show and the two
+    // dates are never half-set.
+    periodStart: formatISODate(new Date()),
+    periodEnd: formatISODate(new Date()),
     usages: [{ ...defaultUsage }],
     serviceCharges: [{ ...defaultServiceCharge }],
 });
@@ -46,6 +52,44 @@ const FormSection: React.FC<React.PropsWithChildren<{ title: string; addTitle: s
         {children}
     </Section>
 );
+
+interface PeriodDatesProps {
+    form: UseFormReturn<CreateBill>;
+    periodIndex: number;
+}
+
+/**
+ * A period's start and end, as one range.
+ *
+ * Driven through the form rather than by a Form.Group, because one control stands for two fields
+ * and a group binds to a single one.
+ */
+const PeriodDates: React.FC<PeriodDatesProps> = ({ form, periodIndex }) => {
+
+    const start = useWatch({ control: form.control, name: `periods.${periodIndex}.periodStart` });
+    const end = useWatch({ control: form.control, name: `periods.${periodIndex}.periodEnd` });
+
+    // Only a bill stored without dates reaches the fallback; read once rather than on every render.
+    const [today] = useState(() => new Date());
+
+    const value: DateRange = {
+        startDate: start ? parseISO(start) : today,
+        endDate: end ? parseISO(end) : today,
+    };
+
+    const change = (range: DateRange) => {
+        form.setValue(`periods.${periodIndex}.periodStart`, formatISODate(range.startDate), { shouldDirty: true });
+        form.setValue(`periods.${periodIndex}.periodEnd`, formatISODate(range.endDate), { shouldDirty: true });
+    };
+
+    return (
+        <div className="period-dates">
+            <Form.Label htmlFor={`period-${periodIndex}-dates`}>Period</Form.Label>
+            {/* No presets: "Last 3 months" is not a thing a bill is billed for. */}
+            <DayRangeSelector id={`period-${periodIndex}-dates`} value={value} onChange={change} presets={false} />
+        </div>
+    );
+};
 
 interface UsagesProps {
     control: Control<CreateBill>;
@@ -180,14 +224,7 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
                     {periodFields.map((field, index) => (
                         <div key={field.id} className="period-entry">
                             <div className="entry-row period-row">
-                                <Form.Group groupId={`periods.${index}.periodStart`}>
-                                    <Form.Label>Period Start</Form.Label>
-                                    <Form.Input type="date" required />
-                                </Form.Group>
-                                <Form.Group groupId={`periods.${index}.periodEnd`}>
-                                    <Form.Label>Period End</Form.Label>
-                                    <Form.Input type="date" required />
-                                </Form.Group>
+                                <PeriodDates form={form} periodIndex={index} />
                                 <span className="entry-action">
                                     {periodFields.length > 1 && <DeleteIcon onClick={() => removePeriod(index)} />}
                                 </span>

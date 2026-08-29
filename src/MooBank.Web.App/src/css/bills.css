@@ -143,8 +143,10 @@
         margin-bottom: 0;
     }
 
+    /* One control for the two dates now, so the row is the picker and its action. */
     .period-row {
-        grid-template-columns: 1fr 1fr 2rem;
+        grid-template-columns: auto 2rem;
+        justify-content: space-between;
     }
 
     .usage-row,

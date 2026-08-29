@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Input } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { parseISO, subYears } from "date-fns";
 
 import type { Account } from "api/types.gen";
+import { DayRangeSelector } from "components/DayRangeSelector";
+import type { Period } from "models/dateFns";
+import { formatISODate } from "utils/dateFns";
 import type { BillFilter } from "../-hooks/types";
 
 export interface BillFilterPanelProps {
@@ -14,20 +18,27 @@ export interface BillFilterPanelProps {
 
 export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filter, onFilterChange }) => {
 
-    const handleStartDateChange = (value: string) => {
-        onFilterChange({ ...filter, startDate: value || undefined });
-    };
-
-    const handleEndDateChange = (value: string) => {
-        onFilterChange({ ...filter, endDate: value || undefined });
+    const handleDatesChange = (period: Period) => {
+        onFilterChange({ ...filter, startDate: formatISODate(period.startDate), endDate: formatISODate(period.endDate) });
     };
 
     const handleAccountChange = (value: string) => {
         onFilterChange({ ...filter, accountId: value || undefined });
     };
 
+    /* Clears everything except the dates, as the transaction filters do: a list with no period at
+       all is rarely what anyone wants back, and the range is the one filter you set deliberately. */
     const clearFilter = () => {
-        onFilterChange({});
+        onFilterChange({ startDate: filter.startDate, endDate: filter.endDate });
+    };
+
+    // Only reached by a filter stored before this control existed; read once rather than on every
+    // render, which would also be a new Date on each pass.
+    const [fallback] = useState<Period>(() => ({ startDate: subYears(new Date(), 2), endDate: new Date() }));
+
+    const dates: Period = {
+        startDate: filter.startDate ? parseISO(filter.startDate) : fallback.startDate,
+        endDate: filter.endDate ? parseISO(filter.endDate) : fallback.endDate,
     };
 
     return (
@@ -43,22 +54,8 @@ export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filt
             </div>
             <div className="filter-row">
                 <div className="filter-field">
-                    <Form.Label htmlFor="filter-start">From</Form.Label>
-                    <Input
-                        id="filter-start"
-                        type="date"
-                        value={filter.startDate ?? ""}
-                        onChange={(e) => handleStartDateChange(e.target.value)}
-                    />
-                </div>
-                <div className="filter-field">
-                    <Form.Label htmlFor="filter-end">To</Form.Label>
-                    <Input
-                        id="filter-end"
-                        type="date"
-                        value={filter.endDate ?? ""}
-                        onChange={(e) => handleEndDateChange(e.target.value)}
-                    />
+                    <Form.Label htmlFor="filter-dates">Dates</Form.Label>
+                    <DayRangeSelector id="filter-dates" value={dates} onChange={handleDatesChange} />
                 </div>
                 {accounts && accounts.length > 0 && (
                     <div className="filter-field">
