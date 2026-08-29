@@ -98,8 +98,7 @@
         gap: 0.5rem;
     }
 
-    .period-entry,
-    .discount-entry {
+    .period-entry {
         padding-bottom: 1rem;
         margin-bottom: 1rem;
         border-bottom: 1px solid var(--border-colour);
@@ -116,8 +115,59 @@
         margin-bottom: 0;
     }
 
-    .remove-button {
-        margin-top: 0.5rem;
+    /* A repeating row: its fields, then a narrow column holding the icon that removes it. The
+       action column is always present so the fields do not shift when the icon is hidden. */
+    .entry-row {
+        display: grid;
+        gap: 1rem;
+        align-items: end;
+        margin-bottom: 0.75rem;
+    }
+
+    .period-row {
+        grid-template-columns: 1fr 1fr 2rem;
+    }
+
+    .usage-row {
+        grid-template-columns: 1fr 1fr 1fr 2rem;
+    }
+
+    .charge-row {
+        grid-template-columns: 1fr 1fr 1fr 2rem;
+    }
+
+    .discount-row {
+        grid-template-columns: 1fr 1fr 2fr 2rem;
+    }
+
+    .entry-action {
+        /* Pinned to the final track so a row with fewer fields still lines its icon up with the
+           rows above it. */
+        grid-column: -2 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Matches the height of the inputs beside it so the icon sits on their centre line. */
+        block-size: var(--input-height, 2.5rem);
+    }
+
+    .row-group {
+        margin-block: 1rem;
+    }
+
+    .row-group-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-colour);
+    }
+
+    .row-group-label {
+        color: var(--secondary-colour);
+        font-size: 0.875rem;
     }
 }
 

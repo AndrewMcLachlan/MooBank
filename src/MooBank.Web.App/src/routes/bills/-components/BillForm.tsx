@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, Section, SectionForm } from "@andrewmclachlan/moo-ds";
+import { Button, DeleteIcon, Form, Icon, Section, SectionForm } from "@andrewmclachlan/moo-ds";
 import type { Control, UseFormReturn } from "react-hook-form";
 import { useFieldArray } from "react-hook-form";
 
@@ -19,6 +19,17 @@ export const emptyPeriod = (): CreatePeriod => ({
     serviceCharges: [{ ...defaultServiceCharge }],
 });
 
+/** A labelled group of repeated rows, with the control that adds another. */
+const RowGroup: React.FC<React.PropsWithChildren<{ label: string; addTitle: string; onAdd: () => void }>> = ({ label, addTitle, onAdd, children }) => (
+    <div className="row-group">
+        <div className="row-group-header">
+            <span className="row-group-label">{label}</span>
+            <Icon icon="plus" title={addTitle} onClick={onAdd} />
+        </div>
+        {children}
+    </div>
+);
+
 interface UsagesProps {
     control: Control<CreateBill>;
     periodIndex: number;
@@ -29,32 +40,26 @@ const Usages: React.FC<UsagesProps> = ({ control, periodIndex }) => {
     const { fields, append, remove } = useFieldArray({ control, name: `periods.${periodIndex}.usages` });
 
     return (
-        <div className="bill-usages">
+        <RowGroup label="Usage" addTitle="Add export" onAdd={() => append({ ...defaultUsage, usageType: "Export" })}>
             {fields.map((field, index) => (
-                <div key={field.id} className="form-row">
+                <div key={field.id} className="entry-row usage-row">
                     <Form.Group groupId={`periods.${periodIndex}.usages.${index}.usageType`}>
-                        <Form.Label>Usage</Form.Label>
                         <Form.Select>
                             {UsageTypes.map(t => <option key={t} value={t}>{t}</option>)}
                         </Form.Select>
                     </Form.Group>
                     <Form.Group groupId={`periods.${periodIndex}.usages.${index}.pricePerUnit`}>
-                        <Form.Label>Price/Unit</Form.Label>
-                        <Form.Input type="number" step="0.00001" required />
+                        <Form.Input type="number" step="0.00001" required placeholder="Price/unit" />
                     </Form.Group>
                     <Form.Group groupId={`periods.${periodIndex}.usages.${index}.totalUsage`}>
-                        <Form.Label>Total Units</Form.Label>
-                        <Form.Input type="number" step="0.001" required />
+                        <Form.Input type="number" step="0.001" required placeholder="Units" />
                     </Form.Group>
-                    {fields.length > 1 && (
-                        <Button variant="outline-danger" size="sm" onClick={() => remove(index)} type="button" className="remove-button">
-                            Remove
-                        </Button>
-                    )}
+                    <span className="entry-action">
+                        {fields.length > 1 && <DeleteIcon onClick={() => remove(index)} />}
+                    </span>
                 </div>
             ))}
-            <Button variant="outline-primary" size="sm" onClick={() => append({ ...defaultUsage, usageType: "Export" })} type="button">Add Export</Button>
-        </div>
+        </RowGroup>
     );
 };
 
@@ -69,28 +74,23 @@ const ServiceCharges: React.FC<ServiceChargesProps> = ({ control, periodIndex, c
     const { fields, append, remove } = useFieldArray({ control, name: `periods.${periodIndex}.serviceCharges` });
 
     return (
-        <div className="service-charges">
+        <RowGroup label="Service charges" addTitle="Add service charge" onAdd={() => append({ ...defaultServiceCharge })}>
             {fields.map((field, index) => (
-                <div key={field.id} className="form-row">
+                <div key={field.id} className="entry-row charge-row">
                     <Form.Group groupId={`periods.${periodIndex}.serviceCharges.${index}.chargeTypeId`}>
-                        <Form.Label>Service Charge</Form.Label>
                         <Form.Select>
                             {chargeTypes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </Form.Select>
                     </Form.Group>
                     <Form.Group groupId={`periods.${periodIndex}.serviceCharges.${index}.chargePerDay`}>
-                        <Form.Label>Charge/Day</Form.Label>
-                        <Form.Input type="number" step="0.00001" required />
+                        <Form.Input type="number" step="0.00001" required placeholder="Charge/day" />
                     </Form.Group>
-                    {fields.length > 1 && (
-                        <Button variant="outline-danger" size="sm" onClick={() => remove(index)} type="button" className="remove-button">
-                            Remove
-                        </Button>
-                    )}
+                    <span className="entry-action">
+                        {fields.length > 1 && <DeleteIcon onClick={() => remove(index)} />}
+                    </span>
                 </div>
             ))}
-            <Button variant="outline-primary" size="sm" onClick={() => append({ ...defaultServiceCharge })} type="button">Add Service Charge</Button>
-        </div>
+        </RowGroup>
     );
 };
 
@@ -108,9 +108,12 @@ export interface BillFormProps {
 /**
  * The fields of a bill, shared by adding and editing.
  *
- * A bill's cost and total usage are not among them: the database derives the cost from the periods
- * and the total from the readings, so both are ignored on the way in. Offering them as inputs would
- * mean typing a figure and watching it be discarded.
+ * Rows are added and removed with icons rather than buttons, which is how the rest of the app
+ * handles a repeating row -- see the transaction split editor.
+ *
+ * A bill's cost and total usage are not among the fields: the database derives the cost from the
+ * periods and the total from the readings, so both are ignored on the way in. Offering them as
+ * inputs would mean typing a figure and watching it be discarded.
  */
 export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLabel, pending, onSubmit, onCancel, header }) => {
 
@@ -155,12 +158,12 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
             <Section header={
                 <span className="section-header">
                     <span>Billing Periods</span>
-                    <Button variant="outline-primary" size="sm" onClick={() => appendPeriod(emptyPeriod())} type="button">Add Period</Button>
+                    <Icon icon="plus" title="Add period" onClick={() => appendPeriod(emptyPeriod())} />
                 </span>
             }>
                 {periodFields.map((field, index) => (
                     <div key={field.id} className="period-entry">
-                        <div className="form-row">
+                        <div className="entry-row period-row">
                             <Form.Group groupId={`periods.${index}.periodStart`}>
                                 <Form.Label>Period Start</Form.Label>
                                 <Form.Input type="date" required />
@@ -169,14 +172,12 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
                                 <Form.Label>Period End</Form.Label>
                                 <Form.Input type="date" required />
                             </Form.Group>
+                            <span className="entry-action">
+                                {periodFields.length > 1 && <DeleteIcon onClick={() => removePeriod(index)} />}
+                            </span>
                         </div>
                         <Usages control={form.control} periodIndex={index} />
                         <ServiceCharges control={form.control} periodIndex={index} chargeTypes={chargeTypes} />
-                        {periodFields.length > 1 && (
-                            <Button variant="outline-danger" size="sm" onClick={() => removePeriod(index)} type="button" className="remove-button">
-                                Remove Period
-                            </Button>
-                        )}
                     </div>
                 ))}
             </Section>
@@ -184,31 +185,26 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
             <Section header={
                 <span className="section-header">
                     <span>Discounts</span>
-                    <Button variant="outline-primary" size="sm" onClick={() => appendDiscount({ discountPercent: undefined, discountAmount: undefined, reason: "" })} type="button">Add Discount</Button>
+                    <Icon icon="plus" title="Add discount" onClick={() => appendDiscount({ discountPercent: undefined, discountAmount: undefined, reason: "" })} />
                 </span>
             }>
                 {discountFields.length === 0 && (
                     <p className="empty-message">No discounts added.</p>
                 )}
                 {discountFields.map((field, index) => (
-                    <div key={field.id} className="discount-entry">
-                        <div className="form-row-3">
-                            <Form.Group groupId={`discounts.${index}.discountPercent`}>
-                                <Form.Label>Discount %</Form.Label>
-                                <Form.Input type="number" min={0} max={100} />
-                            </Form.Group>
-                            <Form.Group groupId={`discounts.${index}.discountAmount`}>
-                                <Form.Label>Discount Amount</Form.Label>
-                                <Form.Input type="number" step={amountStep} />
-                            </Form.Group>
-                            <Form.Group groupId={`discounts.${index}.reason`}>
-                                <Form.Label>Reason</Form.Label>
-                                <Form.Input type="text" maxLength={255} />
-                            </Form.Group>
-                        </div>
-                        <Button variant="outline-danger" size="sm" onClick={() => removeDiscount(index)} type="button" className="remove-button">
-                            Remove Discount
-                        </Button>
+                    <div key={field.id} className="entry-row discount-row">
+                        <Form.Group groupId={`discounts.${index}.discountPercent`}>
+                            <Form.Input type="number" min={0} max={100} placeholder="Discount %" />
+                        </Form.Group>
+                        <Form.Group groupId={`discounts.${index}.discountAmount`}>
+                            <Form.Input type="number" step={amountStep} placeholder="Amount" />
+                        </Form.Group>
+                        <Form.Group groupId={`discounts.${index}.reason`}>
+                            <Form.Input type="text" maxLength={255} placeholder="Reason" />
+                        </Form.Group>
+                        <span className="entry-action">
+                            <DeleteIcon onClick={() => removeDiscount(index)} />
+                        </span>
                     </div>
                 ))}
             </Section>

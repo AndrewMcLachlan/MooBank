@@ -109,6 +109,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     [AllowNull]
     public virtual DbSet<CpiChange> CpiChanges { get; set; }
 
+    [AllowNull]
     public virtual DbSet<PensionRate> PensionRates { get; set; }
 
     [AllowNull]
