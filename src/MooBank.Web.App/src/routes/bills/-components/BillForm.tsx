@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, DeleteIcon, Form, Icon, Modal } from "@andrewmclachlan/moo-ds";
+import { Button, DeleteIcon, Form, Icon, Modal, Section } from "@andrewmclachlan/moo-ds";
 import type { Control, UseFormReturn } from "react-hook-form";
 import { useFieldArray } from "react-hook-form";
 
@@ -19,7 +19,12 @@ export const emptyPeriod = (): CreatePeriod => ({
     serviceCharges: [{ ...defaultServiceCharge }],
 });
 
-/** A group of repeated rows, named by its legend, with the control that adds another. */
+/**
+ * A group of repeated rows within a period.
+ *
+ * A fieldset, but never a nested one: the outer groups are sections, because a fieldset inside a
+ * fieldset lays out badly and reads as a box inside a box.
+ */
 const FieldGroup: React.FC<React.PropsWithChildren<{ legend: string; addTitle: string; onAdd: () => void }>> = ({ legend, addTitle, onAdd, children }) => (
     <fieldset>
         <legend>
@@ -28,6 +33,18 @@ const FieldGroup: React.FC<React.PropsWithChildren<{ legend: string; addTitle: s
         </legend>
         {children}
     </fieldset>
+);
+
+/** A top-level group of the dialog. */
+const FormSection: React.FC<React.PropsWithChildren<{ title: string; addTitle: string; onAdd: () => void }>> = ({ title, addTitle, onAdd, children }) => (
+    <Section header={
+        <span className="section-header">
+            <span>{title}</span>
+            <Icon icon="plus" title={addTitle} onClick={onAdd} />
+        </span>
+    }>
+        {children}
+    </Section>
 );
 
 interface UsagesProps {
@@ -159,7 +176,7 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
                     </Form.Group>
                 </div>
 
-                <FieldGroup legend="Billing Periods" addTitle="Add period" onAdd={() => appendPeriod(emptyPeriod())}>
+                <FormSection title="Billing Periods" addTitle="Add period" onAdd={() => appendPeriod(emptyPeriod())}>
                     {periodFields.map((field, index) => (
                         <div key={field.id} className="period-entry">
                             <div className="entry-row period-row">
@@ -179,9 +196,9 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
                             <ServiceCharges control={form.control} periodIndex={index} chargeTypes={chargeTypes} />
                         </div>
                     ))}
-                </FieldGroup>
+                </FormSection>
 
-                <FieldGroup legend="Discounts" addTitle="Add discount" onAdd={() => appendDiscount({ discountPercent: undefined, discountAmount: undefined, reason: "" })}>
+                <FormSection title="Discounts" addTitle="Add discount" onAdd={() => appendDiscount({ discountPercent: undefined, discountAmount: undefined, reason: "" })}>
                     {discountFields.length === 0 && (
                         <p className="empty-message">No discounts added.</p>
                     )}
@@ -201,7 +218,7 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
                             </span>
                         </div>
                     ))}
-                </FieldGroup>
+                </FormSection>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-primary" onClick={onCancel}>Cancel</Button>

@@ -93,25 +93,35 @@
         margin-bottom: 1rem;
     }
 
-    /* Groups of repeated rows are fieldsets, which the app already styles with a border and a
-       legend. Nested one inside another they need a little breathing room of their own. */
-    fieldset {
+    /* The top-level groups are sections; only the innermost groups -- the usages and service
+       charges within a period -- are fieldsets. A fieldset inside a fieldset lays out badly and
+       reads as a box inside a box. */
+    .section {
         margin-block: 1.5rem;
     }
 
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    fieldset {
+        margin-block: 1.25rem;
+        padding-block: 1rem 0.75rem;
+    }
+
+    /* The design system's reset floats the legend and gives it the full width, which squeezes
+       whatever follows it to nothing and spills that row out of the fieldset. Unfloating it is
+       what makes a fieldset usable as a group of fields here at all. */
     fieldset > legend {
+        float: none;
+        inline-size: auto;
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        font-size: 1.125rem;
-    }
-
-    fieldset fieldset {
-        margin-block: 1.25rem 0;
-    }
-
-    fieldset fieldset > legend {
         font-size: 1rem;
+        margin-bottom: 0;
     }
 
     .period-entry:not(:last-child) {
