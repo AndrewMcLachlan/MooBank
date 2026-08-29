@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, DeleteIcon, Form, Icon, Section, SectionForm } from "@andrewmclachlan/moo-ds";
+import { Button, DeleteIcon, Form, Icon, Modal } from "@andrewmclachlan/moo-ds";
 import type { Control, UseFormReturn } from "react-hook-form";
 import { useFieldArray } from "react-hook-form";
 
@@ -19,15 +19,15 @@ export const emptyPeriod = (): CreatePeriod => ({
     serviceCharges: [{ ...defaultServiceCharge }],
 });
 
-/** A labelled group of repeated rows, with the control that adds another. */
-const RowGroup: React.FC<React.PropsWithChildren<{ label: string; addTitle: string; onAdd: () => void }>> = ({ label, addTitle, onAdd, children }) => (
-    <div className="row-group">
-        <div className="row-group-header">
-            <span className="row-group-label">{label}</span>
+/** A group of repeated rows, named by its legend, with the control that adds another. */
+const FieldGroup: React.FC<React.PropsWithChildren<{ legend: string; addTitle: string; onAdd: () => void }>> = ({ legend, addTitle, onAdd, children }) => (
+    <fieldset>
+        <legend>
+            <span>{legend}</span>
             <Icon icon="plus" title={addTitle} onClick={onAdd} />
-        </div>
+        </legend>
         {children}
-    </div>
+    </fieldset>
 );
 
 interface UsagesProps {
@@ -40,7 +40,7 @@ const Usages: React.FC<UsagesProps> = ({ control, periodIndex }) => {
     const { fields, append, remove } = useFieldArray({ control, name: `periods.${periodIndex}.usages` });
 
     return (
-        <RowGroup label="Usage" addTitle="Add export" onAdd={() => append({ ...defaultUsage, usageType: "Export" })}>
+        <FieldGroup legend="Usage" addTitle="Add export" onAdd={() => append({ ...defaultUsage, usageType: "Export" })}>
             {fields.map((field, index) => (
                 <div key={field.id} className="entry-row usage-row">
                     <Form.Group groupId={`periods.${periodIndex}.usages.${index}.usageType`}>
@@ -59,7 +59,7 @@ const Usages: React.FC<UsagesProps> = ({ control, periodIndex }) => {
                     </span>
                 </div>
             ))}
-        </RowGroup>
+        </FieldGroup>
     );
 };
 
@@ -74,7 +74,7 @@ const ServiceCharges: React.FC<ServiceChargesProps> = ({ control, periodIndex, c
     const { fields, append, remove } = useFieldArray({ control, name: `periods.${periodIndex}.serviceCharges` });
 
     return (
-        <RowGroup label="Service charges" addTitle="Add service charge" onAdd={() => append({ ...defaultServiceCharge })}>
+        <FieldGroup legend="Service Charges" addTitle="Add service charge" onAdd={() => append({ ...defaultServiceCharge })}>
             {fields.map((field, index) => (
                 <div key={field.id} className="entry-row charge-row">
                     <Form.Group groupId={`periods.${periodIndex}.serviceCharges.${index}.chargeTypeId`}>
@@ -90,7 +90,7 @@ const ServiceCharges: React.FC<ServiceChargesProps> = ({ control, periodIndex, c
                     </span>
                 </div>
             ))}
-        </RowGroup>
+        </FieldGroup>
     );
 };
 
@@ -106,7 +106,10 @@ export interface BillFormProps {
 }
 
 /**
- * The fields of a bill, shared by adding and editing.
+ * The body and footer of a bill dialog, shared by adding and editing.
+ *
+ * The form wraps both, as the transaction dialog does, so that the submit button can live in the
+ * modal footer where the dialog's actions belong.
  *
  * Rows are added and removed with icons rather than buttons, which is how the rest of the app
  * handles a repeating row -- see the transaction split editor.
@@ -128,91 +131,82 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
     });
 
     return (
-        <SectionForm form={form} onSubmit={onSubmit} className="bill-form">
-            {header}
-            <div className="form-row">
-                <Form.Group groupId="invoiceNumber">
-                    <Form.Label>Invoice Number</Form.Label>
-                    <Form.Input type="text" maxLength={11} />
-                </Form.Group>
-                <Form.Group groupId="issueDate">
-                    <Form.Label>Issue Date</Form.Label>
-                    <Form.Input type="date" required />
-                </Form.Group>
-            </div>
-            <div className="form-row-3">
-                <Form.Group groupId="previousReading">
-                    <Form.Label>Previous Reading</Form.Label>
-                    <Form.Input type="number" />
-                </Form.Group>
-                <Form.Group groupId="currentReading">
-                    <Form.Label>Current Reading</Form.Label>
-                    <Form.Input type="number" />
-                </Form.Group>
-                <Form.Group groupId="costsIncludeGST" className="form-check">
-                    <Form.Check />
-                    <Form.Label className="form-check-label">Costs Include GST</Form.Label>
-                </Form.Group>
-            </div>
+        <Form form={form} onSubmit={onSubmit} className="bill-form">
+            <Modal.Body>
+                {header}
+                <div className="form-row">
+                    <Form.Group groupId="invoiceNumber">
+                        <Form.Label>Invoice Number</Form.Label>
+                        <Form.Input type="text" maxLength={11} />
+                    </Form.Group>
+                    <Form.Group groupId="issueDate">
+                        <Form.Label>Issue Date</Form.Label>
+                        <Form.Input type="date" required />
+                    </Form.Group>
+                </div>
+                <div className="form-row-3">
+                    <Form.Group groupId="previousReading">
+                        <Form.Label>Previous Reading</Form.Label>
+                        <Form.Input type="number" />
+                    </Form.Group>
+                    <Form.Group groupId="currentReading">
+                        <Form.Label>Current Reading</Form.Label>
+                        <Form.Input type="number" />
+                    </Form.Group>
+                    <Form.Group groupId="costsIncludeGST" className="form-check">
+                        <Form.Check />
+                        <Form.Label className="form-check-label">Costs Include GST</Form.Label>
+                    </Form.Group>
+                </div>
 
-            <Section header={
-                <span className="section-header">
-                    <span>Billing Periods</span>
-                    <Icon icon="plus" title="Add period" onClick={() => appendPeriod(emptyPeriod())} />
-                </span>
-            }>
-                {periodFields.map((field, index) => (
-                    <div key={field.id} className="period-entry">
-                        <div className="entry-row period-row">
-                            <Form.Group groupId={`periods.${index}.periodStart`}>
-                                <Form.Label>Period Start</Form.Label>
-                                <Form.Input type="date" required />
+                <FieldGroup legend="Billing Periods" addTitle="Add period" onAdd={() => appendPeriod(emptyPeriod())}>
+                    {periodFields.map((field, index) => (
+                        <div key={field.id} className="period-entry">
+                            <div className="entry-row period-row">
+                                <Form.Group groupId={`periods.${index}.periodStart`}>
+                                    <Form.Label>Period Start</Form.Label>
+                                    <Form.Input type="date" required />
+                                </Form.Group>
+                                <Form.Group groupId={`periods.${index}.periodEnd`}>
+                                    <Form.Label>Period End</Form.Label>
+                                    <Form.Input type="date" required />
+                                </Form.Group>
+                                <span className="entry-action">
+                                    {periodFields.length > 1 && <DeleteIcon onClick={() => removePeriod(index)} />}
+                                </span>
+                            </div>
+                            <Usages control={form.control} periodIndex={index} />
+                            <ServiceCharges control={form.control} periodIndex={index} chargeTypes={chargeTypes} />
+                        </div>
+                    ))}
+                </FieldGroup>
+
+                <FieldGroup legend="Discounts" addTitle="Add discount" onAdd={() => appendDiscount({ discountPercent: undefined, discountAmount: undefined, reason: "" })}>
+                    {discountFields.length === 0 && (
+                        <p className="empty-message">No discounts added.</p>
+                    )}
+                    {discountFields.map((field, index) => (
+                        <div key={field.id} className="entry-row discount-row">
+                            <Form.Group groupId={`discounts.${index}.discountPercent`}>
+                                <Form.Input type="number" min={0} max={100} placeholder="Discount %" />
                             </Form.Group>
-                            <Form.Group groupId={`periods.${index}.periodEnd`}>
-                                <Form.Label>Period End</Form.Label>
-                                <Form.Input type="date" required />
+                            <Form.Group groupId={`discounts.${index}.discountAmount`}>
+                                <Form.Input type="number" step={amountStep} placeholder="Amount" />
+                            </Form.Group>
+                            <Form.Group groupId={`discounts.${index}.reason`}>
+                                <Form.Input type="text" maxLength={255} placeholder="Reason" />
                             </Form.Group>
                             <span className="entry-action">
-                                {periodFields.length > 1 && <DeleteIcon onClick={() => removePeriod(index)} />}
+                                <DeleteIcon onClick={() => removeDiscount(index)} />
                             </span>
                         </div>
-                        <Usages control={form.control} periodIndex={index} />
-                        <ServiceCharges control={form.control} periodIndex={index} chargeTypes={chargeTypes} />
-                    </div>
-                ))}
-            </Section>
-
-            <Section header={
-                <span className="section-header">
-                    <span>Discounts</span>
-                    <Icon icon="plus" title="Add discount" onClick={() => appendDiscount({ discountPercent: undefined, discountAmount: undefined, reason: "" })} />
-                </span>
-            }>
-                {discountFields.length === 0 && (
-                    <p className="empty-message">No discounts added.</p>
-                )}
-                {discountFields.map((field, index) => (
-                    <div key={field.id} className="entry-row discount-row">
-                        <Form.Group groupId={`discounts.${index}.discountPercent`}>
-                            <Form.Input type="number" min={0} max={100} placeholder="Discount %" />
-                        </Form.Group>
-                        <Form.Group groupId={`discounts.${index}.discountAmount`}>
-                            <Form.Input type="number" step={amountStep} placeholder="Amount" />
-                        </Form.Group>
-                        <Form.Group groupId={`discounts.${index}.reason`}>
-                            <Form.Input type="text" maxLength={255} placeholder="Reason" />
-                        </Form.Group>
-                        <span className="entry-action">
-                            <DeleteIcon onClick={() => removeDiscount(index)} />
-                        </span>
-                    </div>
-                ))}
-            </Section>
-
-            <div className="form-actions">
-                <Button type="submit" variant="primary" disabled={pending}>{submitLabel}</Button>
-                <Button type="button" variant="secondary" onClick={onCancel}>Cancel</Button>
-            </div>
-        </SectionForm>
+                    ))}
+                </FieldGroup>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-primary" onClick={onCancel}>Cancel</Button>
+                <Button variant="primary" type="submit" disabled={pending}>{submitLabel}</Button>
+            </Modal.Footer>
+        </Form>
     );
 };

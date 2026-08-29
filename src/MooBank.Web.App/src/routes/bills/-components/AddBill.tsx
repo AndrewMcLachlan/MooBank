@@ -56,8 +56,7 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
             <Modal.Header closeButton>
                 <Modal.Title>Add Bill</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                <BillForm
+            <BillForm
                     form={form}
                     chargeTypes={chargeTypes ?? []}
                     submitLabel="Create Bill"
@@ -76,8 +75,7 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
                             </Form.Group>
                         </div>
                     )}
-                />
-            </Modal.Body>
+            />
         </Modal>
     );
 };

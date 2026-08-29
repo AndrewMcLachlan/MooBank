@@ -93,21 +93,31 @@
         margin-bottom: 1rem;
     }
 
-    .form-actions {
-        display: flex;
-        gap: 0.5rem;
+    /* Groups of repeated rows are fieldsets, which the app already styles with a border and a
+       legend. Nested one inside another they need a little breathing room of their own. */
+    fieldset {
+        margin-block: 1.5rem;
     }
 
-    .period-entry {
-        padding-bottom: 1rem;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid var(--border-colour);
-    }
-
-    .section-header {
+    fieldset > legend {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        gap: 0.75rem;
+        font-size: 1.125rem;
+    }
+
+    fieldset fieldset {
+        margin-block: 1.25rem 0;
+    }
+
+    fieldset fieldset > legend {
+        font-size: 1rem;
+    }
+
+    .period-entry:not(:last-child) {
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-colour);
     }
 
     .empty-message {
@@ -124,14 +134,15 @@
         margin-bottom: 0.75rem;
     }
 
+    .entry-row:last-child {
+        margin-bottom: 0;
+    }
+
     .period-row {
         grid-template-columns: 1fr 1fr 2rem;
     }
 
-    .usage-row {
-        grid-template-columns: 1fr 1fr 1fr 2rem;
-    }
-
+    .usage-row,
     .charge-row {
         grid-template-columns: 1fr 1fr 1fr 2rem;
     }
@@ -147,27 +158,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        /* Matches the height of the inputs beside it so the icon sits on their centre line. */
         block-size: var(--input-height, 2.5rem);
-    }
-
-    .row-group {
-        margin-block: 1rem;
-    }
-
-    .row-group-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.5rem;
-        padding-bottom: 0.25rem;
-        margin-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border-colour);
-    }
-
-    .row-group-label {
-        color: var(--secondary-colour);
-        font-size: 0.875rem;
     }
 }
 

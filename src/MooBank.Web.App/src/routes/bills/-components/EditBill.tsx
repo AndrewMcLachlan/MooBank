@@ -69,16 +69,14 @@ export const EditBill: React.FC<EditBillProps> = ({ accountId, bill, show, onHid
             <Modal.Header closeButton>
                 <Modal.Title>{bill.invoiceNumber ? `Edit Bill #${bill.invoiceNumber}` : "Edit Bill"}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                <BillForm
+            <BillForm
                     form={form}
                     chargeTypes={chargeTypes ?? []}
                     submitLabel="Save Bill"
                     pending={updateBill.isPending}
                     onSubmit={handleSubmit}
                     onCancel={onHide}
-                />
-            </Modal.Body>
+            />
         </Modal>
     );
 };
