@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Icon, Table } from "@andrewmclachlan/moo-ds";
 import { format, subYears } from "date-fns";
 import { getNumberOfPages, Pagination, useLocalStorage } from "@andrewmclachlan/moo-ds";
@@ -13,6 +13,7 @@ import { BillFilterPanel } from "./BillFilterPanel";
 import { BillsChart } from "./BillsChart";
 import { UsageChart } from "./UsageChart";
 import { getUnit } from "utils/units";
+import { billPeriodOptions } from "../-utils/billPeriodOptions";
 import { formatDateShort } from "utils/dateFns";
 import { Amount } from "components";
 
@@ -40,6 +41,10 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
 
     const numberOfPages = pagedBills ? getNumberOfPages(pagedBills.total, pageSize) : 0;
 
+    // Derived from the bills on show, so "Last period" is a period this account was actually billed
+    // for. A filter narrow enough to return none leaves only the calendar entries.
+    const presets = useMemo(() => billPeriodOptions(pagedBills?.results), [pagedBills?.results]);
+
     const editBill = (bill: Bill) => {
         setEditingBill(bill);
         setEditingAccount(accounts?.find(a => a.id === bill.accountId));
@@ -59,7 +64,7 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
 
     return (
         <div className="utility-bills-tab">
-            <BillFilterPanel accounts={accounts} filter={filter} onFilterChange={handleFilterChange} />
+            <BillFilterPanel accounts={accounts} filter={filter} onFilterChange={handleFilterChange} presets={presets} />
 
             <BillsChart utilityType={utilityType} filter={filter} />
 

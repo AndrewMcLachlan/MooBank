@@ -5,6 +5,7 @@ import classNames from "classnames";
 import { addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameMonth, parseISO, startOfMonth, startOfWeek } from "date-fns";
 
 import type { Period } from "models/dateFns";
+import type { PeriodOption } from "models/periodOptions";
 import { periodOptions } from "models/periodOptions";
 import { formatDateRange, formatISODate, formatPeriod } from "utils/dateFns";
 
@@ -29,7 +30,7 @@ const toPeriod = (start: string, end: string): Period => ({ startDate: parseISO(
  * And it always holds a range. There is no empty state to clear to: resetting a filter leaves the
  * period alone, exactly as the transaction filters do, and a bill period always has two ends.
  */
-export const DayRangeSelector: React.FC<DayRangeSelectorProps> = ({ value, onChange, presets = true, className, id = "day-range" }) => {
+export const DayRangeSelector: React.FC<DayRangeSelectorProps> = ({ value, onChange, presets = periodOptions, className, id = "day-range" }) => {
 
     const label = formatDateRange(formatISODate(value.startDate), formatISODate(value.endDate));
 
@@ -49,8 +50,12 @@ export const DayRangeSelector: React.FC<DayRangeSelectorProps> = ({ value, onCha
 export interface DayRangeSelectorProps {
     value: Period;
     onChange: (value: Period) => void;
-    /** The ready-made periods. On by default; a form editing one bill's period has no use for them. */
-    presets?: boolean;
+    /**
+     * The ready-made periods offered beside the calendar. Defaults to the app-wide list; pass an
+     * empty array for none, or a list of your own -- bills offer periods derived from the bills
+     * themselves, which the shared list knows nothing about.
+     */
+    presets?: PeriodOption[];
     id?: string;
     className?: string;
 }
@@ -59,7 +64,7 @@ export interface DayRangeSelectorProps {
  * The popover contents. Exported for tests, which drive it directly: `OverlayTrigger` positions
  * itself with CSS anchor positioning in the top layer, neither of which jsdom implements.
  */
-export const DayRangePanel: React.FC<DayRangePanelProps> = ({ value, onSelect, onClose, presets = true }) => {
+export const DayRangePanel: React.FC<DayRangePanelProps> = ({ value, onSelect, onClose, presets = periodOptions }) => {
 
     // Opens on the month the range ends in -- the end is what you are most likely to be adjusting
     // from, and a range that starts in the previous month would otherwise open a month early.
@@ -149,9 +154,9 @@ export const DayRangePanel: React.FC<DayRangePanelProps> = ({ value, onSelect, o
                     })}
                 </div>
             </div>
-            {presets && (
+            {presets.length > 0 && (
                 <ul className="date-range-presets" aria-label="Ready-made periods">
-                    {periodOptions.map(o => {
+                    {presets.map(o => {
                         // Matched on the dates themselves: this control holds a range, not which
                         // preset produced it, so a preset reads as current when it resolves to what
                         // is selected -- however that selection was arrived at.
@@ -173,5 +178,5 @@ export interface DayRangePanelProps {
     value: Period;
     onSelect: (value: Period) => void;
     onClose: () => void;
-    presets?: boolean;
+    presets?: PeriodOption[];
 }

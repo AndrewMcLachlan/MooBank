@@ -153,7 +153,7 @@ describe("DayRangePanel presets", () => {
 
     /* A bill is billed for the dates printed on it, never for "the last 3 months". */
     it("omits them when turned off", () => {
-        panel({ presets: false });
+        panel({ presets: [] });
 
         expect(screen.queryByRole("button", { name: "Last Month" })).not.toBeInTheDocument();
     });

@@ -86,7 +86,7 @@ const PeriodDates: React.FC<PeriodDatesProps> = ({ form, periodIndex }) => {
         <div className="period-dates">
             <Form.Label htmlFor={`period-${periodIndex}-dates`}>Period</Form.Label>
             {/* No presets: "Last 3 months" is not a thing a bill is billed for. */}
-            <DayRangeSelector id={`period-${periodIndex}-dates`} value={value} onChange={change} presets={false} />
+            <DayRangeSelector id={`period-${periodIndex}-dates`} value={value} onChange={change} presets={[]} />
         </div>
     );
 };

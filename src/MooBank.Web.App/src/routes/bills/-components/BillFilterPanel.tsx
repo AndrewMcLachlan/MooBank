@@ -7,6 +7,7 @@ import { parseISO, subYears } from "date-fns";
 import type { Account } from "api/types.gen";
 import { DayRangeSelector } from "components/DayRangeSelector";
 import type { Period } from "models/dateFns";
+import type { PeriodOption } from "models/periodOptions";
 import { formatISODate } from "utils/dateFns";
 import type { BillFilter } from "../-hooks/types";
 
@@ -14,9 +15,11 @@ export interface BillFilterPanelProps {
     accounts?: Account[];
     filter: BillFilter;
     onFilterChange: (filter: BillFilter) => void;
+    /** Ready-made periods for the date picker, built from the bills on show. */
+    presets?: PeriodOption[];
 }
 
-export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filter, onFilterChange }) => {
+export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filter, onFilterChange, presets }) => {
 
     const handleDatesChange = (period: Period) => {
         onFilterChange({ ...filter, startDate: formatISODate(period.startDate), endDate: formatISODate(period.endDate) });
@@ -55,7 +58,7 @@ export const BillFilterPanel: React.FC<BillFilterPanelProps> = ({ accounts, filt
             <div className="filter-row">
                 <div className="filter-field">
                     <Form.Label htmlFor="filter-dates">Dates</Form.Label>
-                    <DayRangeSelector id="filter-dates" value={dates} onChange={handleDatesChange} />
+                    <DayRangeSelector id="filter-dates" value={dates} onChange={handleDatesChange} presets={presets} />
                 </div>
                 {accounts && accounts.length > 0 && (
                     <div className="filter-field">
