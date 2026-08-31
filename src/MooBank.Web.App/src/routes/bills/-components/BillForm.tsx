@@ -7,7 +7,8 @@ import type { ChargeType } from "api/types.gen";
 import type { CreateBill, CreatePeriod, CreateServiceCharge, CreateUsage } from "models/bills";
 import { UsageTypes } from "models/bills";
 import { amountStep } from "utils/currency";
-import { DayRangeSelector } from "components/DayRangeSelector";
+import type { DayRangeSelection } from "components/DayRangeSelector";
+import { DayRangeSelector, isPresetSelection } from "components/DayRangeSelector";
 import type { Period as DateRange } from "models/dateFns";
 import { formatISODate } from "utils/dateFns";
 import { parseISO } from "date-fns";
@@ -77,7 +78,10 @@ const PeriodDates: React.FC<PeriodDatesProps> = ({ form, periodIndex }) => {
         endDate: end ? parseISO(end) : today,
     };
 
-    const change = (range: DateRange) => {
+    const change = (range: DayRangeSelection) => {
+        // No presets are offered here, so a named period cannot arrive.
+        if (isPresetSelection(range)) return;
+
         form.setValue(`periods.${periodIndex}.periodStart`, formatISODate(range.startDate), { shouldDirty: true });
         form.setValue(`periods.${periodIndex}.periodEnd`, formatISODate(range.endDate), { shouldDirty: true });
     };

@@ -41,15 +41,9 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
 
     const numberOfPages = pagedBills ? getNumberOfPages(pagedBills.total, pageSize) : 0;
 
-    /*
-        The two most recent bills, fetched without the date filter, purely to build the ready-made
-        periods. Deriving them from the list on show is circular: picking a period that happens to
-        contain no bills would remove the very entries that would take you back out of it. The
-        account filter still applies, so "Last period" follows whichever account is selected.
-    */
-    const { data: recentBills } = useBillsByUtilityType(utilityType, 1, 2, { accountId: filter.accountId });
-
-    const presets = useMemo(() => billPeriodOptions(recentBills?.results), [recentBills?.results]);
+    // Built from the accounts, which carry how often they are billed. The two bill-relative periods
+    // carry no dates: they go to the server by name and it answers from the bills.
+    const presets = useMemo(() => billPeriodOptions(accounts, filter.accountId), [accounts, filter.accountId]);
 
     const editBill = (bill: Bill) => {
         setEditingBill(bill);

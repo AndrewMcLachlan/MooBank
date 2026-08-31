@@ -180,7 +180,48 @@ describe("DayRangePanel presets", () => {
     });
 });
 
+describe("DayRangePanel named periods", () => {
+
+    // A period whose dates only the data can answer -- the consumer resolves it elsewhere.
+    const named = [{ value: "Last", label: "Last period" }];
+
+    /**
+     * Given a preset that carries no dates
+     * When it is chosen
+     * Then its name is reported rather than a range, for the consumer to resolve.
+     */
+    it("reports the name of a period it cannot date", async () => {
+        const user = setup();
+        const { onSelect } = panel({ presets: named });
+
+        await user.click(screen.getByRole("button", { name: "Last period" }));
+
+        expect(onSelect).toHaveBeenCalledWith({ preset: "Last" });
+    });
+
+    /**
+     * Given a named period is in force
+     * When the panel opens
+     * Then it reads as current, and nothing is marked on the calendar.
+     */
+    /* Marking a range would be a claim about which days were billed, which is not known here. */
+    it("marks it current and leaves the calendar unmarked", () => {
+        panel({ value: { preset: "Last" }, presets: named });
+
+        expect(screen.getByRole("button", { name: "Last period" })).toHaveAttribute("aria-current", "true");
+        expect(document.querySelectorAll(".day-range-days .in-range")).toHaveLength(0);
+    });
+});
+
 describe("DayRangeSelector", () => {
+
+    /* A named period says what it is; there are no dates to show. */
+    it("labels the trigger with the name of a period it cannot date", () => {
+        render(<DayRangeSelector value={{ preset: "Last" }} presets={[{ value: "Last", label: "Last period" }]} onChange={vi.fn()} />);
+
+        expect(screen.getByRole("button", { name: /Dates: Last period/ })).toBeInTheDocument();
+    });
+
     /* The label drops the year from the start when both ends share one, which is the common case. */
     it("labels the trigger with the range", () => {
         render(<DayRangeSelector value={august(10, 20)} onChange={vi.fn()} />);

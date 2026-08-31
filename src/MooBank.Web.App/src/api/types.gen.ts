@@ -8,6 +8,7 @@ export type Account = {
     utilityType: UtilityType;
     firstBill?: null | string;
     latestBill?: null | string;
+    billingIntervalDays?: null | number;
     id: string;
     name: string;
     description?: null | string;
@@ -83,6 +84,8 @@ export type Bill = {
     periods: Array<Period>;
     discounts: Array<Discount>;
 };
+
+export type BillPeriod = 'Last' | 'Previous';
 
 export type BreakdownReport = {
     tags: Array<TagValue>;
@@ -1617,6 +1620,7 @@ export type GetBillsByUtilityTypeData = {
         StartDate?: string;
         EndDate?: string;
         AccountId?: string;
+        Period?: BillPeriod;
     };
     url: '/bills/types/{utilityType}/bills';
 };

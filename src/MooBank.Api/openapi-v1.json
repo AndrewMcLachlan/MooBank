@@ -725,6 +725,13 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "Period",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/BillPeriod"
+            }
           }
         ],
         "responses": {
@@ -6117,6 +6124,13 @@
             ],
             "format": "date"
           },
+          "billingIntervalDays": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -6480,6 +6494,13 @@
             }
           }
         }
+      },
+      "BillPeriod": {
+        "enum": [
+          "Last",
+          "Previous",
+          null
+        ]
       },
       "BreakdownReport": {
         "required": [

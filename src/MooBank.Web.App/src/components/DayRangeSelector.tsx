@@ -5,9 +5,33 @@ import classNames from "classnames";
 import { addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameMonth, parseISO, startOfMonth, startOfWeek } from "date-fns";
 
 import type { Period } from "models/dateFns";
-import type { PeriodOption } from "models/periodOptions";
 import { periodOptions } from "models/periodOptions";
 import { formatDateRange, formatISODate, formatPeriod } from "utils/dateFns";
+
+/** A ready-made period offered beside the calendar. */
+export interface DayRangePreset {
+    value: string;
+    label: string;
+    /**
+     * The dates it covers, where they can be worked out here. Absent for a period only the data can
+     * answer -- "the last one billed" is a question about bills, not about the calendar -- which the
+     * consumer resolves for itself, typically by passing the name of it to the server.
+     */
+    period?: Period;
+}
+
+/** Either a named period or an explicit range. One or the other, never both. */
+export type DayRangeSelection = Period | { preset: string };
+
+export const isPresetSelection = (selection: DayRangeSelection): selection is { preset: string } =>
+    "preset" in selection;
+
+/** The app-wide periods, as presets. Getters so they stay live in a long-open tab. */
+const defaultPresets: DayRangePreset[] = periodOptions.map(o => ({
+    value: o.value,
+    label: o.label,
+    get period() { return { startDate: o.startDate, endDate: o.endDate }; },
+}));
 
 /** The week starts on Monday, as it does on every Australian calendar. */
 const weekStartsOn = 1 as const;
@@ -30,9 +54,14 @@ const toPeriod = (start: string, end: string): Period => ({ startDate: parseISO(
  * And it always holds a range. There is no empty state to clear to: resetting a filter leaves the
  * period alone, exactly as the transaction filters do, and a bill period always has two ends.
  */
-export const DayRangeSelector: React.FC<DayRangeSelectorProps> = ({ value, onChange, presets = periodOptions, className, id = "day-range" }) => {
+export const DayRangeSelector: React.FC<DayRangeSelectorProps> = ({ value, onChange, presets = defaultPresets, className, id = "day-range" }) => {
 
-    const label = formatDateRange(formatISODate(value.startDate), formatISODate(value.endDate));
+    const dates = resolve(value, presets);
+
+    // A named period says what it is; a range says when it is.
+    const label = isPresetSelection(value)
+        ? presets.find(p => p.value === value.preset)?.label ?? "Select dates"
+        : formatDateRange(formatISODate(dates.startDate), formatISODate(dates.endDate));
 
     return (
         <OverlayTrigger trigger="click" placement="bottom" rootClose overlay={(close) => (
@@ -48,27 +77,44 @@ export const DayRangeSelector: React.FC<DayRangeSelectorProps> = ({ value, onCha
 };
 
 export interface DayRangeSelectorProps {
-    value: Period;
-    onChange: (value: Period) => void;
+    value: DayRangeSelection;
+    onChange: (value: DayRangeSelection) => void;
     /**
      * The ready-made periods offered beside the calendar. Defaults to the app-wide list; pass an
      * empty array for none, or a list of your own -- bills offer periods derived from the bills
      * themselves, which the shared list knows nothing about.
      */
-    presets?: PeriodOption[];
+    presets?: DayRangePreset[];
     id?: string;
     className?: string;
 }
 
 /**
+ * The dates a selection covers. A named period the consumer resolves elsewhere has none to show, so
+ * the calendar falls back to today: it opens somewhere sensible and highlights nothing, which is
+ * honest -- it does not know which days were billed.
+ */
+const resolve = (value: DayRangeSelection, presets: DayRangePreset[]): Period => {
+    if (!isPresetSelection(value)) return value;
+
+    const period = presets.find(p => p.value === value.preset)?.period;
+    return period ?? { startDate: new Date(), endDate: new Date() };
+};
+
+/**
  * The popover contents. Exported for tests, which drive it directly: `OverlayTrigger` positions
  * itself with CSS anchor positioning in the top layer, neither of which jsdom implements.
  */
-export const DayRangePanel: React.FC<DayRangePanelProps> = ({ value, onSelect, onClose, presets = periodOptions }) => {
+export const DayRangePanel: React.FC<DayRangePanelProps> = ({ value, onSelect, onClose, presets = defaultPresets }) => {
+
+    const dates = resolve(value, presets);
 
     // Opens on the month the range ends in -- the end is what you are most likely to be adjusting
     // from, and a range that starts in the previous month would otherwise open a month early.
-    const [month, setMonth] = useState(() => startOfMonth(value.endDate));
+    const [month, setMonth] = useState(() => startOfMonth(dates.endDate));
+
+    // A named period the consumer resolves elsewhere has no dates to draw, so nothing is marked.
+    const unresolved = isPresetSelection(value) && !presets.find(p => p.value === value.preset)?.period;
 
     // The first click of a range. Held here rather than committed, so a half-made range never
     // reaches the consumer and fires a query for dates you did not ask for.
@@ -99,14 +145,14 @@ export const DayRangePanel: React.FC<DayRangePanelProps> = ({ value, onSelect, o
         end: endOfWeek(new Date(), { weekStartsOn }),
     }).map(d => ({ key: format(d, "i"), short: format(d, "EEEEE"), long: format(d, "EEEE") })), []);
 
-    const current: [string, string] = [formatISODate(value.startDate), formatISODate(value.endDate)];
+    const current: [string, string] = [formatISODate(dates.startDate), formatISODate(dates.endDate)];
 
     // What the grid highlights: the range being built if there is one, otherwise the current value.
     const activeRange: [string, string] = pendingStart
         ? orderPair(pendingStart, hoverDay ?? pendingStart)
-        : current;
+        : unresolved ? ["", ""] : current;
 
-    const resolved = pendingStart ? toPeriod(activeRange[0], activeRange[1]) : value;
+    const resolved = pendingStart ? toPeriod(activeRange[0], activeRange[1]) : dates;
 
     const selectDay = (day: string) => {
         if (!pendingStart) {
@@ -160,23 +206,25 @@ export const DayRangePanel: React.FC<DayRangePanelProps> = ({ value, onSelect, o
                         // Matched on the dates themselves: this control holds a range, not which
                         // preset produced it, so a preset reads as current when it resolves to what
                         // is selected -- however that selection was arrived at.
-                        const isCurrent = formatISODate(o.startDate) === current[0] && formatISODate(o.endDate) === current[1];
+                        const isCurrent = isPresetSelection(value)
+                            ? value.preset === o.value
+                            : o.period !== undefined && formatISODate(o.period.startDate) === current[0] && formatISODate(o.period.endDate) === current[1];
                         return (
                             <li key={o.value}>
-                                <button type="button" className={isCurrent ? "current" : undefined} aria-current={isCurrent ? "true" : undefined} onClick={() => { onSelect({ startDate: o.startDate, endDate: o.endDate }); onClose(); }}>{o.label}</button>
+                                <button type="button" className={isCurrent ? "current" : undefined} aria-current={isCurrent ? "true" : undefined} onClick={() => { onSelect(o.period ? { startDate: o.period.startDate, endDate: o.period.endDate } : { preset: o.value }); onClose(); }}>{o.label}</button>
                             </li>
                         );
                     })}
                 </ul>
             )}
-            <p className="date-range-resolved" aria-live="polite">{formatPeriod(resolved)}</p>
+            <p className="date-range-resolved" aria-live="polite">{unresolved && !pendingStart ? "Whatever was last billed" : formatPeriod(resolved)}</p>
         </div>
     );
 };
 
 export interface DayRangePanelProps {
-    value: Period;
-    onSelect: (value: Period) => void;
+    value: DayRangeSelection;
+    onSelect: (value: DayRangeSelection) => void;
     onClose: () => void;
-    presets?: PeriodOption[];
+    presets?: DayRangePreset[];
 }
