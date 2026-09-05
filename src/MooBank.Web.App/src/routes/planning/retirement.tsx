@@ -1,7 +1,7 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
 import { IconButton } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRetirementPlans } from "./-retirement-hooks/useRetirementPlans";
 import { useRetirementPlan } from "./-retirement-hooks/useRetirementPlan";
 import { useRetirementProjection } from "./-retirement-hooks/useRetirementProjection";
@@ -17,8 +17,7 @@ import { RetirementAssumptionsNote } from "./-retirement-components/RetirementAs
 import { RetirementSettingsModal } from "./-retirement-components/RetirementSettingsModal";
 import { RetirementTweaks } from "./-retirement-components/RetirementTweaks";
 import { CreateRetirementPlan } from "./-retirement-components/CreateRetirementPlan";
-import { applyDraftToPlan, emptyDraft, pruneDraft, withPlanValue } from "./-retirement-utils/tweaks";
-import { householdKey, projectionMatchesDraft } from "./-retirement-utils/retirementSync";
+import { applyDraftToPlan, emptyDraft, pruneDraft } from "./-retirement-utils/tweaks";
 import type { RetirementProjectionOverrides } from "api/types.gen";
 
 export const Route = createFileRoute("/planning/retirement")({
@@ -53,56 +52,6 @@ function Retirement() {
     const { data: projection, isFetching: projectionLoading } = useRetirementProjection(planId, settledDraft);
 
     const currencyCode = user?.currency ?? "AUD";
-
-    /**
-     * Leaving someone out changes the household, and with it the balance the target income was
-     * solved against — a target a couple could sustain will outlive one person's savings. The income
-     * is re-solved for the age already chosen, which is the same rule the two sliders follow when
-     * either is moved: the horizon is what the household holds to, and the income follows from it.
-     *
-     * Gated on the projection actually describing the household the draft is asking for, rather than
-     * on the request having had time to finish. The draft reaches the query debounced, so for a
-     * moment the projection on screen still belongs to the previous set of people — and an earlier
-     * version of this read the summary in exactly that moment. It re-solved against the household it
-     * was leaving, which changed nothing visible, marked the work done, and never looked again; then
-     * putting the person back solved against the one-person figures still on screen. Comparing who
-     * is in the result against who is wanted cannot drift that way.
-     *
-     * It cannot chase its own tail either: a balance at retirement is settled before any drawdown
-     * begins, so it does not move when the target income does.
-     */
-    const solvedFor = useRef<string | null>(null);
-
-    useEffect(() => {
-        if (!plan || !projection) return;
-
-        const planMemberIds = plan.members.map(m => m.id);
-        const projectedMemberIds = projection.members.map(m => m.memberId);
-
-        // Still showing the previous household; wait for the one that was asked for.
-        if (!projectionMatchesDraft(planMemberIds, scoped.excludedMemberIds, projectedMemberIds)) return;
-
-        // Keyed on the horizon as well as the household, both read from the result rather than the
-        // draft, so the income is re-solved whenever either changes — and never against a projection
-        // that has not caught up.
-        const household = `${householdKey(projectedMemberIds)}@${projection.summary.lifeExpectancyYear}`;
-
-        // The first matching projection sets the baseline rather than re-solving against it.
-        if (solvedFor.current === null || solvedFor.current === household) {
-            solvedFor.current = household;
-            return;
-        }
-
-        solvedFor.current = household;
-
-        // The server's own figure, solved against the projection rather than estimated from the
-        // closing balance: it accounts for the fees still being charged and for the pension sharing
-        // the load, which an annuity cannot, and which it overstated by a tenth or more.
-        const income = projection.summary.sustainableIncomeInTodaysDollars;
-        if (income <= 0) return;
-
-        setDraft(current => withPlanValue(current, plan, "targetRetirementIncome", income));
-    }, [plan, projection, scoped]);
 
     // Page pushes actions into the layout by reference, so a fresh array on every render sets the
     // context every render, which re-renders and builds another array. Memoised, and declared
