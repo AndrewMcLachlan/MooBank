@@ -81,6 +81,13 @@ void AddServices(WebApplicationBuilder builder)
 
     AzureOAuthOptions oAuthOptions = builder.Configuration.GetSection("OAuth").Get<AzureOAuthOptions>() ?? throw new InvalidOperationException("OAuth config not defined");
 
+    // The URL clients reach the MCP endpoint on. It is published as the `resource` of the Protected
+    // Resource Metadata document, and the client sends that value straight back to the authorisation
+    // server as the RFC 8707 resource indicator. Both ends match it exactly: the client requires the
+    // same origin as the URL it connected to, and Entra requires a registered App ID URI, scheme,
+    // port and path included. Anything else fails the handshake before a token is ever issued.
+    string mcpResource = builder.Configuration["Mcp:Resource"] ?? throw new InvalidOperationException("Mcp:Resource config not defined");
+
     services.AddAuthentication(builder.Configuration)
         .AddMcp(options =>
         {
@@ -89,26 +96,13 @@ void AddServices(WebApplicationBuilder builder)
             // resource_metadata pointer the MCP spec requires.
             options.ForwardAuthenticate = JwtBearerDefaults.AuthenticationScheme;
             options.ForwardForbid = JwtBearerDefaults.AuthenticationScheme;
-            // The MCP spec / Claude Desktop's Custom Connector require the `resource`
-            // field in the Protected Resource Metadata document to match the MCP
-            // server URL exactly as the user enters it in the client, INCLUDING the
-            // path component. Using the App ID URI ("api://...") here makes Claude
-            // reject the metadata document and fall back to treating MooBank as the
-            // authorization server. Token audience validation is unaffected because
-            // it's driven by JwtBearer config, not this value.
-            //
-            // Entra v2's /authorize endpoint also requires the `scope` parameter and
-            // the `resource` parameter to point at the same App ID URI, or it
-            // rejects with AADSTS9010010 ("resource parameter doesn't match requested
-            // scopes"). The scope advertised here must therefore live under the same
-            // App ID URI as the Resource value above — i.e. an Entra app whose App
-            // ID URI is https://moobank.mclachlan.family/mcp, with `api.read`
-            // exposed under it.
             options.ResourceMetadata = new()
             {
-                Resource = "https://moobank.mclachlan.family/mcp",
+                Resource = mcpResource,
                 AuthorizationServers = { oAuthOptions.Authority },
-                ScopesSupported = ["https://moobank.mclachlan.family/mcp/api.read"],
+                // Entra addresses a delegated scope as "<App ID URI>/<scope>" and rejects an
+                // authorize request whose scope and resource sit under different App ID URIs.
+                ScopesSupported = [$"{mcpResource}/api.read"],
             };
         });
 
