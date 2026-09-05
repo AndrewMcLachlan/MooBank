@@ -35,22 +35,12 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
         onChange(withPlanValue(draft, plan, key, value));
 
     /**
-     * The target income and how long the savings must last are two ends of one equation, so moving
-     * either solves the other. Without the link the two could quietly contradict each other — a
-     * target the balance cannot sustain to the age on the slider beside it.
-     */
-
-    /**
-     * Moves the horizon alone. The income that goes with it is solved on the server against the
-     * projection itself and arrives with the next run — an estimate worked out here would only be
-     * replaced a moment later by a figure a tenth different, having shown a wrong number meanwhile.
+     * Every slider moves its own value and nothing else. What a change costs — whether the money
+     * still lasts, and how long — comes back with the next projection, which is the only thing
+     * that knows.
      */
     const setLifeExpectancy = (age: number) => onChange(withPlanValue(draft, plan, "lifeExpectancy", age));
 
-    /**
-     * Moves the target alone. What it costs — whether the money still lasts, and how long — comes
-     * back with the next projection, which is the only thing that knows.
-     */
     const setTargetIncome = (income: number) => onChange(withPlanValue(draft, plan, "targetRetirementIncome", income));
 
     return (
@@ -191,8 +181,9 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                 </div>
                 <p className="retirement-tweak-note">
                     Expected return applies to anyone on the Custom strategy; the named strategies carry their own.
-                    Target income is what the household draws each year once everyone has retired, in today's dollars —
-                    moving it and the age the savings must last to solves the other, since the two are one equation.
+                    Target income is what the household draws each year once everyone has retired, in today's dollars.
+                    Set it above what the savings can carry and the money runs out before the age beside it, leaving the
+                    Age Pension to pay from there — a plan, if that is the one you want, not a mistake to be corrected.
                     Clearing "Include" leaves someone out of the projection to see the plan for one person; it changes
                     what is shown, never who is on the plan, so locking in cannot remove them.
                 </p>
