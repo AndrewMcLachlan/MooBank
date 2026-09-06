@@ -130,8 +130,8 @@ public class MemberExclusionTests
         var plan = TestEntities.CreatePlan(inflationRate: 0m, targetRetirementIncome: 60_000m, members: [self, spouse]);
 
         // Act
-        var asCouple = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan)).Years.ElementAt(1);
-        var asSingle = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), new ProjectionOverrides { ExcludedMemberIds = [spouse.Id] }).Years.ElementAt(1);
+        var asCouple = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Years.ElementAt(1);
+        var asSingle = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None, new ProjectionOverrides { ExcludedMemberIds = [spouse.Id] }).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(45_080m, asCouple.Pension);

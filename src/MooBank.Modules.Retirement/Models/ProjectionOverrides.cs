@@ -76,4 +76,17 @@ public sealed record MemberOverride
     /// <see cref="GrowthStrategy.Custom"/>.
     /// </summary>
     public decimal? CustomReturnRate { get; init; }
+
+    /// <summary>
+    /// What to move them to once retired.
+    /// </summary>
+    public GrowthStrategy? RetirementGrowthStrategy { get; init; }
+
+    /// <inheritdoc cref="CustomReturnRate"/>
+    public decimal? RetirementCustomReturnRate { get; init; }
+
+    /// <summary>
+    /// How their pay grows, instead of following the plan's inflation.
+    /// </summary>
+    public decimal? SalaryGrowthRate { get; init; }
 }

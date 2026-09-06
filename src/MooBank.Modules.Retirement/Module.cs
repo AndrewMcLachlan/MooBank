@@ -28,6 +28,7 @@ public class Module : IModule
         services.AddScoped<IMemberGuard, MemberGuard>();
         services.AddScoped<IPensionRateReader, PensionRateReader>();
         services.AddScoped<IGrowthStrategyRateReader, GrowthStrategyRateReader>();
+        services.AddScoped<IMinimumDrawdownRateReader, MinimumDrawdownRateReader>();
 
         return services;
     }

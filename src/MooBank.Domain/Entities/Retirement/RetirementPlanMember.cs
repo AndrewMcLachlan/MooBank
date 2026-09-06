@@ -78,18 +78,46 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
     [Precision(6, 4)]
     public decimal? CustomReturnRate { get; set; }
 
+    /// <summary>
+    /// The strategy this member moves to once retired, if they move at all.
+    /// </summary>
+    /// <remarks>
+    /// A portfolio that suits twenty years of accumulation rarely suits drawing an income from,
+    /// and leaving it unset keeps them where they are rather than guessing at a glide.
+    /// </remarks>
+    [Column("RetirementGrowthStrategyId")]
+    public GrowthStrategy? RetirementGrowthStrategy { get; set; }
+
+    /// <inheritdoc cref="CustomReturnRate"/>
+    [Precision(6, 4)]
+    public decimal? RetirementCustomReturnRate { get; set; }
+
+    /// <summary>
+    /// How this member's salary is assumed to grow each year.
+    /// </summary>
+    /// <remarks>
+    /// Absent follows the plan's inflation, which assumes pay keeps pace with prices. That is an
+    /// assumption rather than a fact, and one worth being able to contradict: a salary that holds
+    /// flat in nominal terms contributes markedly less over twenty years.
+    /// </remarks>
+    [Precision(6, 4)]
+    public decimal? SalaryGrowthRate { get; set; }
+
     public IReadOnlyCollection<RetirementPlanMemberAccount> Accounts { get => _accounts; internal init => _accounts = [.. value]; }
 
-    public void Update(int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal? customReturnRate, decimal annualFees, decimal insurancePremium)
+    public void Update(RetirementMemberDetails details)
     {
-        CurrentAge = currentAge;
-        CurrentIncome = currentIncome;
-        SalarySacrifice = salarySacrifice;
-        RetirementAge = retirementAge;
-        GrowthStrategy = growthStrategy;
-        CustomReturnRate = customReturnRate;
-        AnnualFees = annualFees;
-        InsurancePremium = insurancePremium;
+        CurrentAge = details.CurrentAge;
+        CurrentIncome = details.CurrentIncome;
+        SalarySacrifice = details.SalarySacrifice;
+        SalaryGrowthRate = details.SalaryGrowthRate;
+        RetirementAge = details.RetirementAge;
+        GrowthStrategy = details.GrowthStrategy;
+        CustomReturnRate = details.CustomReturnRate;
+        RetirementGrowthStrategy = details.RetirementGrowthStrategy;
+        RetirementCustomReturnRate = details.RetirementCustomReturnRate;
+        AnnualFees = details.AnnualFees;
+        InsurancePremium = details.InsurancePremium;
     }
 
     /// <summary>
@@ -114,3 +142,32 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
         }
     }
 }
+
+/// <summary>
+/// Everything about a member that a caller sets, as one value.
+/// </summary>
+/// <param name="CurrentAge">Their age now, from which every year of the projection is counted.</param>
+/// <param name="CurrentIncome">Gross annual income, which drives employer contributions.</param>
+/// <param name="SalarySacrifice">Additional concessional contributions from pre-tax income.</param>
+/// <param name="SalaryGrowthRate">
+/// How the income grows each year. Absent follows the plan's inflation.
+/// </param>
+/// <param name="RetirementAge">The age they stop contributing and start drawing.</param>
+/// <param name="GrowthStrategy">What their balance is invested in while accumulating.</param>
+/// <param name="CustomReturnRate">Their own rate, when the strategy is Custom.</param>
+/// <param name="RetirementGrowthStrategy">What they move to once retired, if anything.</param>
+/// <param name="RetirementCustomReturnRate">Their own rate for that, when it is Custom.</param>
+/// <param name="AnnualFees">Administration fees charged by the fund each year.</param>
+/// <param name="InsurancePremium">Insurance premiums deducted from the balance each year.</param>
+public readonly record struct RetirementMemberDetails(
+    int CurrentAge,
+    decimal CurrentIncome,
+    decimal SalarySacrifice,
+    decimal? SalaryGrowthRate,
+    int RetirementAge,
+    GrowthStrategy GrowthStrategy,
+    decimal? CustomReturnRate,
+    GrowthStrategy? RetirementGrowthStrategy,
+    decimal? RetirementCustomReturnRate,
+    decimal AnnualFees,
+    decimal InsurancePremium);

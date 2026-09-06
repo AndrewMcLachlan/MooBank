@@ -22,5 +22,5 @@ internal static class EngineExtensions
         DateOnly today,
         ProjectionOverrides? overrides = null,
         decimal? cashReturnRate = null) =>
-        engine.Calculate(plan, today, AgePensionRates.None, TestEntities.StrategyRates(plan, cashReturnRate), overrides);
+        engine.Calculate(plan, today, AgePensionRates.None, TestEntities.StrategyRates(plan, cashReturnRate), MinimumDrawdownRates.None, overrides);
 }

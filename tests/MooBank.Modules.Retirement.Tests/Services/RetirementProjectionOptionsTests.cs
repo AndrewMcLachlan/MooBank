@@ -182,6 +182,61 @@ public class RetirementProjectionOptionsTests
     }
 
     /// <summary>
+    /// Given a member who moves to a different strategy at retirement
+    /// When the projection runs
+    /// Then their balance should earn the accumulation rate first and the retirement rate after
+    /// </summary>
+    /// <remarks>
+    /// A portfolio built for twenty years of accumulation is not the one most people draw an income
+    /// from, and the difference compounds either side of the same date.
+    /// </remarks>
+    [Fact]
+    public void Calculate_AMemberWhoDeRisksAtRetirement_ChangesRateAtTheirRetirementYear()
+    {
+        // Arrange: Growth at 6.4% until 65, Conservative at 4.9% from then on.
+        var plan = TestEntities.CreatePlan(inflationRate: 0m, superGuaranteeRate: 0m, members: [
+            TestEntities.CreateMember(currentAge: 63, retirementAge: 65, currentIncome: 0m,
+                growthStrategy: GrowthStrategy.Growth, retirementGrowthStrategy: GrowthStrategy.Conservative,
+                accountBalances: [100_000m]),
+        ]);
+
+        // Act
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+
+        // Assert: the last accumulating year earns 6.4%, the first retired year 4.9%.
+        Assert.Equal(6_400m, years[1].InvestmentReturn);
+        var atRetirement = years[2].OpeningBalance;
+        Assert.Equal(Math.Round(atRetirement * 0.049m, 2), years[2].InvestmentReturn);
+    }
+
+    /// <summary>
+    /// Given a member whose pay does not grow
+    /// When the projection runs
+    /// Then their contribution should be the same figure every year
+    /// </summary>
+    /// <remarks>
+    /// Salary growth follows the plan's inflation unless the member says otherwise, which is an
+    /// assumption worth being able to contradict: pay rises are not automatic.
+    /// </remarks>
+    [Fact]
+    public void Calculate_AMemberWithNoSalaryGrowth_ContributesTheSameEachYear()
+    {
+        // Arrange: inflation is 5%, but this member's pay is flat.
+        var plan = TestEntities.CreatePlan(inflationRate: 0.05m, superGuaranteeRate: 0.10m, contributionsTaxRate: 0m, members: [
+            TestEntities.CreateMember(currentAge: 40, retirementAge: 65, currentIncome: 100_000m,
+                salaryGrowthRate: 0m, accountBalances: [10_000m]),
+        ]);
+
+        // Act
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+
+        // Assert
+        Assert.Equal(10_000m, years[1].Contributions);
+        Assert.Equal(10_000m, years[3].Contributions);
+        Assert.Equal(10_000m, years[10].Contributions);
+    }
+
+    /// <summary>
     /// Given a member on a named strategy
     /// When their outcome is produced
     /// Then it should report the strategy it was projected under

@@ -37,6 +37,9 @@ public static class ModelExtensions
             RetirementAge = member.RetirementAge,
             GrowthStrategy = member.GrowthStrategy,
             CustomReturnRate = member.CustomReturnRate,
+            RetirementGrowthStrategy = member.RetirementGrowthStrategy,
+            RetirementCustomReturnRate = member.RetirementCustomReturnRate,
+            SalaryGrowthRate = member.SalaryGrowthRate,
             InstrumentIds = member.Accounts.Select(a => a.InstrumentId).ToList(),
         };
 

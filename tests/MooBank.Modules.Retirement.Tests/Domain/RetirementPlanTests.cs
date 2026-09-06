@@ -10,6 +10,12 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Domain;
 [Trait("Category", "Unit")]
 public class RetirementPlanTests
 {
+    private static RetirementMemberDetails Details(
+        int currentAge = 45, decimal currentIncome = 100_000m, decimal salarySacrifice = 0m,
+        int retirementAge = 65, GrowthStrategy growthStrategy = GrowthStrategy.Balanced,
+        decimal annualFees = 0m, decimal insurancePremium = 0m) =>
+        new(currentAge, currentIncome, salarySacrifice, null, retirementAge, growthStrategy, null, null, null, annualFees, insurancePremium);
+
     private static readonly RetirementAssumptions Assumptions = new(0.025m, 0.12m, 0.15m, 90, 60_000m, 2);
 
     /// <summary>
@@ -50,7 +56,7 @@ public class RetirementPlanTests
         var instrumentId = Guid.NewGuid();
 
         // Act
-        var member = plan.AddMember(Guid.NewGuid(), 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, null, 0m, 0m, [instrumentId]);
+        var member = plan.AddMember(Guid.NewGuid(), Details(), [instrumentId]);
 
         // Assert
         Assert.Equal(plan.Id, member.RetirementPlanId);
@@ -68,7 +74,7 @@ public class RetirementPlanTests
     {
         // Arrange
         var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
-        var member = plan.AddMember(Guid.NewGuid(), 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, null, 0m, 0m, []);
+        var member = plan.AddMember(Guid.NewGuid(), Details(), []);
 
         // Act
         plan.RemoveMember(member.Id);
@@ -144,7 +150,7 @@ public class RetirementPlanTests
         var member = TestEntities.CreateMember(name: "Self", currentAge: 45, currentIncome: 100_000m, salarySacrifice: 0m, retirementAge: 65, growthStrategy: GrowthStrategy.Balanced);
 
         // Act
-        member.Update(50, 130_000m, 12_000m, 62, GrowthStrategy.Conservative, null, 250m, 300m);
+        member.Update(Details(50, 130_000m, 12_000m, 62, GrowthStrategy.Conservative, 250m, 300m));
 
         // Assert
         Assert.Equal(50, member.CurrentAge);

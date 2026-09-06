@@ -659,6 +659,9 @@ export type RetirementMemberOverride = {
     retirementAge?: null | number;
     growthStrategy?: null | GrowthStrategy;
     customReturnRate?: null | number;
+    retirementGrowthStrategy?: null | GrowthStrategy;
+    retirementCustomReturnRate?: null | number;
+    salaryGrowthRate?: null | number;
 };
 
 export type RetirementMemberYear = {
@@ -705,6 +708,9 @@ export type RetirementPlanMember = {
     insurancePremium: number;
     growthStrategy: GrowthStrategy;
     customReturnRate?: null | number;
+    retirementGrowthStrategy?: null | GrowthStrategy;
+    retirementCustomReturnRate?: null | number;
+    salaryGrowthRate?: null | number;
     instrumentIds: Array<string>;
 };
 

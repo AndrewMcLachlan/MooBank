@@ -668,6 +668,19 @@ END
 GO
 
 /*
+ The legislated minimum drawdown for an account-based pension, by the age reached in the year.
+ ATO Schedule 7, standard rates -- the temporary reductions that ran from 2019-20 to 2022-23 are
+ not these. Seeded once; corrections are left alone thereafter.
+*/
+IF NOT EXISTS (SELECT 1 FROM [dbo].[MinimumDrawdownRate])
+BEGIN
+    INSERT INTO [dbo].[MinimumDrawdownRate] ([MinAge], [Rate])
+    VALUES (0, 0.0400), (65, 0.0500), (75, 0.0600), (80, 0.0700), (85, 0.0900), (90, 0.1100), (95, 0.1400);
+END
+
+GO
+
+/*
  Seeds a starting order for groups that predate the SortOrder column.
 
  New rows default to 0, so without this every existing group ties and the list falls back to

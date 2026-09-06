@@ -95,6 +95,7 @@ public static class IServiceCollectionExtensions
                 // and edited in settings. Not an aggregate root — nothing owns them.
                 .AddQueryable<Asm.MooBank.Domain.Entities.ReferenceData.PensionRate, MooBankContext>()
                 .AddQueryable<Asm.MooBank.Domain.Entities.ReferenceData.GrowthStrategyRate, MooBankContext>()
+                .AddQueryable<Asm.MooBank.Domain.Entities.ReferenceData.MinimumDrawdownRate, MooBankContext>()
                 // The kinds of service charge a bill can carry: seeded reference data, offered to
                 // the bill form and the import tool. Not an aggregate root — nothing owns them.
                 .AddQueryable<Asm.MooBank.Domain.Entities.Utility.ChargeType, MooBankContext>();

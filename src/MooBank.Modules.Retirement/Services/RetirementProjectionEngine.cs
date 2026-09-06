@@ -43,16 +43,16 @@ namespace Asm.MooBank.Modules.Retirement.Services;
 /// </remarks>
 internal class RetirementProjectionEngine : IRetirementProjectionEngine
 {
-    public RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, ProjectionOverrides? overrides = null)
+    public RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, MinimumDrawdownRates minimumDrawdownRates, ProjectionOverrides? overrides = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
 
-        var projection = Project(plan, today, pensionRates, strategyRates, overrides);
+        var projection = Project(plan, today, pensionRates, strategyRates, minimumDrawdownRates, overrides);
 
         // Nobody to project is nobody to pay: with no members there is no drawdown, so no target is
         // ever unaffordable and the search would run to its own ceiling.
         var sustainable = projection.Members.Any()
-            ? SolveSustainableIncome(plan, today, pensionRates, strategyRates, overrides)
+            ? SolveSustainableIncome(plan, today, pensionRates, strategyRates, minimumDrawdownRates, overrides)
             : 0m;
 
         return projection with
@@ -86,7 +86,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
     /// Each pass is a few dozen years of arithmetic over a handful of people, so the whole solve costs
     /// far less than the request that carried it.
     /// </remarks>
-    private decimal SolveSustainableIncome(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, ProjectionOverrides? overrides)
+    private decimal SolveSustainableIncome(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, MinimumDrawdownRates minimumDrawdownRates, ProjectionOverrides? overrides)
     {
         decimal affordable = 0m, tooMuch = 1_000_000m;
 
@@ -97,14 +97,14 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 ? new ProjectionOverrides { TargetRetirementIncome = candidate }
                 : overrides with { TargetRetirementIncome = candidate };
 
-            if (Project(plan, today, pensionRates, strategyRates, trial).Summary.MoneyRunsOutYear is null) affordable = candidate;
+            if (Project(plan, today, pensionRates, strategyRates, minimumDrawdownRates, trial).Summary.MoneyRunsOutYear is null) affordable = candidate;
             else tooMuch = candidate;
         }
 
         return Math.Floor(affordable / 100m) * 100m;
     }
 
-    private RetirementProjection Project(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, ProjectionOverrides? overrides)
+    private RetirementProjection Project(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, MinimumDrawdownRates minimumDrawdownRates, ProjectionOverrides? overrides)
     {
 
         var assumptions = ResolvedAssumptions.From(plan, overrides);
@@ -213,7 +213,6 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                     expectedDrawdown = members.Count > 0 ? assumptions.TargetRetirementIncome / members.Count : 0m;
                 }
 
-                var memberReturn = Round(memberOpening * member.ReturnRateInYear(yearOffset, memberOpening, expectedDrawdown, assumptions));
                 var memberContribution = member.IsAccumulating(yearOffset)
                     ? Round(member.ContributionForYear(yearOffset, assumptions))
                     : 0m;
@@ -221,6 +220,17 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 // Taken out year by year rather than as a lump at the end, so the fees paid
                 // early lose their compounding too — which is most of what fees actually cost.
                 var memberCosts = Round(member.CostsForYear(yearOffset, assumptions));
+
+                // Money moves through the year rather than arriving on the last day of it, so half
+                // of the year's flows earn a return. Contributions are paid each pay cycle and a
+                // pension is drawn as it is spent; crediting them at year end left every
+                // contribution idle for twelve months and every drawdown earning to the last day.
+                // Only what actually leaves counts: before drawing starts expectedDrawdown is a
+                // sizing figure for the cash bucket, not money going anywhere.
+                var flowingOut = (isDrawingDown ? expectedDrawdown : 0m) + memberCosts;
+                var earningBalance = Math.Max(0m, memberOpening + ((memberContribution - flowingOut) / 2m));
+
+                var memberReturn = Round(earningBalance * member.ReturnRateInYear(yearOffset, memberOpening, expectedDrawdown, assumptions));
 
                 // A balance cannot be charged into the red.
                 memberCosts = Math.Min(memberCosts, memberOpening + memberReturn + memberContribution);
@@ -230,7 +240,16 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 // Their share of the target, and never more than they have: a member whose balance
                 // is exhausted simply stops contributing to the household's income.
                 var share = openingTotalThisYear > 0m ? memberOpening / openingTotalThisYear : 0m;
-                var memberDrawdown = Math.Min(Round(targetThisYear * share), Math.Max(0m, available));
+                var wanted = Round(targetThisYear * share);
+
+                // An account-based pension has a legislated floor, so a member drawing less than the
+                // household needs still has to take it. The money leaves superannuation whatever the
+                // plan intended, which is why a low target does not simply compound away.
+                var minimum = isDrawingDown
+                    ? Round(memberOpening * minimumDrawdownRates.For(member.AgeAt(yearOffset)))
+                    : 0m;
+
+                var memberDrawdown = Math.Min(Math.Max(wanted, minimum), Math.Max(0m, available));
 
                 member.Balance = available - memberDrawdown;
 
@@ -443,6 +462,13 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             YearsToRetirement = Math.Max(0, member.RetirementAge - member.CurrentAge);
             YearsToLifeExpectancy = Math.Max(0, assumptions.LifeExpectancy - member.CurrentAge);
             ReturnRate = strategyRates.For(member.GrowthStrategy, member.CustomReturnRate);
+
+            // Staying put is the default: a member who has not chosen a retirement strategy keeps
+            // the one they accumulated under rather than being glided somewhere they did not ask for.
+            RetirementReturnRate = member.RetirementGrowthStrategy is null
+                ? ReturnRate
+                : strategyRates.For(member.RetirementGrowthStrategy.Value, member.RetirementCustomReturnRate);
+
             CashReturnRate = strategyRates.Cash;
         }
 
@@ -461,9 +487,21 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         public decimal ReturnRate { get; }
 
         /// <summary>
+        /// The nominal return once this member has retired, which may differ from what they
+        /// accumulated under.
+        /// </summary>
+        public decimal RetirementReturnRate { get; }
+
+        /// <summary>
         /// The nominal return on the part of the balance sitting in the cash bucket.
         /// </summary>
         public decimal CashReturnRate { get; }
+
+        /// <summary>
+        /// The rate this member's invested balance earns in the given year.
+        /// </summary>
+        public decimal ReturnRateFor(int yearOffset) =>
+            yearOffset >= YearsToRetirement ? RetirementReturnRate : ReturnRate;
 
         /// <summary>
         /// The age this member reaches in the given projection year.
@@ -502,11 +540,13 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         /// </summary>
         public decimal ReturnRateInYear(int yearOffset, decimal balance, decimal expectedDrawdown, ResolvedAssumptions assumptions)
         {
-            if (balance <= 0m) return ReturnRate;
+            var invested = ReturnRateFor(yearOffset);
+
+            if (balance <= 0m) return invested;
 
             var cash = CashHeld(yearOffset, balance, expectedDrawdown, assumptions);
 
-            return ((cash * CashReturnRate) + ((balance - cash) * ReturnRate)) / balance;
+            return ((cash * CashReturnRate) + ((balance - cash) * invested)) / balance;
         }
 
         /// <summary>
@@ -552,7 +592,9 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         /// </summary>
         public decimal ContributionForYear(int yearOffset, ResolvedAssumptions assumptions)
         {
-            var indexation = Indexation(yearOffset, assumptions.InflationRate);
+            // Pay follows the member's own growth rate, not inflation: a salary keeping pace with
+            // prices is an assumption, and one a member may want to contradict.
+            var indexation = Indexation(yearOffset, _member.SalaryGrowthRate ?? assumptions.InflationRate);
 
             var employer = _member.CurrentIncome * indexation * assumptions.SuperGuaranteeRate;
             var sacrificed = _member.SalarySacrifice * indexation;

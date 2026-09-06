@@ -65,6 +65,19 @@ internal sealed record ResolvedMember
     /// </summary>
     public required decimal? CustomReturnRate { get; init; }
 
+    /// <summary>
+    /// What this member moves to once retired, or nothing to stay where they are.
+    /// </summary>
+    public required GrowthStrategy? RetirementGrowthStrategy { get; init; }
+
+    /// <inheritdoc cref="CustomReturnRate"/>
+    public required decimal? RetirementCustomReturnRate { get; init; }
+
+    /// <summary>
+    /// How their pay grows, or nothing to follow the plan's inflation.
+    /// </summary>
+    public required decimal? SalaryGrowthRate { get; init; }
+
     public required decimal Balance { get; init; }
 
     public static ResolvedMember From(DomainEntities.RetirementPlanMember member, ProjectionOverrides? overrides, decimal balance)
@@ -88,6 +101,11 @@ internal sealed record ResolvedMember
             CustomReturnRate = over is not null && (over.GrowthStrategy is not null || over.CustomReturnRate is not null)
                 ? over.CustomReturnRate
                 : member.CustomReturnRate,
+            RetirementGrowthStrategy = over?.RetirementGrowthStrategy ?? member.RetirementGrowthStrategy,
+            RetirementCustomReturnRate = over is not null && (over.RetirementGrowthStrategy is not null || over.RetirementCustomReturnRate is not null)
+                ? over.RetirementCustomReturnRate
+                : member.RetirementCustomReturnRate,
+            SalaryGrowthRate = over?.SalaryGrowthRate ?? member.SalaryGrowthRate,
             Balance = balance,
         };
     }

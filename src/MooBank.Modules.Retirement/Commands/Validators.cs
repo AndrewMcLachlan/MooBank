@@ -93,5 +93,23 @@ public class RetirementPlanMemberValidator : AbstractValidator<RetirementPlanMem
         RuleFor(x => x.CustomReturnRate)
             .InclusiveBetween(-1m, 1m).WithMessage("The return rate must be between -100% and 100%")
             .When(x => x.CustomReturnRate is not null);
+
+        // The retirement strategy pairs with its rate the same way, and a rate with no strategy
+        // behind it belongs to nothing.
+        RuleFor(x => x.RetirementCustomReturnRate)
+            .NotNull().WithMessage("A custom retirement strategy needs a return rate")
+            .When(x => x.RetirementGrowthStrategy == GrowthStrategy.Custom);
+
+        RuleFor(x => x.RetirementCustomReturnRate)
+            .Null().WithMessage("Only a custom retirement strategy carries its own return rate")
+            .When(x => x.RetirementGrowthStrategy != GrowthStrategy.Custom);
+
+        RuleFor(x => x.RetirementCustomReturnRate)
+            .InclusiveBetween(-1m, 1m).WithMessage("The retirement return rate must be between -100% and 100%")
+            .When(x => x.RetirementCustomReturnRate is not null);
+
+        RuleFor(x => x.SalaryGrowthRate)
+            .InclusiveBetween(-1m, 1m).WithMessage("Salary growth must be between -100% and 100%")
+            .When(x => x.SalaryGrowthRate is not null);
     }
 }

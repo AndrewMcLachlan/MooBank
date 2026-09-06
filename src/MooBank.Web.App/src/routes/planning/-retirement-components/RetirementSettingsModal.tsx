@@ -34,6 +34,10 @@ interface RetirementSettingsFormValues {
         currentAge: number;
         salarySacrifice: number;
         growthStrategy: GrowthStrategy;
+        customReturnPercent: number | "";
+        retirementGrowthStrategy: GrowthStrategy | "";
+        retirementCustomReturnPercent: number | "";
+        salaryGrowthPercent: number | "";
         annualFees: number;
         insurancePremium: number;
         currentIncome: number;
@@ -56,6 +60,10 @@ const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
         currentAge: m.currentAge,
         salarySacrifice: m.salarySacrifice,
         growthStrategy: m.growthStrategy,
+        customReturnPercent: m.customReturnRate == null ? "" : toPercent(m.customReturnRate),
+        retirementGrowthStrategy: m.retirementGrowthStrategy ?? "",
+        retirementCustomReturnPercent: m.retirementCustomReturnRate == null ? "" : toPercent(m.retirementCustomReturnRate),
+        salaryGrowthPercent: m.salaryGrowthRate == null ? "" : toPercent(m.salaryGrowthRate),
         annualFees: m.annualFees,
         insurancePremium: m.insurancePremium,
         currentIncome: m.currentIncome,
@@ -80,6 +88,11 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
         currentAge: Number(m.currentAge) || 0,
         salarySacrifice: Number(m.salarySacrifice) || 0,
         growthStrategy: m.growthStrategy,
+        // A rate belongs to a custom strategy and to nothing else, so it is sent only alongside one.
+        customReturnRate: m.growthStrategy === "Custom" ? fromPercent(Number(m.customReturnPercent) || 0) : null,
+        retirementGrowthStrategy: m.retirementGrowthStrategy === "" ? null : m.retirementGrowthStrategy,
+        retirementCustomReturnRate: m.retirementGrowthStrategy === "Custom" ? fromPercent(Number(m.retirementCustomReturnPercent) || 0) : null,
+        salaryGrowthRate: m.salaryGrowthPercent === "" ? null : fromPercent(Number(m.salaryGrowthPercent)),
         annualFees: Number(m.annualFees) || 0,
         insurancePremium: Number(m.insurancePremium) || 0,
         currentIncome: Number(m.currentIncome) || 0,
@@ -248,6 +261,25 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                                             {growthStrategies.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                         </Form.Select>
                                     </Form.Group>
+                                    <Form.Group groupId={`members.${index}.customReturnPercent`}>
+                                        <Form.Label>Custom Return (% a year)</Form.Label>
+                                        <Form.Input type="number" step="0.1" />
+                                    </Form.Group>
+                                    <Form.Group groupId={`members.${index}.retirementGrowthStrategy`}>
+                                        <Form.Label>Strategy Once Retired</Form.Label>
+                                        <Form.Select>
+                                            <option value="">Stays the same</option>
+                                            {growthStrategies.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                    <Form.Group groupId={`members.${index}.retirementCustomReturnPercent`}>
+                                        <Form.Label>Custom Return Once Retired (%)</Form.Label>
+                                        <Form.Input type="number" step="0.1" />
+                                    </Form.Group>
+                                    <Form.Group groupId={`members.${index}.salaryGrowthPercent`}>
+                                        <Form.Label>Salary Growth (% a year)</Form.Label>
+                                        <Form.Input type="number" step="0.1" placeholder="follows inflation" />
+                                    </Form.Group>
                                     <Form.Group groupId={`members.${index}.annualFees`}>
                                         <Form.Label>Fund Fees (a year)</Form.Label>
                                         <CurrencyInput currency={currencyCode} min={0} />
@@ -280,7 +312,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                         )}
                         <Button
                             variant="outline-primary"
-                            onClick={() => append({ userId: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", annualFees: 0, insurancePremium: 0, instrumentIds: [] })}
+                            onClick={() => append({ userId: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", customReturnPercent: "", retirementGrowthStrategy: "", retirementCustomReturnPercent: "", salaryGrowthPercent: "", annualFees: 0, insurancePremium: 0, instrumentIds: [] })}
                         >
                             Add Person
                         </Button>

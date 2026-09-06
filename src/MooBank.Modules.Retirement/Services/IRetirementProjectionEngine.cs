@@ -14,5 +14,5 @@ public interface IRetirementProjectionEngine
     /// Values to run under instead of the plan's own. Used by the tweak sliders; the plan is never
     /// modified.
     /// </param>
-    RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, ProjectionOverrides? overrides = null);
+    RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, MinimumDrawdownRates minimumDrawdownRates, ProjectionOverrides? overrides = null);
 }

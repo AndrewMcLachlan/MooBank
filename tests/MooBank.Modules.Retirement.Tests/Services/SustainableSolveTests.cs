@@ -48,16 +48,16 @@ public class SustainableSolveTests
     public void Solve_TheSustainableIncome_LastsAndIsNearlyTheMost()
     {
         // Act
-        var solved = _engine.Calculate(Plan(), Today, Rates, StrategyRates).Summary.SustainableIncomeInTodaysDollars;
+        var solved = _engine.Calculate(Plan(), Today, Rates, StrategyRates, MinimumDrawdownRates.None).Summary.SustainableIncomeInTodaysDollars;
 
         // Assert
         Assert.True(solved > 0m);
 
-        var atSolved = _engine.Calculate(Plan(solved), Today, Rates, StrategyRates).Summary;
+        var atSolved = _engine.Calculate(Plan(solved), Today, Rates, StrategyRates, MinimumDrawdownRates.None).Summary;
         Assert.Null(atSolved.MoneyRunsOutYear);
 
         // A hundred pounds more than the solve claims is beyond the rounding it allows for.
-        var justOver = _engine.Calculate(Plan(solved + 500m), Today, Rates, StrategyRates).Summary;
+        var justOver = _engine.Calculate(Plan(solved + 500m), Today, Rates, StrategyRates, MinimumDrawdownRates.None).Summary;
         Assert.NotNull(justOver.MoneyRunsOutYear);
     }
 
@@ -72,8 +72,8 @@ public class SustainableSolveTests
     [Fact]
     public void Solve_WithThePension_AllowsMoreThanWithout()
     {
-        var withPension = _engine.Calculate(Plan(), Today, Rates, StrategyRates).Summary.SustainableIncomeInTodaysDollars;
-        var without = _engine.Calculate(Plan(), Today, AgePensionRates.None, StrategyRates).Summary.SustainableIncomeInTodaysDollars;
+        var withPension = _engine.Calculate(Plan(), Today, Rates, StrategyRates, MinimumDrawdownRates.None).Summary.SustainableIncomeInTodaysDollars;
+        var without = _engine.Calculate(Plan(), Today, AgePensionRates.None, StrategyRates, MinimumDrawdownRates.None).Summary.SustainableIncomeInTodaysDollars;
 
         Assert.True(withPension > without, $"expected the pension to allow more, but got {withPension} against {without}");
     }
@@ -86,8 +86,8 @@ public class SustainableSolveTests
     [Fact]
     public void Solve_ALongerRetirement_SustainsLess()
     {
-        var to85 = _engine.Calculate(Plan(lifeExpectancy: 85), Today, Rates, StrategyRates).Summary.SustainableIncomeInTodaysDollars;
-        var to95 = _engine.Calculate(Plan(lifeExpectancy: 95), Today, Rates, StrategyRates).Summary.SustainableIncomeInTodaysDollars;
+        var to85 = _engine.Calculate(Plan(lifeExpectancy: 85), Today, Rates, StrategyRates, MinimumDrawdownRates.None).Summary.SustainableIncomeInTodaysDollars;
+        var to95 = _engine.Calculate(Plan(lifeExpectancy: 95), Today, Rates, StrategyRates, MinimumDrawdownRates.None).Summary.SustainableIncomeInTodaysDollars;
 
         Assert.True(to95 < to85, $"expected a longer retirement to sustain less, but got {to95} against {to85}");
     }
@@ -110,8 +110,8 @@ public class SustainableSolveTests
         var plan = TestEntities.CreatePlan(lifeExpectancy: 85, members: [self, spouse]);
 
         // Act
-        var household = _engine.Calculate(plan, Today, Rates, StrategyRates).Summary.SustainableIncomeInTodaysDollars;
-        var alone = _engine.Calculate(plan, Today, Rates, StrategyRates, new ProjectionOverrides { ExcludedMemberIds = [spouse.Id] })
+        var household = _engine.Calculate(plan, Today, Rates, StrategyRates, MinimumDrawdownRates.None).Summary.SustainableIncomeInTodaysDollars;
+        var alone = _engine.Calculate(plan, Today, Rates, StrategyRates, MinimumDrawdownRates.None, new ProjectionOverrides { ExcludedMemberIds = [spouse.Id] })
             .Summary.SustainableIncomeInTodaysDollars;
 
         // Assert
@@ -129,6 +129,6 @@ public class SustainableSolveTests
     {
         var plan = TestEntities.CreatePlan(members: []);
 
-        Assert.Equal(0m, _engine.Calculate(plan, Today, Rates, StrategyRates).Summary.SustainableIncomeInTodaysDollars);
+        Assert.Equal(0m, _engine.Calculate(plan, Today, Rates, StrategyRates, MinimumDrawdownRates.None).Summary.SustainableIncomeInTodaysDollars);
     }
 }

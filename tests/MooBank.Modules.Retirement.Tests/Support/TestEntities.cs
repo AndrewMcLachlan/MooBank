@@ -81,6 +81,15 @@ internal static class TestEntities
         });
 
     /// <summary>
+    /// The legislated minimum drawdown bands, as ATO Schedule 7 sets them.
+    /// </summary>
+    public static MinimumDrawdownRates MinimumDrawdown() =>
+        new(new Dictionary<byte, decimal>
+        {
+            [0] = 0.04m, [65] = 0.05m, [75] = 0.06m, [80] = 0.07m, [85] = 0.09m, [90] = 0.11m, [95] = 0.14m,
+        });
+
+    /// <summary>
     /// A plan member. The <c>User</c> navigation is populated because the projection reads the
     /// member's display name from it.
     /// </summary>
@@ -94,6 +103,9 @@ internal static class TestEntities
         int retirementAge = 65,
         GrowthStrategy growthStrategy = GrowthStrategy.Custom,
         decimal? customReturnRate = null,
+        GrowthStrategy? retirementGrowthStrategy = null,
+        decimal? retirementCustomReturnRate = null,
+        decimal? salaryGrowthRate = null,
         decimal annualFees = 0m,
         decimal insurancePremium = 0m,
         IEnumerable<decimal>? accountBalances = null)
@@ -111,6 +123,9 @@ internal static class TestEntities
             RetirementAge = retirementAge,
             GrowthStrategy = growthStrategy,
             CustomReturnRate = customReturnRate,
+            RetirementGrowthStrategy = retirementGrowthStrategy,
+            RetirementCustomReturnRate = retirementCustomReturnRate,
+            SalaryGrowthRate = salaryGrowthRate,
             AnnualFees = annualFees,
             InsurancePremium = insurancePremium,
             Accounts = (accountBalances ?? []).Select(balance => CreateMemberAccount(memberId, balance)).ToList(),

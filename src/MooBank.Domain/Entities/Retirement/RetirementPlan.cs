@@ -109,7 +109,7 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     /// Thrown when that person is already on the plan. Two members for one person would double
     /// their balance in the projection.
     /// </exception>
-    public RetirementPlanMember AddMember(Guid userId, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal? customReturnRate, decimal annualFees, decimal insurancePremium, IEnumerable<Guid> instrumentIds)
+    public RetirementPlanMember AddMember(Guid userId, RetirementMemberDetails details, IEnumerable<Guid> instrumentIds)
     {
         if (_members.Any(m => m.UserId == userId))
         {
@@ -120,15 +120,9 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
         {
             RetirementPlanId = Id,
             UserId = userId,
-            CurrentAge = currentAge,
-            CurrentIncome = currentIncome,
-            SalarySacrifice = salarySacrifice,
-            RetirementAge = retirementAge,
-            GrowthStrategy = growthStrategy,
-            CustomReturnRate = customReturnRate,
-            AnnualFees = annualFees,
-            InsurancePremium = insurancePremium,
         };
+
+        member.Update(details);
 
         member.SetAccounts(instrumentIds);
 

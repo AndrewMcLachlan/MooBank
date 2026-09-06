@@ -113,6 +113,20 @@ public sealed record RetirementPlanMember
     public decimal? CustomReturnRate { get; init; }
 
     /// <summary>
+    /// The strategy this member moves to once retired. Absent leaves them where they are.
+    /// </summary>
+    public GrowthStrategy? RetirementGrowthStrategy { get; init; }
+
+    /// <inheritdoc cref="CustomReturnRate"/>
+    public decimal? RetirementCustomReturnRate { get; init; }
+
+    /// <summary>
+    /// How this member's pay grows each year. Absent follows the plan's inflation, which assumes
+    /// pay keeps pace with prices.
+    /// </summary>
+    public decimal? SalaryGrowthRate { get; init; }
+
+    /// <summary>
     /// The superannuation instruments belonging to this member.
     /// </summary>
     public IEnumerable<Guid> InstrumentIds { get; init; } = [];

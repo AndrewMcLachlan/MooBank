@@ -189,7 +189,7 @@ public class AgePensionTests
         ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan)).Summary;
+        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         Assert.Equal(470_000m + (45_080m / 0.078m), summary.PensionStartsBelowInTodaysDollars, 0);
@@ -209,7 +209,7 @@ public class AgePensionTests
         ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan)).Summary;
+        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         Assert.Equal(314_000m + (29_900m / 0.078m), summary.PensionStartsBelowInTodaysDollars, 0);
@@ -270,7 +270,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan));
+        var projection = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None);
         var finalYear = projection.Years.Last();
 
         // Assert
@@ -307,7 +307,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan)).Years.ToList();
+        var years = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Years.ToList();
         var drawing = years.Where(y => y.TotalIncome > 0m).ToList();
 
         // Assert
@@ -351,7 +351,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan));
+        var projection = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None);
 
         // Assert
         Assert.All(projection.Years, y => Assert.Equal(0m, y.Drawdown));
@@ -382,7 +382,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan)).Summary;
+        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         // A single person's rate is below the target, so this one genuinely does fall short.

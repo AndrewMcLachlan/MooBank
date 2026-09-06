@@ -8968,6 +8968,30 @@
               "number"
             ],
             "format": "double"
+          },
+          "retirementGrowthStrategy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/GrowthStrategy"
+              }
+            ]
+          },
+          "retirementCustomReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "salaryGrowthRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
           }
         }
       },
@@ -9170,6 +9194,30 @@
             "$ref": "#/components/schemas/GrowthStrategy"
           },
           "customReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "retirementGrowthStrategy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/GrowthStrategy"
+              }
+            ]
+          },
+          "retirementCustomReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "salaryGrowthRate": {
             "type": [
               "null",
               "number"
