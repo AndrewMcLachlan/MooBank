@@ -23,6 +23,15 @@ public interface IReferenceDataRepository
     /// </summary>
     PensionRate AddPensionRate();
 
+    /// <summary>
+    /// A tracked growth strategy, for correcting the rate recorded against it.
+    /// </summary>
+    /// <remarks>
+    /// There is no matching Add: the strategies are the enum, seeded with it, so a rate is always
+    /// an edit to a row that already exists.
+    /// </remarks>
+    Task<GrowthStrategyRate> GetGrowthStrategyRate(GrowthStrategy strategy, CancellationToken cancellationToken = default);
+
     Task<StockPriceHistory> AddStockPrice(StockPriceHistory stockPrice, CancellationToken cancellationToken = default);
 
     ExchangeRate AddExchangeRate(ExchangeRate exchangeRate);

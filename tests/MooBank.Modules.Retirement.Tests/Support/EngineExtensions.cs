@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Retirement.Models;
 using Asm.MooBank.Modules.Retirement.Services;
 using DomainPlan = Asm.MooBank.Domain.Entities.Retirement.RetirementPlan;
@@ -20,6 +20,7 @@ internal static class EngineExtensions
         this RetirementProjectionEngine engine,
         DomainPlan plan,
         DateOnly today,
-        ProjectionOverrides? overrides = null) =>
-        engine.Calculate(plan, today, AgePensionRates.None, overrides);
+        ProjectionOverrides? overrides = null,
+        decimal? cashReturnRate = null) =>
+        engine.Calculate(plan, today, AgePensionRates.None, TestEntities.StrategyRates(plan, cashReturnRate), MinimumDrawdownRates.None, overrides);
 }

@@ -33,15 +33,18 @@ export const defaultCurrentAge = 40;
 export const minWorkingAge = 15;
 
 /**
- * The investment options a member can be projected under. The rates each one implies live on the
- * server; the projection reports the rate it used, so nothing here needs to restate them.
+ * The investment options a member can be projected under, in risk order. The rate each one implies
+ * is reference data on the server and is fetched with it; the projection also reports the rate it
+ * actually used, so nothing here restates them.
  */
 export const growthStrategies: { value: GrowthStrategy; label: string }[] = [
+    { value: "Cash", label: "Cash" },
     { value: "Conservative", label: "Conservative" },
+    { value: "Moderate", label: "Moderate" },
     { value: "Balanced", label: "Balanced" },
     { value: "Growth", label: "Growth" },
     { value: "HighGrowth", label: "High Growth" },
-    { value: "Custom", label: "Custom (use the plan's rate)" },
+    { value: "Custom", label: "Custom" },
 ];
 
 export const emptyMember = (): RetirementPlanMember => ({

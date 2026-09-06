@@ -20,13 +20,14 @@ export const RetirementMembersTable: React.FC<RetirementMembersTableProps> = ({ 
                         <th>Name</th>
                         <th>Age</th>
                         <th>Retires</th>
+                        <th>Return</th>
                         <th>Balance Today</th>
                         <th>At Retirement</th>
                         <th>In Today's Dollars</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <LoadingTableRows rows={2} cols={6} />
+                    <LoadingTableRows rows={2} cols={7} />
                 </tbody>
             </SectionTable>
         );
@@ -41,6 +42,7 @@ export const RetirementMembersTable: React.FC<RetirementMembersTableProps> = ({ 
                     <th>Name</th>
                     <th>Age</th>
                     <th>Retires</th>
+                    <th>Return</th>
                     <th>Balance Today</th>
                     <th>At Retirement</th>
                     <th>In Today's Dollars</th>
@@ -55,6 +57,10 @@ export const RetirementMembersTable: React.FC<RetirementMembersTableProps> = ({ 
                             {member.alreadyRetired
                                 ? <Badge pill muted bg="success">Retired</Badge>
                                 : <>{member.retirementYear} <span className="retirement-age-note">at {member.retirementAge}</span></>}
+                        </td>
+                        <td>
+                            {(member.returnRate * 100).toFixed(1)}%
+                            <span className="retirement-age-note"> {member.growthStrategy === "Custom" ? "custom" : member.growthStrategy}</span>
                         </td>
                         <td><Amount amount={member.currentBalance} currencyCode={currencyCode} decimalPlaces={0} /></td>
                         <td><Amount amount={member.balanceAtRetirement} currencyCode={currencyCode} decimalPlaces={0} /></td>

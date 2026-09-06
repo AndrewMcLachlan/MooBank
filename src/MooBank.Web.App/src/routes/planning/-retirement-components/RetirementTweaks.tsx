@@ -1,5 +1,6 @@
 ﻿import { Button, Section } from "@andrewmclachlan/moo-ds";
 import type { GrowthStrategy, RetirementPlan, RetirementProjectionOverrides, RetirementProjectionSummary } from "api/types.gen";
+import { useGrowthStrategyRates } from "../../settings/returns/-hooks/useGrowthStrategyRates";
 import { formatCurrency } from "utils/currency";
 import { TweakSlider } from "./TweakSlider";
 import { isDirty, isExcluded, memberValue, planValue, withExcluded, withMemberValue, withPlanValue, type PlanTweakKey } from "../-retirement-utils/tweaks";
@@ -31,6 +32,13 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
     const money = (value: number) => formatCurrency(value, currencyCode, 0);
     const dirty = isDirty(draft, plan);
 
+    const { data: strategyRates } = useGrowthStrategyRates();
+
+    // What a member's balance actually grows by: a named strategy's recorded rate, or the figure
+    // they set for themselves.
+    const rateFor = (strategy: GrowthStrategy, custom?: number | null) =>
+        strategy === "Custom" ? custom ?? 0 : strategyRates?.find(r => r.strategy === strategy)?.rate ?? 0;
+
     const setPlan = <K extends PlanTweakKey>(key: K, value: number) =>
         onChange(withPlanValue(draft, plan, key, value));
 
@@ -52,14 +60,22 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
             </p>
 
             {plan.members.map(member => {
-                const set = <K extends "currentAge" | "currentIncome" | "salarySacrifice" | "retirementAge" | "growthStrategy">(key: K, value: unknown) =>
+                const set = <K extends "currentAge" | "currentIncome" | "salarySacrifice" | "retirementAge" | "growthStrategy" | "customReturnRate">(key: K, value: unknown) =>
                     onChange(withMemberValue(draft, plan, member.id, key, value as never));
+
+                // Naming a rate is what Custom means, so moving the slider chooses the strategy as
+                // well. The two cannot be set apart: a rate on a named strategy would never be read.
+                const setReturn = (rate: number) =>
+                    onChange(withMemberValue(
+                        withMemberValue(draft, plan, member.id, "growthStrategy", "Custom" as never),
+                        plan, member.id, "customReturnRate", rate as never));
 
                 const age = memberValue(draft, plan, member.id, "currentAge") as number;
                 const retirementAge = memberValue(draft, plan, member.id, "retirementAge") as number;
                 const income = memberValue(draft, plan, member.id, "currentIncome") as number;
                 const sacrifice = memberValue(draft, plan, member.id, "salarySacrifice") as number;
                 const strategy = memberValue(draft, plan, member.id, "growthStrategy") as GrowthStrategy;
+                const customReturnRate = memberValue(draft, plan, member.id, "customReturnRate") as number | null | undefined;
                 const excluded = isExcluded(draft, member.id);
 
                 return (
@@ -131,6 +147,18 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                                     <span className="tweak-slider-saved">saved: {growthStrategies.find(s => s.value === member.growthStrategy)?.label}</span>
                                 )}
                             </label>
+                            <TweakSlider
+                                label="Return"
+                                value={toPercent(rateFor(strategy, customReturnRate))}
+                                min={0}
+                                max={15}
+                                step={0.1}
+                                display={`${toPercent(rateFor(strategy, customReturnRate))}%`}
+                                savedDisplay={rateFor(strategy, customReturnRate) !== rateFor(member.growthStrategy, member.customReturnRate)
+                                    ? `${toPercent(rateFor(member.growthStrategy, member.customReturnRate))}%`
+                                    : undefined}
+                                onChange={percent => setReturn(percent / 100)}
+                            />
                         </div>
                     </div>
                 );
@@ -139,16 +167,6 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
             <div className="tweak-member">
                 <h4 className="tweak-member-name">Whole plan</h4>
                 <div className="tweak-grid">
-                    <TweakSlider
-                        label="Expected return"
-                        value={toPercent(planValue(draft, plan, "expectedReturnRate"))}
-                        min={0}
-                        max={15}
-                        step={0.1}
-                        display={`${toPercent(planValue(draft, plan, "expectedReturnRate"))}%`}
-                        savedDisplay={draft.expectedReturnRate != null ? `${toPercent(plan.expectedReturnRate)}%` : undefined}
-                        onChange={percent => setPlan("expectedReturnRate", percent / 100)}
-                    />
                     <TweakSlider
                         label="Inflation"
                         value={toPercent(planValue(draft, plan, "inflationRate"))}
@@ -180,7 +198,7 @@ export const RetirementTweaks: React.FC<RetirementTweaksProps> = ({ plan, draft,
                     />
                 </div>
                 <p className="retirement-tweak-note">
-                    Expected return applies to anyone on the Custom strategy; the named strategies carry their own.
+                    Each person's return follows their strategy; moving their Return slider makes it Custom and pins it there.
                     Target income is what the household draws each year once everyone has retired, in today's dollars.
                     Set it above what the savings can carry and the money runs out before the age beside it, leaving the
                     Age Pension to pay from there — a plan, if that is the one you want, not a mistake to be corrected.

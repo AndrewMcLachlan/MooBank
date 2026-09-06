@@ -14,6 +14,8 @@ internal class RunProjectionHandler(
     IQueryable<DomainEntities.RetirementPlan> plans,
     IRetirementProjectionEngine projectionEngine,
     IPensionRateReader pensionRateReader,
+    IGrowthStrategyRateReader strategyRateReader,
+    IMinimumDrawdownRateReader minimumDrawdownRateReader,
     MooBank.Models.User user) : ICommandHandler<RunProjection, RetirementProjection>
 {
     public async ValueTask<RetirementProjection> Handle(RunProjection command, CancellationToken cancellationToken)
@@ -25,7 +27,9 @@ internal class RunProjectionHandler(
 
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var pensionRates = await pensionRateReader.Current(today, cancellationToken);
+        var strategyRates = await strategyRateReader.Current(cancellationToken);
+        var minimumDrawdownRates = await minimumDrawdownRateReader.Current(cancellationToken);
 
-        return projectionEngine.Calculate(plan, today, pensionRates, command.Overrides);
+        return projectionEngine.Calculate(plan, today, pensionRates, strategyRates, minimumDrawdownRates, command.Overrides);
     }
 }

@@ -189,7 +189,7 @@ public class AgePensionTests
         ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates).Summary;
+        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         Assert.Equal(470_000m + (45_080m / 0.078m), summary.PensionStartsBelowInTodaysDollars, 0);
@@ -209,7 +209,7 @@ public class AgePensionTests
         ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates).Summary;
+        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         Assert.Equal(314_000m + (29_900m / 0.078m), summary.PensionStartsBelowInTodaysDollars, 0);
@@ -263,7 +263,6 @@ public class AgePensionTests
         // the difference. A target the pension nearly covers would leave the balance barely touched.
         var plan = TestEntities.CreatePlan(
             inflationRate: 0m,
-            cashReturnRate: 0m,
             targetRetirementIncome: 100_000m,
             members: [
                 TestEntities.CreateMember(currentAge: 67, retirementAge: 67, currentIncome: 0m, accountBalances: [100_000m]),
@@ -271,7 +270,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today, Rates);
+        var projection = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None);
         var finalYear = projection.Years.Last();
 
         // Assert
@@ -301,7 +300,6 @@ public class AgePensionTests
         var plan = TestEntities.CreatePlan(
             expectedReturnRate: 0m,
             inflationRate: 0m,
-            cashReturnRate: 0m,
             targetRetirementIncome: 80_000m,
             members: [
                 TestEntities.CreateMember(currentAge: 67, retirementAge: 67, currentIncome: 0m, accountBalances: [900_000m]),
@@ -309,7 +307,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today, Rates).Years.ToList();
+        var years = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Years.ToList();
         var drawing = years.Where(y => y.TotalIncome > 0m).ToList();
 
         // Assert
@@ -346,7 +344,6 @@ public class AgePensionTests
         var plan = TestEntities.CreatePlan(
             expectedReturnRate: 0m,
             inflationRate: 0m,
-            cashReturnRate: 0m,
             targetRetirementIncome: 30_000m,
             members: [
                 TestEntities.CreateMember(currentAge: 67, retirementAge: 67, currentIncome: 0m, accountBalances: [200_000m]),
@@ -354,7 +351,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today, Rates);
+        var projection = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None);
 
         // Assert
         Assert.All(projection.Years, y => Assert.Equal(0m, y.Drawdown));
@@ -379,14 +376,13 @@ public class AgePensionTests
         // Arrange: a target just above the full couple rate, so super tops it up until spent.
         var plan = TestEntities.CreatePlan(
             inflationRate: 0m,
-            cashReturnRate: 0m,
             targetRetirementIncome: 45_080m,
             members: [
                 TestEntities.CreateMember(currentAge: 67, retirementAge: 67, currentIncome: 0m, accountBalances: [10_000m]),
             ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates).Summary;
+        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         // A single person's rate is below the target, so this one genuinely does fall short.

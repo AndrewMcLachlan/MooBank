@@ -51,4 +51,8 @@ internal class ReferenceDataRepository(MooBankContext dataContext) : IReferenceD
     /// </remarks>
     public PensionRate AddPensionRate() =>
         dataContext.PensionRates.Add(new PensionRate()).Entity;
+
+    public async Task<GrowthStrategyRate> GetGrowthStrategyRate(GrowthStrategy strategy, CancellationToken cancellationToken = default) =>
+        await dataContext.GrowthStrategyRates.SingleOrDefaultAsync(r => r.Strategy == strategy, cancellationToken) ??
+        throw new NotFoundException("Growth strategy not found");
 }

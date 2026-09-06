@@ -36,8 +36,9 @@ public class RetirementCostsTests
 
         // Assert
         Assert.Equal(736m, firstYear.Costs);
-        // 100,000 opening, 10,000 return, less 736 of costs.
-        Assert.Equal(109_264m, firstYear.ClosingBalance);
+        // 100,000 opening, less half the year's costs before the 10% return is earned on it, then
+        // the whole 736 taken out: fees are charged through the year, not on its last day.
+        Assert.Equal(109_227.20m, firstYear.ClosingBalance);
     }
 
     /// <summary>
