@@ -23,6 +23,7 @@
     CONSTRAINT [PK_RetirementPlanMember] PRIMARY KEY CLUSTERED ([Id]),
     CONSTRAINT [FK_RetirementPlanMember_RetirementPlan] FOREIGN KEY ([RetirementPlanId]) REFERENCES [RetirementPlan]([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_RetirementPlanMember_User] FOREIGN KEY ([UserId]) REFERENCES [User]([Id]),
+    CONSTRAINT [FK_RetirementPlanMember_GrowthStrategy] FOREIGN KEY ([GrowthStrategyId]) REFERENCES [GrowthStrategy]([Id]),
     -- One member per person: two rows for the same user would count their balance twice.
     CONSTRAINT [UQ_RetirementPlanMember_Person] UNIQUE ([RetirementPlanId], [UserId]),
     CONSTRAINT [CK_RetirementPlanMember_CurrentAge] CHECK ([CurrentAge] BETWEEN 0 AND 120),
