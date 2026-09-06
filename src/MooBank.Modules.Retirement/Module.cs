@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Asm.AspNetCore.Modules;
 using Asm.MooBank.Modules.Retirement.Services;
 using FluentValidation;
@@ -27,6 +27,8 @@ public class Module : IModule
         services.AddScoped<IRetirementProjectionEngine, RetirementProjectionEngine>();
         services.AddScoped<IMemberGuard, MemberGuard>();
         services.AddScoped<IPensionRateReader, PensionRateReader>();
+        services.AddScoped<IGrowthStrategyRateReader, GrowthStrategyRateReader>();
+        services.AddScoped<IMinimumDrawdownRateReader, MinimumDrawdownRateReader>();
 
         return services;
     }

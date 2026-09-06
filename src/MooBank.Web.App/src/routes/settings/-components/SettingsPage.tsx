@@ -23,6 +23,7 @@ const getMenuItems = (navItems: (ReactNode | NavItem)[]) => {
         { route: `/settings/institutions`, text: "Institutions", image: <Sliders />  },
         { route: `/settings/families`, text: "Families", image: <Users /> },
         { route: `/settings/pension`, text: "Age Pension", image: <PiggyBank /> },
+        { route: `/settings/returns`, text: "Return Assumptions", image: <PiggyBank /> },
     ];
 
     if (navItems.length > 0) {

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Retirement.Specifications;
 using Asm.MooBank.Modules.Retirement.Commands;
 using Asm.MooBank.Modules.Retirement.Models;
@@ -28,7 +28,6 @@ public class UpdatePlanTests
         new()
         {
             Name = name,
-            ExpectedReturnRate = 0.07m,
             InflationRate = 0.03m,
             SuperGuaranteeRate = 0.12m,
             ContributionsTaxRate = 0.15m,
@@ -64,7 +63,6 @@ public class UpdatePlanTests
 
         // Assert
         Assert.Equal("Updated", result.Name);
-        Assert.Equal(0.07m, result.ExpectedReturnRate);
         Assert.Equal(92, result.LifeExpectancy);
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }

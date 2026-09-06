@@ -6,7 +6,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
     gap: 0.75rem;
-    margin-bottom: 1.5rem;
 }
 
 /* Card, accent, value and caption come from moo-ds; only the sizing is ours. */

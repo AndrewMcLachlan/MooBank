@@ -9,14 +9,12 @@ public static class ModelExtensions
         {
             Id = plan.Id,
             Name = plan.Name,
-            ExpectedReturnRate = plan.ExpectedReturnRate,
             InflationRate = plan.InflationRate,
             SuperGuaranteeRate = plan.SuperGuaranteeRate,
             ContributionsTaxRate = plan.ContributionsTaxRate,
             LifeExpectancy = plan.LifeExpectancy,
             TargetRetirementIncome = plan.TargetRetirementIncome,
             CashBucketYears = plan.CashBucketYears,
-            CashReturnRate = plan.CashReturnRate,
             CreatedUtc = plan.CreatedUtc,
             UpdatedUtc = plan.UpdatedUtc,
             Members = plan.Members.Select(m => m.ToModel()).ToList(),
@@ -38,10 +36,14 @@ public static class ModelExtensions
             InsurancePremium = member.InsurancePremium,
             RetirementAge = member.RetirementAge,
             GrowthStrategy = member.GrowthStrategy,
+            CustomReturnRate = member.CustomReturnRate,
+            RetirementGrowthStrategy = member.RetirementGrowthStrategy,
+            RetirementCustomReturnRate = member.RetirementCustomReturnRate,
+            SalaryGrowthRate = member.SalaryGrowthRate,
             InstrumentIds = member.Accounts.Select(a => a.InstrumentId).ToList(),
         };
 
     public static DomainEntities.RetirementAssumptions ToAssumptions(this RetirementPlanBase plan) =>
-        new(plan.ExpectedReturnRate, plan.InflationRate, plan.SuperGuaranteeRate, plan.ContributionsTaxRate, plan.LifeExpectancy,
-            plan.TargetRetirementIncome, plan.CashBucketYears, plan.CashReturnRate);
+        new(plan.InflationRate, plan.SuperGuaranteeRate, plan.ContributionsTaxRate, plan.LifeExpectancy,
+            plan.TargetRetirementIncome, plan.CashBucketYears);
 }

@@ -56,7 +56,6 @@ public class RetirementDrawdownTests
         // Arrange: a target well above what a 3% cash return on the balance yields.
         var plan = TestEntities.CreatePlan(
             expectedReturnRate: 0.06m,
-            cashReturnRate: 0.03m,
             targetRetirementIncome: 60_000m,
             members: [TestEntities.CreateMember(currentAge: 64, retirementAge: 65, currentIncome: 0m, accountBalances: [800_000m])]);
 
@@ -80,7 +79,6 @@ public class RetirementDrawdownTests
         // Arrange: 100,000 has to fund 50,000 a year, so it lasts about two years.
         var plan = TestEntities.CreatePlan(
             inflationRate: 0m,
-            cashReturnRate: 0m,
             targetRetirementIncome: 50_000m,
             members: [TestEntities.CreateMember(currentAge: 65, retirementAge: 65, currentIncome: 0m, accountBalances: [100_000m])]);
 
@@ -105,7 +103,6 @@ public class RetirementDrawdownTests
         // Arrange
         var plan = TestEntities.CreatePlan(
             inflationRate: 0m,
-            cashReturnRate: 0m,
             lifeExpectancy: 90,
             targetRetirementIncome: 20_000m,
             members: [TestEntities.CreateMember(currentAge: 65, retirementAge: 65, currentIncome: 0m, accountBalances: [2_000_000m])]);
@@ -154,7 +151,6 @@ public class RetirementDrawdownTests
         // Arrange: a 3:1 split of the balances.
         var plan = TestEntities.CreatePlan(
             inflationRate: 0m,
-            cashReturnRate: 0m,
             targetRetirementIncome: 40_000m,
             members: [
                 TestEntities.CreateMember(name: "Bigger", currentAge: 65, retirementAge: 65, currentIncome: 0m, accountBalances: [300_000m]),
@@ -211,7 +207,6 @@ public class RetirementDrawdownTests
         // Arrange: 8% invested, 2% in cash, two years of a 20,000 target held back.
         var plan = TestEntities.CreatePlan(
             expectedReturnRate: 0.08m,
-            cashReturnRate: 0.02m,
             cashBucketYears: 2,
             superGuaranteeRate: 0m,
             targetRetirementIncome: 20_000m,
@@ -219,7 +214,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, growthStrategy: GrowthStrategy.Custom, accountBalances: [500_000m])]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, Today, cashReturnRate: 0.02m).Years.ToList();
 
         // Assert
         // Year 1 is four years from retirement, beyond a two-year bucket, so the whole balance earns 8%.
@@ -252,14 +247,13 @@ public class RetirementDrawdownTests
         static Asm.MooBank.Domain.Entities.Retirement.RetirementPlan Plan(int bucketYears) =>
             TestEntities.CreatePlan(
                 expectedReturnRate: 0.08m,
-                cashReturnRate: 0.02m,
-                cashBucketYears: bucketYears,
+                    cashBucketYears: bucketYears,
                 targetRetirementIncome: 40_000m,
                 members: [TestEntities.CreateMember(currentAge: 50, retirementAge: 65, accountBalances: [200_000m])]);
 
         // Act
-        var withBucket = _engine.CalculateWithoutPension(Plan(3), Today).Summary.BalanceAtRetirement;
-        var without = _engine.CalculateWithoutPension(Plan(0), Today).Summary.BalanceAtRetirement;
+        var withBucket = _engine.CalculateWithoutPension(Plan(3), Today, cashReturnRate: 0.02m).Summary.BalanceAtRetirement;
+        var without = _engine.CalculateWithoutPension(Plan(0), Today, cashReturnRate: 0.02m).Summary.BalanceAtRetirement;
 
         // Assert
         Assert.True(withBucket < without, $"expected the bucket to cost some growth, but it left {withBucket} against {without}");

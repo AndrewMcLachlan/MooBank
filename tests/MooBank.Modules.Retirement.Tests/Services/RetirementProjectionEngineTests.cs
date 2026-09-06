@@ -46,14 +46,14 @@ public class RetirementProjectionEngineTests
     /// <summary>
     /// Given a starting balance of 100,000, income of 100,000, a 10% return and a 10% contribution
     /// When the projection is run
-    /// Then the first year should add a 10,000 return and a 10,000 contribution
+    /// Then the first year should add a 10,500 return and a 10,000 contribution
     /// </summary>
     /// <remarks>
-    /// The return applies to the opening balance only: that year's contributions earn nothing until
-    /// the following year.
+    /// Contributions are paid through the year rather than on its last day, so half of the year's
+    /// contribution earns a return: 10% of 105,000, not of 100,000.
     /// </remarks>
     [Fact]
-    public void Calculate_FirstYear_AppliesReturnToOpeningBalanceOnly()
+    public void Calculate_FirstYear_EarnsOnHalfTheYearsContributions()
     {
         // Arrange
         var plan = TestEntities.CreatePlan(members: [
@@ -65,9 +65,9 @@ public class RetirementProjectionEngineTests
 
         // Assert
         Assert.Equal(100_000m, firstProjectedYear.OpeningBalance);
-        Assert.Equal(10_000m, firstProjectedYear.InvestmentReturn);
+        Assert.Equal(10_500m, firstProjectedYear.InvestmentReturn);
         Assert.Equal(10_000m, firstProjectedYear.Contributions);
-        Assert.Equal(120_000m, firstProjectedYear.ClosingBalance);
+        Assert.Equal(120_500m, firstProjectedYear.ClosingBalance);
     }
 
     /// <summary>
@@ -76,11 +76,11 @@ public class RetirementProjectionEngineTests
     /// Then each year should compound on the last
     /// </summary>
     [Theory]
-    [InlineData(1, 100_000, 120_000)]
-    [InlineData(2, 120_000, 142_000)]
-    [InlineData(3, 142_000, 166_200)]
-    [InlineData(4, 166_200, 192_820)]
-    [InlineData(5, 192_820, 222_102)]
+    [InlineData(1, 100_000, 120_500)]
+    [InlineData(2, 120_500, 143_050)]
+    [InlineData(3, 143_050, 167_855)]
+    [InlineData(4, 167_855, 195_140.50)]
+    [InlineData(5, 195_140.50, 225_154.55)]
     public void Calculate_EachYear_CompoundsOnTheLast(int yearOffset, decimal expectedOpening, decimal expectedClosing)
     {
         // Arrange
@@ -238,8 +238,8 @@ public class RetirementProjectionEngineTests
 
         Assert.Equal(2028, early.RetirementYear);
         Assert.Equal(2033, late.RetirementYear);
-        // Two years of the same starting position: 100,000 -> 120,000 -> 142,000.
-        Assert.Equal(142_000m, early.BalanceAtRetirement);
+        // Two years of the same starting position: 100,000 -> 120,500 -> 143,050.
+        Assert.Equal(143_050m, early.BalanceAtRetirement);
         Assert.True(late.BalanceAtRetirement > early.BalanceAtRetirement);
     }
 

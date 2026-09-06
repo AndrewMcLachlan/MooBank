@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "MooBank API",
-    "version": "2026.8.0"
+    "version": "2026.9.0"
   },
   "servers": [
     {
@@ -3637,6 +3637,60 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PensionRates"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reference-data/growth-strategy-rates": {
+      "get": {
+        "tags": [
+          "Reference Data"
+        ],
+        "operationId": "growth-strategy-rates",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GrowthStrategyRates"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Reference Data"
+        ],
+        "operationId": "save-growth-strategy-rate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveGrowthStrategyRate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrowthStrategyRates"
                 }
               }
             }
@@ -7662,8 +7716,32 @@
           "Conservative",
           "Balanced",
           "Growth",
-          "HighGrowth"
+          "HighGrowth",
+          "Cash",
+          "Moderate"
         ]
+      },
+      "GrowthStrategyRates": {
+        "required": [
+          "strategy",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "strategy": {
+            "$ref": "#/components/schemas/GrowthStrategy"
+          },
+          "description": {
+            "type": "string"
+          },
+          "rate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          }
+        }
       },
       "HexColour": { },
       "IFormFile": {
@@ -8946,6 +9024,37 @@
                 "$ref": "#/components/schemas/GrowthStrategy"
               }
             ]
+          },
+          "customReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "retirementGrowthStrategy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/GrowthStrategy"
+              }
+            ]
+          },
+          "retirementCustomReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "salaryGrowthRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
           }
         }
       },
@@ -9030,14 +9139,12 @@
           "id",
           "createdUtc",
           "updatedUtc",
-          "expectedReturnRate",
           "inflationRate",
           "superGuaranteeRate",
           "contributionsTaxRate",
           "lifeExpectancy",
           "targetRetirementIncome",
           "cashBucketYears",
-          "cashReturnRate",
           "members"
         ],
         "type": "object",
@@ -9056,10 +9163,6 @@
           },
           "name": {
             "type": "string"
-          },
-          "expectedReturnRate": {
-            "type": "number",
-            "format": "double"
           },
           "inflationRate": {
             "type": "number",
@@ -9084,10 +9187,6 @@
           "cashBucketYears": {
             "type": "integer",
             "format": "int32"
-          },
-          "cashReturnRate": {
-            "type": "number",
-            "format": "double"
           },
           "members": {
             "type": "array",
@@ -9157,6 +9256,37 @@
           "growthStrategy": {
             "$ref": "#/components/schemas/GrowthStrategy"
           },
+          "customReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "retirementGrowthStrategy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/GrowthStrategy"
+              }
+            ]
+          },
+          "retirementCustomReturnRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "salaryGrowthRate": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
           "instrumentIds": {
             "type": "array",
             "items": {
@@ -9203,13 +9333,6 @@
         ],
         "type": "object",
         "properties": {
-          "expectedReturnRate": {
-            "type": [
-              "null",
-              "number"
-            ],
-            "format": "double"
-          },
           "inflationRate": {
             "type": [
               "null",
@@ -9251,13 +9374,6 @@
               "integer"
             ],
             "format": "int32"
-          },
-          "cashReturnRate": {
-            "type": [
-              "null",
-              "number"
-            ],
-            "format": "double"
           },
           "members": {
             "type": "array",
@@ -9467,6 +9583,17 @@
             "items": {
               "$ref": "#/components/schemas/Tag"
             }
+          }
+        }
+      },
+      "SaveGrowthStrategyRate": {
+        "required": [
+          "rate"
+        ],
+        "type": "object",
+        "properties": {
+          "rate": {
+            "$ref": "#/components/schemas/GrowthStrategyRates"
           }
         }
       },
@@ -9842,24 +9969,18 @@
       "SimpleRetirementPlan": {
         "required": [
           "name",
-          "expectedReturnRate",
           "inflationRate",
           "superGuaranteeRate",
           "contributionsTaxRate",
           "lifeExpectancy",
           "targetRetirementIncome",
           "cashBucketYears",
-          "cashReturnRate",
           "members"
         ],
         "type": "object",
         "properties": {
           "name": {
             "type": "string"
-          },
-          "expectedReturnRate": {
-            "type": "number",
-            "format": "double"
           },
           "inflationRate": {
             "type": "number",
@@ -9884,10 +10005,6 @@
           "cashBucketYears": {
             "type": "integer",
             "format": "int32"
-          },
-          "cashReturnRate": {
-            "type": "number",
-            "format": "double"
           },
           "members": {
             "type": "array",

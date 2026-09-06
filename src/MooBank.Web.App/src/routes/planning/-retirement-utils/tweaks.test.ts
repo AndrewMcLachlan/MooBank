@@ -11,14 +11,12 @@ const spouseUserId = "66666666-6666-6666-6666-666666666666";
 const plan = (over: Partial<RetirementPlan> = {}): RetirementPlan => ({
     id: "44444444-4444-4444-4444-444444444444",
     name: "Retirement",
-    expectedReturnRate: 0.065,
     inflationRate: 0.025,
     superGuaranteeRate: 0.12,
     contributionsTaxRate: 0.15,
     lifeExpectancy: 90,
     targetRetirementIncome: 60_000,
     cashBucketYears: 2,
-    cashReturnRate: 0.03,
     createdUtc: "2026-01-01T00:00:00Z",
     updatedUtc: "2026-01-01T00:00:00Z",
     members: [
@@ -125,7 +123,6 @@ describe("the target income slider", () => {
         const updated = applyDraftToPlan(emptyDraft, p);
 
         expect(updated.cashBucketYears).toBe(2);
-        expect(updated.cashReturnRate).toBe(0.03);
     });
 });
 
@@ -205,12 +202,12 @@ describe("applyDraftToPlan", () => {
         const p = plan();
         const draft = withPlanValue(
             withMemberValue(emptyDraft, p, selfId, "retirementAge", 60),
-            p, "expectedReturnRate", 0.08);
+            p, "inflationRate", 0.08);
 
         const updated = applyDraftToPlan(draft, p);
         const self = updated.members.find(m => m.id === selfId);
 
-        expect(updated.expectedReturnRate).toBe(0.08);
+        expect(updated.inflationRate).toBe(0.08);
         expect(self?.retirementAge).toBe(60);
         // Untweaked values, and the fields sliders never touch, survive.
         expect(self?.currentAge).toBe(47);
@@ -223,7 +220,7 @@ describe("applyDraftToPlan", () => {
         const p = plan();
         const updated = applyDraftToPlan(emptyDraft, p);
 
-        expect(updated.expectedReturnRate).toBe(p.expectedReturnRate);
+        expect(updated.inflationRate).toBe(p.inflationRate);
         expect(updated.members.map(m => m.retirementAge)).toEqual([65, 67]);
         expect(updated.members.map(m => m.insurancePremium)).toEqual([364, 0]);
     });

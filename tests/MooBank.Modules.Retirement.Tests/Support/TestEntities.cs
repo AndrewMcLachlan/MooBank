@@ -1,5 +1,6 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Models;
+using Asm.MooBank.Modules.Retirement.Services;
 using Bogus;
 using DomainAccount = Asm.MooBank.Domain.Entities.Account.LogicalAccount;
 using DomainPlan = Asm.MooBank.Domain.Entities.Retirement.RetirementPlan;
@@ -33,23 +34,60 @@ internal static class TestEntities
         decimal targetRetirementIncome = 0m,
         int cashBucketYears = 0,
         decimal? cashReturnRate = null,
-        IEnumerable<DomainPlanMember>? members = null) =>
-        new(id ?? Guid.NewGuid())
+        IEnumerable<DomainPlanMember>? members = null)
+    {
+        var list = members?.ToList() ?? [];
+
+        // The rate now belongs to the member, so a plan-level figure is how a test says "everyone
+        // earns this". A member given its own rate keeps it.
+        foreach (var member in list.Where(m => m.GrowthStrategy == GrowthStrategy.Custom && m.CustomReturnRate is null))
+        {
+            member.CustomReturnRate = expectedReturnRate;
+        }
+
+        return new DomainPlan(id ?? Guid.NewGuid())
         {
             Name = name ?? Faker.Lorem.Sentence(3),
             FamilyId = familyId ?? Guid.NewGuid(),
-            ExpectedReturnRate = expectedReturnRate,
             InflationRate = inflationRate,
             SuperGuaranteeRate = superGuaranteeRate,
             ContributionsTaxRate = contributionsTaxRate,
             LifeExpectancy = lifeExpectancy,
             TargetRetirementIncome = targetRetirementIncome,
             CashBucketYears = cashBucketYears,
-            CashReturnRate = cashReturnRate ?? expectedReturnRate,
             CreatedUtc = DateTime.UtcNow,
             UpdatedUtc = DateTime.UtcNow,
-            Members = members?.ToList() ?? [],
+            Members = list,
         };
+    }
+
+    /// <summary>
+    /// The return assumptions a test runs under.
+    /// </summary>
+    /// <remarks>
+    /// Cash earns what the member earns unless a test says otherwise, so the bucket cannot change a
+    /// figure a test about accumulation is asserting on. The named strategies carry the seeded
+    /// rates, which is what a test choosing one is asking for.
+    /// </remarks>
+    public static GrowthStrategyRates StrategyRates(DomainPlan plan, decimal? cashReturnRate = null) =>
+        new(new Dictionary<GrowthStrategy, decimal>
+        {
+            [GrowthStrategy.Conservative] = 0.049m,
+            [GrowthStrategy.Balanced] = 0.061m,
+            [GrowthStrategy.Growth] = 0.064m,
+            [GrowthStrategy.HighGrowth] = 0.068m,
+            [GrowthStrategy.Moderate] = 0.057m,
+            [GrowthStrategy.Cash] = cashReturnRate ?? plan.Members.Select(m => m.CustomReturnRate).FirstOrDefault() ?? 0m,
+        });
+
+    /// <summary>
+    /// The legislated minimum drawdown bands, as ATO Schedule 7 sets them.
+    /// </summary>
+    public static MinimumDrawdownRates MinimumDrawdown() =>
+        new(new Dictionary<byte, decimal>
+        {
+            [0] = 0.04m, [65] = 0.05m, [75] = 0.06m, [80] = 0.07m, [85] = 0.09m, [90] = 0.11m, [95] = 0.14m,
+        });
 
     /// <summary>
     /// A plan member. The <c>User</c> navigation is populated because the projection reads the
@@ -64,6 +102,10 @@ internal static class TestEntities
         decimal salarySacrifice = 0m,
         int retirementAge = 65,
         GrowthStrategy growthStrategy = GrowthStrategy.Custom,
+        decimal? customReturnRate = null,
+        GrowthStrategy? retirementGrowthStrategy = null,
+        decimal? retirementCustomReturnRate = null,
+        decimal? salaryGrowthRate = null,
         decimal annualFees = 0m,
         decimal insurancePremium = 0m,
         IEnumerable<decimal>? accountBalances = null)
@@ -80,6 +122,10 @@ internal static class TestEntities
             SalarySacrifice = salarySacrifice,
             RetirementAge = retirementAge,
             GrowthStrategy = growthStrategy,
+            CustomReturnRate = customReturnRate,
+            RetirementGrowthStrategy = retirementGrowthStrategy,
+            RetirementCustomReturnRate = retirementCustomReturnRate,
+            SalaryGrowthRate = salaryGrowthRate,
             AnnualFees = annualFees,
             InsurancePremium = insurancePremium,
             Accounts = (accountBalances ?? []).Select(balance => CreateMemberAccount(memberId, balance)).ToList(),

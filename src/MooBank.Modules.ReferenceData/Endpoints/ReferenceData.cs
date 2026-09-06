@@ -30,5 +30,15 @@ internal class ReferenceData : EndpointGroupBase
             .RequireAuthorization(Policies.Admin)
             .WithNames("Save Pension Rates")
             .WithValidation<SavePensionRates>();
+
+        builder.MapQuery<GetGrowthStrategyRates, IEnumerable<GrowthStrategyRates>>("growth-strategy-rates")
+            .WithNames("Growth Strategy Rates");
+
+        // A return assumption is national in the same sense the pension rates are: every family's
+        // projection moves with it, so editing sits behind the admin policy while reading does not.
+        builder.MapPutCommand<SaveGrowthStrategyRate, GrowthStrategyRates>("growth-strategy-rates")
+            .RequireAuthorization(Policies.Admin)
+            .WithNames("Save Growth Strategy Rate")
+            .WithValidation<SaveGrowthStrategyRate>();
     }
 }

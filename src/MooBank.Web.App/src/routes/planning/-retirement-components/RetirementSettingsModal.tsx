@@ -22,20 +22,22 @@ interface RetirementSettingsModalProps {
  */
 interface RetirementSettingsFormValues {
     name: string;
-    expectedReturnPercent: number;
     inflationPercent: number;
     superGuaranteePercent: number;
     contributionsTaxPercent: number;
     lifeExpectancy: number;
     targetRetirementIncome: number;
     cashBucketYears: number;
-    cashReturnPercent: number;
     members: {
         id?: string;
         userId: string;
         currentAge: number;
         salarySacrifice: number;
         growthStrategy: GrowthStrategy;
+        customReturnPercent: number | "";
+        retirementGrowthStrategy: GrowthStrategy | "";
+        retirementCustomReturnPercent: number | "";
+        salaryGrowthPercent: number | "";
         annualFees: number;
         insurancePremium: number;
         currentIncome: number;
@@ -46,20 +48,22 @@ interface RetirementSettingsFormValues {
 
 const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
     name: plan?.name ?? "",
-    expectedReturnPercent: toPercent(plan?.expectedReturnRate),
     inflationPercent: toPercent(plan?.inflationRate),
     superGuaranteePercent: toPercent(plan?.superGuaranteeRate),
     contributionsTaxPercent: toPercent(plan?.contributionsTaxRate),
     lifeExpectancy: plan?.lifeExpectancy ?? 90,
     targetRetirementIncome: plan?.targetRetirementIncome ?? 0,
     cashBucketYears: plan?.cashBucketYears ?? 2,
-    cashReturnPercent: toPercent(plan?.cashReturnRate),
     members: (plan?.members ?? []).map(m => ({
         id: m.id,
         userId: m.userId,
         currentAge: m.currentAge,
         salarySacrifice: m.salarySacrifice,
         growthStrategy: m.growthStrategy,
+        customReturnPercent: m.customReturnRate == null ? "" : toPercent(m.customReturnRate),
+        retirementGrowthStrategy: m.retirementGrowthStrategy ?? "",
+        retirementCustomReturnPercent: m.retirementCustomReturnRate == null ? "" : toPercent(m.retirementCustomReturnRate),
+        salaryGrowthPercent: m.salaryGrowthRate == null ? "" : toPercent(m.salaryGrowthRate),
         annualFees: m.annualFees,
         insurancePremium: m.insurancePremium,
         currentIncome: m.currentIncome,
@@ -70,14 +74,12 @@ const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
 
 const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => ({
     name: data.name,
-    expectedReturnRate: fromPercent(data.expectedReturnPercent),
     inflationRate: fromPercent(data.inflationPercent),
     superGuaranteeRate: fromPercent(data.superGuaranteePercent),
     contributionsTaxRate: fromPercent(data.contributionsTaxPercent),
     lifeExpectancy: Number(data.lifeExpectancy) || 0,
     targetRetirementIncome: Number(data.targetRetirementIncome) || 0,
     cashBucketYears: Number(data.cashBucketYears) || 0,
-    cashReturnRate: fromPercent(data.cashReturnPercent),
     members: data.members.map(m => ({
         id: m.id,
         // Null rather than the empty string the select carries for "not chosen yet": an empty string
@@ -86,6 +88,11 @@ const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => 
         currentAge: Number(m.currentAge) || 0,
         salarySacrifice: Number(m.salarySacrifice) || 0,
         growthStrategy: m.growthStrategy,
+        // A rate belongs to a custom strategy and to nothing else, so it is sent only alongside one.
+        customReturnRate: m.growthStrategy === "Custom" ? fromPercent(Number(m.customReturnPercent) || 0) : null,
+        retirementGrowthStrategy: m.retirementGrowthStrategy === "" ? null : m.retirementGrowthStrategy,
+        retirementCustomReturnRate: m.retirementGrowthStrategy === "Custom" ? fromPercent(Number(m.retirementCustomReturnPercent) || 0) : null,
+        salaryGrowthRate: m.salaryGrowthPercent === "" ? null : fromPercent(Number(m.salaryGrowthPercent)),
         annualFees: Number(m.annualFees) || 0,
         insurancePremium: Number(m.insurancePremium) || 0,
         currentIncome: Number(m.currentIncome) || 0,
@@ -182,10 +189,6 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                     <fieldset className="retirement-fieldset">
                         <legend>Assumptions</legend>
                         <div className="retirement-assumptions">
-                            <Form.Group groupId="expectedReturnPercent">
-                                <Form.Label>Expected Return (% a year)</Form.Label>
-                                <Form.Input type="number" step="0.1" />
-                            </Form.Group>
                             <Form.Group groupId="inflationPercent">
                                 <Form.Label>Inflation (% a year)</Form.Label>
                                 <Form.Input type="number" step="0.1" />
@@ -215,10 +218,6 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                             <Form.Group groupId="cashBucketYears">
                                 <Form.Label>Years of Spending Held in Cash</Form.Label>
                                 <Form.Input type="number" step="1" min="0" />
-                            </Form.Group>
-                            <Form.Group groupId="cashReturnPercent">
-                                <Form.Label>Cash Return (% a year)</Form.Label>
-                                <Form.Input type="number" step="0.1" />
                             </Form.Group>
                         </div>
                     </fieldset>
@@ -262,6 +261,25 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                                             {growthStrategies.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                                         </Form.Select>
                                     </Form.Group>
+                                    <Form.Group groupId={`members.${index}.customReturnPercent`}>
+                                        <Form.Label>Custom Return (% a year)</Form.Label>
+                                        <Form.Input type="number" step="0.1" />
+                                    </Form.Group>
+                                    <Form.Group groupId={`members.${index}.retirementGrowthStrategy`}>
+                                        <Form.Label>Strategy Once Retired</Form.Label>
+                                        <Form.Select>
+                                            <option value="">Stays the same</option>
+                                            {growthStrategies.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                                        </Form.Select>
+                                    </Form.Group>
+                                    <Form.Group groupId={`members.${index}.retirementCustomReturnPercent`}>
+                                        <Form.Label>Custom Return Once Retired (%)</Form.Label>
+                                        <Form.Input type="number" step="0.1" />
+                                    </Form.Group>
+                                    <Form.Group groupId={`members.${index}.salaryGrowthPercent`}>
+                                        <Form.Label>Salary Growth (% a year)</Form.Label>
+                                        <Form.Input type="number" step="0.1" placeholder="follows inflation" />
+                                    </Form.Group>
                                     <Form.Group groupId={`members.${index}.annualFees`}>
                                         <Form.Label>Fund Fees (a year)</Form.Label>
                                         <CurrencyInput currency={currencyCode} min={0} />
@@ -294,7 +312,7 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                         )}
                         <Button
                             variant="outline-primary"
-                            onClick={() => append({ userId: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", annualFees: 0, insurancePremium: 0, instrumentIds: [] })}
+                            onClick={() => append({ userId: "", currentAge: defaultCurrentAge, currentIncome: 0, salarySacrifice: 0, retirementAge: defaultRetirementAge, growthStrategy: "Balanced", customReturnPercent: "", retirementGrowthStrategy: "", retirementCustomReturnPercent: "", salaryGrowthPercent: "", annualFees: 0, insurancePremium: 0, instrumentIds: [] })}
                         >
                             Add Person
                         </Button>

@@ -19,10 +19,6 @@ export const RetirementAssumptionsNote: React.FC<RetirementAssumptionsNoteProps>
         <Section header="Assumptions">
             <dl className="retirement-assumption-list">
                 <div>
-                    <dt>Expected return</dt>
-                    <dd>{toPercent(plan.expectedReturnRate)}% a year</dd>
-                </div>
-                <div>
                     <dt>Inflation</dt>
                     <dd>{toPercent(plan.inflationRate)}% a year</dd>
                 </div>

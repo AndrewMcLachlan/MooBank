@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Retirement.Commands;
 using Asm.MooBank.Modules.Retirement.Models;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
@@ -21,7 +21,6 @@ public class CreatePlanTests
         new()
         {
             Name = "Retirement",
-            ExpectedReturnRate = 0.065m,
             InflationRate = 0.025m,
             SuperGuaranteeRate = 0.12m,
             ContributionsTaxRate = 0.15m,
@@ -85,7 +84,6 @@ public class CreatePlanTests
         var result = await handler.Handle(new CreatePlan(CreateRequest()), TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.Equal(0.065m, result.ExpectedReturnRate);
         Assert.Equal(0.025m, result.InflationRate);
         Assert.Equal(0.12m, result.SuperGuaranteeRate);
         Assert.Equal(0.15m, result.ContributionsTaxRate);

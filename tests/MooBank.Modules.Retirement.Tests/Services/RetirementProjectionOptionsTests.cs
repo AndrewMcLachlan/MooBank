@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Retirement.Models;
 using Asm.MooBank.Modules.Retirement.Services;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
@@ -118,14 +118,18 @@ public class RetirementProjectionOptionsTests
     /// Then the strategy's own rate should be used rather than the plan's
     /// </summary>
     [Theory]
-    [InlineData(GrowthStrategy.Conservative, 0.045)]
-    [InlineData(GrowthStrategy.Balanced, 0.060)]
-    [InlineData(GrowthStrategy.Growth, 0.070)]
-    [InlineData(GrowthStrategy.HighGrowth, 0.080)]
-    public void ReturnRateFor_NamedStrategy_UsesItsOwnRate(GrowthStrategy strategy, decimal expected)
+    [InlineData(GrowthStrategy.Conservative, 0.049)]
+    [InlineData(GrowthStrategy.Balanced, 0.061)]
+    [InlineData(GrowthStrategy.Growth, 0.064)]
+    [InlineData(GrowthStrategy.HighGrowth, 0.068)]
+    [InlineData(GrowthStrategy.Moderate, 0.057)]
+    public void For_NamedStrategy_UsesTheRecordedRate(GrowthStrategy strategy, decimal expected)
     {
-        // Act
-        var rate = RetirementProjectionEngine.ReturnRateFor(strategy, planRate: 0.99m);
+        // Arrange
+        var rates = TestEntities.StrategyRates(TestEntities.CreatePlan());
+
+        // Act: a custom rate is offered and should be ignored, because the strategy is not Custom.
+        var rate = rates.For(strategy, customRate: 0.99m);
 
         // Assert
         Assert.Equal(expected, rate);
@@ -134,13 +138,16 @@ public class RetirementProjectionOptionsTests
     /// <summary>
     /// Given the custom growth strategy
     /// When its return rate is resolved
-    /// Then the plan's own rate should be used
+    /// Then the member's own rate should be used
     /// </summary>
     [Fact]
-    public void ReturnRateFor_Custom_FallsBackToThePlanRate()
+    public void For_Custom_UsesTheMembersOwnRate()
     {
+        // Arrange
+        var rates = TestEntities.StrategyRates(TestEntities.CreatePlan());
+
         // Act
-        var rate = RetirementProjectionEngine.ReturnRateFor(GrowthStrategy.Custom, planRate: 0.0625m);
+        var rate = rates.For(GrowthStrategy.Custom, customRate: 0.0625m);
 
         // Assert
         Assert.Equal(0.0625m, rate);
@@ -164,14 +171,69 @@ public class RetirementProjectionOptionsTests
         var projection = _engine.CalculateWithoutPension(plan, Today);
 
         // Assert
-        // 4.5% on 100,000 plus 8% on 100,000.
-        Assert.Equal(12_500m, projection.Years.ElementAt(1).InvestmentReturn);
+        // 4.9% on 100,000 plus 6.8% on 100,000.
+        Assert.Equal(11_700m, projection.Years.ElementAt(1).InvestmentReturn);
 
         var cautious = projection.Members.Single(m => m.Name == "Cautious");
         var bold = projection.Members.Single(m => m.Name == "Bold");
-        Assert.Equal(0.045m, cautious.ReturnRate);
-        Assert.Equal(0.080m, bold.ReturnRate);
+        Assert.Equal(0.049m, cautious.ReturnRate);
+        Assert.Equal(0.068m, bold.ReturnRate);
         Assert.True(bold.BalanceAtRetirement > cautious.BalanceAtRetirement);
+    }
+
+    /// <summary>
+    /// Given a member who moves to a different strategy at retirement
+    /// When the projection runs
+    /// Then their balance should earn the accumulation rate first and the retirement rate after
+    /// </summary>
+    /// <remarks>
+    /// A portfolio built for twenty years of accumulation is not the one most people draw an income
+    /// from, and the difference compounds either side of the same date.
+    /// </remarks>
+    [Fact]
+    public void Calculate_AMemberWhoDeRisksAtRetirement_ChangesRateAtTheirRetirementYear()
+    {
+        // Arrange: Growth at 6.4% until 65, Conservative at 4.9% from then on.
+        var plan = TestEntities.CreatePlan(inflationRate: 0m, superGuaranteeRate: 0m, members: [
+            TestEntities.CreateMember(currentAge: 63, retirementAge: 65, currentIncome: 0m,
+                growthStrategy: GrowthStrategy.Growth, retirementGrowthStrategy: GrowthStrategy.Conservative,
+                accountBalances: [100_000m]),
+        ]);
+
+        // Act
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+
+        // Assert: the last accumulating year earns 6.4%, the first retired year 4.9%.
+        Assert.Equal(6_400m, years[1].InvestmentReturn);
+        var atRetirement = years[2].OpeningBalance;
+        Assert.Equal(Math.Round(atRetirement * 0.049m, 2), years[2].InvestmentReturn);
+    }
+
+    /// <summary>
+    /// Given a member whose pay does not grow
+    /// When the projection runs
+    /// Then their contribution should be the same figure every year
+    /// </summary>
+    /// <remarks>
+    /// Salary growth follows the plan's inflation unless the member says otherwise, which is an
+    /// assumption worth being able to contradict: pay rises are not automatic.
+    /// </remarks>
+    [Fact]
+    public void Calculate_AMemberWithNoSalaryGrowth_ContributesTheSameEachYear()
+    {
+        // Arrange: inflation is 5%, but this member's pay is flat.
+        var plan = TestEntities.CreatePlan(inflationRate: 0.05m, superGuaranteeRate: 0.10m, contributionsTaxRate: 0m, members: [
+            TestEntities.CreateMember(currentAge: 40, retirementAge: 65, currentIncome: 100_000m,
+                salaryGrowthRate: 0m, accountBalances: [10_000m]),
+        ]);
+
+        // Act
+        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+
+        // Assert
+        Assert.Equal(10_000m, years[1].Contributions);
+        Assert.Equal(10_000m, years[3].Contributions);
+        Assert.Equal(10_000m, years[10].Contributions);
     }
 
     /// <summary>
@@ -192,7 +254,7 @@ public class RetirementProjectionOptionsTests
 
         // Assert
         Assert.Equal(GrowthStrategy.Growth, member.GrowthStrategy);
-        Assert.Equal(0.070m, member.ReturnRate);
+        Assert.Equal(0.064m, member.ReturnRate);
     }
 
     // ---- Overrides ----
@@ -255,11 +317,14 @@ public class RetirementProjectionOptionsTests
     public void Calculate_OverridingPlanRates_UsesTheOverriddenRates()
     {
         // Arrange
-        var plan = TestEntities.CreatePlan(members: [
-            TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, accountBalances: [100_000m]),
-        ]);
+        var member = TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, accountBalances: [100_000m]);
+        var plan = TestEntities.CreatePlan(members: [member]);
 
-        var overrides = new ProjectionOverrides { ExpectedReturnRate = 0.20m };
+        // The slider sets a rate and the strategy together: a rate on its own belongs to nobody.
+        var overrides = new ProjectionOverrides
+        {
+            Members = [new MemberOverride { MemberId = member.Id, GrowthStrategy = GrowthStrategy.Custom, CustomReturnRate = 0.20m }],
+        };
 
         // Act
         var firstYear = _engine.CalculateWithoutPension(plan, Today, overrides).Years.ElementAt(1);
@@ -286,7 +351,6 @@ public class RetirementProjectionOptionsTests
 
         var overrides = new ProjectionOverrides
         {
-            ExpectedReturnRate = 0.20m,
             InflationRate = 0.09m,
             LifeExpectancy = 100,
             Members = [new MemberOverride { MemberId = member.Id, RetirementAge = 70, CurrentIncome = 999_999m, SalarySacrifice = 50_000m, CurrentAge = 30, GrowthStrategy = GrowthStrategy.HighGrowth }],
@@ -296,7 +360,7 @@ public class RetirementProjectionOptionsTests
         _engine.CalculateWithoutPension(plan, Today, overrides);
 
         // Assert
-        Assert.Equal(0.10m, plan.ExpectedReturnRate);
+        Assert.Equal(0.10m, member.CustomReturnRate);
         Assert.Equal(90, plan.LifeExpectancy);
         Assert.Equal(65, member.RetirementAge);
         Assert.Equal(100_000m, member.CurrentIncome);
@@ -353,5 +417,56 @@ public class RetirementProjectionOptionsTests
 
         // Assert
         Assert.Equal(without.Summary.BalanceAtRetirement, withEmpty.Summary.BalanceAtRetirement);
+    }
+
+    /// <summary>
+    /// Given two members on different strategies
+    /// When the summary is produced
+    /// Then the headline real return should be weighted by what each of them holds
+    /// </summary>
+    /// <remarks>
+    /// A household of a Conservative member and a High Growth one earns neither rate. Reporting
+    /// either would describe a portfolio nobody holds, and would not agree with the projection
+    /// printed beside it.
+    /// </remarks>
+    [Fact]
+    public void Calculate_MembersOnDifferentStrategies_ReportsTheWeightedRealReturn()
+    {
+        // Arrange: three times as much on the conservative side, so a plain average would differ.
+        var plan = TestEntities.CreatePlan(inflationRate: 0m, members: [
+            TestEntities.CreateMember(currentAge: 60, currentIncome: 0m, growthStrategy: GrowthStrategy.Conservative, accountBalances: [300_000m]),
+            TestEntities.CreateMember(currentAge: 60, currentIncome: 0m, growthStrategy: GrowthStrategy.HighGrowth, accountBalances: [100_000m]),
+        ]);
+
+        // Act
+        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
+
+        // Assert: (300,000 x 4.9% + 100,000 x 6.8%) / 400,000, and no inflation to discount.
+        Assert.Equal(0.05375m, summary.RealReturnRate, 5);
+    }
+
+    /// <summary>
+    /// Given a member on a named strategy
+    /// When the summary is produced
+    /// Then the household return should be that strategy's, not a figure from the plan
+    /// </summary>
+    /// <remarks>
+    /// The plan used to carry a rate of its own that the summary reported whether or not anyone was
+    /// invested at it. A single-member household is the sharpest case: the headline is simply that
+    /// member's rate.
+    /// </remarks>
+    [Fact]
+    public void Calculate_OneNamedMember_ReportsThatStrategysRealReturn()
+    {
+        // Arrange
+        var plan = TestEntities.CreatePlan(inflationRate: 0m, members: [
+            TestEntities.CreateMember(currentAge: 60, currentIncome: 0m, growthStrategy: GrowthStrategy.Growth, accountBalances: [100_000m]),
+        ]);
+
+        // Act
+        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
+
+        // Assert
+        Assert.Equal(0.064m, summary.RealReturnRate, 5);
     }
 }

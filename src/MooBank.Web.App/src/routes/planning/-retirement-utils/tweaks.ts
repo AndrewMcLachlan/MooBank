@@ -39,14 +39,12 @@ export const withExcluded = (draft: RetirementProjectionOverrides, memberId: str
  * not the other left it silently unable to mark the draft dirty.
  */
 export const planTweakKeys = [
-    "expectedReturnRate",
     "inflationRate",
     "superGuaranteeRate",
     "contributionsTaxRate",
     "lifeExpectancy",
     "targetRetirementIncome",
     "cashBucketYears",
-    "cashReturnRate",
 ] as const;
 
 export type PlanTweakKey = typeof planTweakKeys[number];
@@ -87,7 +85,7 @@ export const isDirty = (draft: RetirementProjectionOverrides, plan: RetirementPl
 
     const memberLevel = draft.members.some(m =>
         plan.members.some(p => p.id === m.memberId) &&
-        (["currentAge", "currentIncome", "salarySacrifice", "retirementAge", "growthStrategy", "annualFees", "insurancePremium"] as const)
+        (["currentAge", "currentIncome", "salarySacrifice", "retirementAge", "growthStrategy", "customReturnRate", "annualFees", "insurancePremium"] as const)
             .some(k => m[k] !== undefined && m[k] !== null));
 
     return planLevel || memberLevel || excluded;
@@ -111,7 +109,7 @@ export const withPlanValue = <K extends PlanTweakKey>(
 };
 
 /** Set one of a member's values, or clear it when it matches the plan again. */
-export const withMemberValue = <K extends "currentAge" | "currentIncome" | "salarySacrifice" | "retirementAge" | "growthStrategy" | "annualFees" | "insurancePremium">(
+export const withMemberValue = <K extends "currentAge" | "currentIncome" | "salarySacrifice" | "retirementAge" | "growthStrategy" | "customReturnRate" | "annualFees" | "insurancePremium">(
     draft: RetirementProjectionOverrides,
     plan: RetirementPlan,
     memberId: string,
@@ -124,7 +122,7 @@ export const withMemberValue = <K extends "currentAge" | "currentIncome" | "sala
     const updated: RetirementMemberOverride = { ...(existing ?? { memberId }), [key]: value };
     if (member && value === member[key as keyof typeof member]) delete updated[key];
 
-    const stillTweaked = (["currentAge", "currentIncome", "salarySacrifice", "retirementAge", "growthStrategy", "annualFees", "insurancePremium"] as const)
+    const stillTweaked = (["currentAge", "currentIncome", "salarySacrifice", "retirementAge", "growthStrategy", "customReturnRate", "annualFees", "insurancePremium"] as const)
         .some(k => updated[k] !== undefined && updated[k] !== null);
 
     return {
@@ -143,14 +141,12 @@ export const withMemberValue = <K extends "currentAge" | "currentIncome" | "sala
  */
 export const applyDraftToPlan = (draft: RetirementProjectionOverrides, plan: RetirementPlan): SimpleRetirementPlan => ({
     name: plan.name,
-    expectedReturnRate: draft.expectedReturnRate ?? plan.expectedReturnRate,
     inflationRate: draft.inflationRate ?? plan.inflationRate,
     superGuaranteeRate: draft.superGuaranteeRate ?? plan.superGuaranteeRate,
     contributionsTaxRate: draft.contributionsTaxRate ?? plan.contributionsTaxRate,
     lifeExpectancy: draft.lifeExpectancy ?? plan.lifeExpectancy,
     targetRetirementIncome: draft.targetRetirementIncome ?? plan.targetRetirementIncome,
     cashBucketYears: draft.cashBucketYears ?? plan.cashBucketYears,
-    cashReturnRate: draft.cashReturnRate ?? plan.cashReturnRate,
     members: plan.members.map(member => {
         const tweak = draft.members.find(m => m.memberId === member.id);
 
@@ -161,6 +157,9 @@ export const applyDraftToPlan = (draft: RetirementProjectionOverrides, plan: Ret
             salarySacrifice: tweak?.salarySacrifice ?? member.salarySacrifice,
             retirementAge: tweak?.retirementAge ?? member.retirementAge,
             growthStrategy: tweak?.growthStrategy ?? member.growthStrategy,
+            customReturnRate: tweak?.growthStrategy !== undefined || tweak?.customReturnRate !== undefined
+                ? tweak.customReturnRate
+                : member.customReturnRate,
             annualFees: tweak?.annualFees ?? member.annualFees,
             insurancePremium: tweak?.insurancePremium ?? member.insurancePremium,
         };
