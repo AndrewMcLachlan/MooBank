@@ -275,6 +275,12 @@ jobs:
   # for environment approval once per job, so the gate has to be a job by itself or every job
   # behind it asks again. Approving this approves the release; what follows is the release.
   approve-production:
+    # In the same group as the release it gates, so a newer run queues behind a pending approval
+    # rather than reaching the environment and superseding it -- which cancels the run that was
+    # waiting, approval and all.
+    concurrency:
+      group: moobank-production
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     environment: Production
     needs: [staging, database-staging]
