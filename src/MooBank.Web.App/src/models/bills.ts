@@ -1,4 +1,6 @@
-import type { UtilityType } from "api/types.gen";
+import type { UtilityType, UsageType } from "api/types.gen";
+
+export const UsageTypes: UsageType[] = ["Consumption", "Export"];
 
 export const UtilityTypes: UtilityType[] = ["Electricity", "Gas", "Water", "Phone", "Internet", "Other"];
 
@@ -7,11 +9,16 @@ export interface CreateServiceCharge {
     chargePerDay: number;
 }
 
+export interface CreateUsage {
+    usageType: UsageType;
+    pricePerUnit: number;
+    totalUsage: number;
+}
+
 export interface CreatePeriod {
     periodStart: string;
     periodEnd: string;
-    pricePerUnit: number;
-    totalUsage: number;
+    usages: CreateUsage[];
     serviceCharges: CreateServiceCharge[];
 }
 
@@ -21,14 +28,18 @@ export interface CreateDiscount {
     reason?: string;
 }
 
+/**
+ * The values a bill form edits. Creating and updating take the same shape.
+ *
+ * There is no cost or total: the database derives the cost from the periods and the total from the
+ * readings, so both are ignored on the way in.
+ */
 export interface CreateBill {
     invoiceNumber?: string;
     issueDate: string;
     currentReading?: number;
     previousReading?: number;
-    total: number;
     costsIncludeGST?: boolean;
-    cost: number;
     periods: CreatePeriod[];
     discounts: CreateDiscount[];
 }

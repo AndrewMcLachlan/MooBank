@@ -37,11 +37,12 @@ internal class CreateHandler(IUnitOfWork unitOfWork, Domain.Entities.Utility.IAc
                     ChargeTypeId = sc.ChargeTypeId,
                     ChargePerDay = sc.ChargePerDay,
                 }).ToList(),
-                Usage = new()
+                Usages = p.Usages.Select(u => new Domain.Entities.Utility.Usage
                 {
-                    PricePerUnit = p.PricePerUnit,
-                    TotalUsage = p.TotalUsage,
-                }
+                    UsageType = u.UsageType,
+                    PricePerUnit = u.PricePerUnit,
+                    TotalUsage = u.TotalUsage,
+                }).ToList(),
             }).ToList(),
             PreviousReading = command.Bill.PreviousReading,
             Total = command.Bill.Total,

@@ -88,16 +88,11 @@
         margin-bottom: 1rem;
     }
 
-    .form-actions {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .period-entry,
-    .discount-entry {
-        padding-bottom: 1rem;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid var(--border-colour);
+    /* The top-level groups are sections; only the innermost groups -- the usages and service
+       charges within a period -- are fieldsets. A fieldset inside a fieldset lays out badly and
+       reads as a box inside a box. */
+    .section {
+        margin-block: 1.5rem;
     }
 
     .section-header {
@@ -106,13 +101,71 @@
         align-items: center;
     }
 
+    fieldset {
+        margin-block: 1.25rem;
+        padding-block: 1rem 0.75rem;
+    }
+
+    /* The design system's reset floats the legend and gives it the full width, which squeezes
+       whatever follows it to nothing and spills that row out of the fieldset. Unfloating it is
+       what makes a fieldset usable as a group of fields here at all. */
+    fieldset > legend {
+        float: none;
+        inline-size: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+    .period-entry:not(:last-child) {
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-colour);
+    }
+
     .empty-message {
         color: var(--secondary-colour);
         margin-bottom: 0;
     }
 
-    .remove-button {
-        margin-top: 0.5rem;
+    /* A repeating row: its fields, then a narrow column holding the icon that removes it. The
+       action column is always present so the fields do not shift when the icon is hidden. */
+    .entry-row {
+        display: grid;
+        gap: 1rem;
+        align-items: end;
+        margin-bottom: 0.75rem;
+    }
+
+    .entry-row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* One control for the two dates now, so the row is the picker and its action. */
+    .period-row {
+        grid-template-columns: auto 2rem;
+        justify-content: space-between;
+    }
+
+    .usage-row,
+    .charge-row {
+        grid-template-columns: 1fr 1fr 1fr 2rem;
+    }
+
+    .discount-row {
+        grid-template-columns: 1fr 1fr 2fr 2rem;
+    }
+
+    .entry-action {
+        /* Pinned to the final track so a row with fewer fields still lines its icon up with the
+           rows above it. */
+        grid-column: -2 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        block-size: var(--input-height, 2.5rem);
     }
 }
 

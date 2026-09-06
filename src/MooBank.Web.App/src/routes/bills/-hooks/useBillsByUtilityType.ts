@@ -14,6 +14,7 @@ export const useBillsByUtilityType = (utilityType: string, pageNumber: number, p
             StartDate: filter?.startDate,
             EndDate: filter?.endDate,
             AccountId: filter?.accountId,
+            Period: filter?.period,
         },
     }),
     queryFn: async ({ signal }) => {
@@ -25,6 +26,7 @@ export const useBillsByUtilityType = (utilityType: string, pageNumber: number, p
                 StartDate: filter?.startDate,
                 EndDate: filter?.endDate,
                 AccountId: filter?.accountId,
+                Period: filter?.period,
             },
             signal,
             throwOnError: true,

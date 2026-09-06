@@ -17,6 +17,11 @@ public record GetByUtilityType : IQuery<PagedResult<Models.Bill>>
     public DateOnly? EndDate { get; init; }
 
     public Guid? AccountId { get; init; }
+
+    /// <summary>
+    /// A period named rather than dated. Set, it selects that bill and the dates are ignored.
+    /// </summary>
+    public BillPeriod? Period { get; init; }
 }
 
 internal class GetByUtilityTypeHandler(IQueryable<Domain.Entities.Utility.Account> accounts, User user) : IQueryHandler<GetByUtilityType, PagedResult<Bill>>
@@ -32,23 +37,48 @@ internal class GetByUtilityTypeHandler(IQueryable<Domain.Entities.Utility.Accoun
             .ThenInclude(p => p.ServiceCharges)
             .ThenInclude(sc => sc.ChargeType)
             .Include(b => b.Periods)
-            .ThenInclude(p => p.Usage)
+            .ThenInclude(p => p.Usages)
             .Include(b => b.Discounts)
             .AsQueryable();
 
-        if (query.StartDate.HasValue)
+        // Dates only narrow when no period is named: a named period is the request, not a range to
+        // be narrowed further, and applying both would let a stale range empty it.
+        if (!query.Period.HasValue)
         {
-            billsQuery = billsQuery.Where(b => b.IssueDate >= query.StartDate.Value);
-        }
+            if (query.StartDate.HasValue)
+            {
+                billsQuery = billsQuery.Where(b => b.IssueDate >= query.StartDate.Value);
+            }
 
-        if (query.EndDate.HasValue)
-        {
-            billsQuery = billsQuery.Where(b => b.IssueDate <= query.EndDate.Value);
+            if (query.EndDate.HasValue)
+            {
+                billsQuery = billsQuery.Where(b => b.IssueDate <= query.EndDate.Value);
+            }
         }
 
         if (query.AccountId.HasValue)
         {
             billsQuery = billsQuery.Where(b => b.AccountId == query.AccountId.Value);
+        }
+
+        /*
+            A named period resolves here, where the bills are, rather than at the caller: asking for
+            "the last period" should not require knowing which dates that covers, and a caller that
+            had to fetch bills to find out would be filtering by the very thing it was asking for.
+
+        */
+        if (query.Period.HasValue)
+        {
+            var skip = query.Period.Value == BillPeriod.Previous ? 1 : 0;
+
+            var billId = await billsQuery
+                .OrderByDescending(b => b.IssueDate).ThenByDescending(b => b.Id)
+                .Skip(skip).Take(1)
+                .Select(b => (int?)b.Id)
+                .SingleOrDefaultAsync(cancellationToken);
+
+            // No such bill -- a new account, or only one when the previous was asked for.
+            billsQuery = billsQuery.Where(b => billId != null && b.Id == billId);
         }
 
         var count = await billsQuery.CountAsync(cancellationToken);

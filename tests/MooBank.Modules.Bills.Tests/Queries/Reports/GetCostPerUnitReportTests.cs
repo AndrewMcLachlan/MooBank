@@ -224,4 +224,44 @@ public class GetCostPerUnitReportTests
         var dataPoints = result.DataPoints.ToList();
         Assert.True(dataPoints[0].Date <= dataPoints[1].Date);
     }
+
+    /// <summary>
+    /// Given a period carrying consumption and export
+    /// When the report is run
+    /// Then each should be its own series rather than averaged together
+    /// </summary>
+    /// <remarks>
+    /// A feed-in tariff and the rate charged for consumption appear on the same bill and move
+    /// independently; averaging them produces a figure that is neither.
+    /// </remarks>
+    [Fact]
+    public async Task Handle_PeriodWithExport_ReturnsAPointPerUsageType()
+    {
+        // Arrange
+        var userId = _mocks.User.Id;
+        var period = TestEntities.CreatePeriod(periodEnd: new DateTime(2024, 1, 31), pricePerUnit: 0.30m, totalUsage: 400);
+        period.Usages.Add(new Domain.Entities.Utility.Usage
+        {
+            UsageType = UsageType.Export,
+            PricePerUnit = 0.08m,
+            TotalUsage = 250,
+        });
+        var bill = TestEntities.CreateBill(id: 1, issueDate: new DateOnly(2024, 2, 1), periods: [period]);
+        var account = TestEntities.CreateAccountWithOwner(name: "Electricity", ownerId: userId, bills: [bill]);
+
+        var handler = new GetCostPerUnitReportHandler(TestEntities.CreateAccountQueryable(account), _mocks.User);
+        var query = new GetCostPerUnitReport { Start = new DateOnly(2024, 1, 1), End = new DateOnly(2024, 12, 31) };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(2, result.DataPoints.Count());
+        var consumption = result.DataPoints.Single(d => d.UsageType == UsageType.Consumption);
+        var export = result.DataPoints.Single(d => d.UsageType == UsageType.Export);
+        Assert.Equal(0.30m, consumption.AveragePricePerUnit);
+        Assert.Equal(400, consumption.TotalUsage);
+        Assert.Equal(0.08m, export.AveragePricePerUnit);
+        Assert.Equal(250, export.TotalUsage);
+    }
 }

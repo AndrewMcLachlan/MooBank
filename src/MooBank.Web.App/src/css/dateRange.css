@@ -161,3 +161,67 @@
         border-block-start: 1px solid var(--border-colour);
     }
 }
+
+/* Day range selector: the same trigger and popover as the month one, with a calendar in place of
+   the month grid. Everything shared is reused rather than restated; only the calendar is new. */
+
+/* Wider than the month trigger, because a cross-year day range is the longest label the control can
+   show -- "26 Jul 2025 - 25 Aug 2026" against the month selector's "May 2028 – May 2028". Fixed for
+   the same reason: the width must not depend on which range is selected. */
+.day-range-trigger {
+    inline-size: 19rem;
+}
+
+/* One column when the presets are off, which is how a form uses it: with nothing beside the
+   calendar, a two-column grid would leave an empty half. */
+.day-range-panel:not(:has(.date-range-presets)) {
+    grid-template-columns: auto;
+}
+
+.date-range-panel .day-range-weekdays,
+.date-range-panel .day-range-days {
+    display: grid;
+    grid-template-columns: repeat(7, 2.25rem);
+    gap: 0.15rem;
+}
+
+.date-range-panel .day-range-weekdays {
+    margin-block-end: 0.25rem;
+}
+
+.date-range-panel .day-range-weekdays span {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--body-colour-dim);
+}
+
+.date-range-panel .day-range-days button {
+    background: none;
+    border: 1px solid transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0.4rem 0;
+    border-radius: 0.25rem;
+}
+
+.date-range-panel .day-range-days button:hover {
+    border-color: var(--border-colour);
+}
+
+/* Days either side of the month on show. Dimmed rather than hidden: a range often crosses a month
+   boundary, and a gap in the grid makes that harder to read. */
+.date-range-panel .day-range-days button.outside {
+    color: var(--body-colour-dim);
+}
+
+.date-range-panel .day-range-days button.in-range {
+    background: var(--section-bg);
+}
+
+.date-range-panel .day-range-days button.range-start,
+.date-range-panel .day-range-days button.range-end {
+    background: var(--primary);
+    color: var(--btn-colour, #fff);
+    font-weight: 600;
+}

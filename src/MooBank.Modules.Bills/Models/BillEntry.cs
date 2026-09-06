@@ -78,14 +78,26 @@ public record BillEntryPeriod
     [Description("The last day of the billing period.")]
     public DateOnly PeriodEnd { get; set; }
 
-    [Description("The price charged per unit of usage.")]
-    public decimal PricePerUnit { get; set; }
-
-    [Description("The total units consumed during the period.")]
-    public decimal TotalUsage { get; set; }
+    [Description("The metered quantities and their rates. Most bills carry one, for what was consumed; a solar electricity bill also carries an Export entry for what was sent back to the grid.")]
+    public IEnumerable<BillEntryUsage> Usages { get; set; } = [];
 
     [Description("The daily service charges. Electricity and gas carry one supply charge; a water bill carries a water service charge and a sewerage service charge.")]
     public IEnumerable<BillEntryServiceCharge> ServiceCharges { get; set; } = [];
+}
+
+/// <summary>
+/// A metered quantity within a <see cref="BillEntryPeriod"/>.
+/// </summary>
+public record BillEntryUsage
+{
+    [Description("What the quantity measures: Consumption for what was used, Export for solar sent back to the grid.")]
+    public UsageType UsageType { get; set; } = UsageType.Consumption;
+
+    [Description("The rate as printed on the bill, always positive. A feed-in tariff is recorded as a positive rate against Export; MooBank treats it as a credit.")]
+    public decimal PricePerUnit { get; set; }
+
+    [Description("The total units measured during the period.")]
+    public decimal TotalUsage { get; set; }
 }
 
 /// <summary>
@@ -118,8 +130,12 @@ public static class BillEntryExtensions
             {
                 PeriodStart = p.PeriodStart.ToDateTime(TimeOnly.MinValue),
                 PeriodEnd = p.PeriodEnd.ToDateTime(TimeOnly.MinValue),
-                PricePerUnit = p.PricePerUnit,
-                TotalUsage = p.TotalUsage,
+                Usages = p.Usages.Select(u => new Usage
+                {
+                    UsageType = u.UsageType,
+                    PricePerUnit = u.PricePerUnit,
+                    TotalUsage = u.TotalUsage,
+                }).ToList(),
                 ServiceCharges = p.ServiceCharges.Select(sc => new ServiceCharge
                 {
                     ChargeTypeId = sc.ChargeTypeId,

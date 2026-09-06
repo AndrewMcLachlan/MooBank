@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Table } from "@andrewmclachlan/moo-ds";
+import React, { useMemo, useState } from "react";
+import { Icon, Table } from "@andrewmclachlan/moo-ds";
 import { format, subYears } from "date-fns";
 import { getNumberOfPages, Pagination, useLocalStorage } from "@andrewmclachlan/moo-ds";
 
@@ -8,10 +8,12 @@ import type { BillFilter } from "../-hooks/types";
 import { useBillsByUtilityType } from "../-hooks/useBillsByUtilityType";
 import { useBillAccountsByType } from "../-hooks/useBillAccountsByType";
 import { BillDetails } from "./BillDetails";
+import { EditBill } from "./EditBill";
 import { BillFilterPanel } from "./BillFilterPanel";
 import { BillsChart } from "./BillsChart";
 import { UsageChart } from "./UsageChart";
 import { getUnit } from "utils/units";
+import { billPeriodOptions } from "../-utils/billPeriodOptions";
 import { formatDateShort } from "utils/dateFns";
 import { Amount } from "components";
 
@@ -31,11 +33,22 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
     const [showDetails, setShowDetails] = useState(false);
     const [selectedBill, setSelectedBill] = useState<Bill | undefined>(undefined);
     const [selectedAccount, setSelectedAccount] = useState<Account | undefined>(undefined);
+    const [editingBill, setEditingBill] = useState<Bill | undefined>(undefined);
+    const [editingAccount, setEditingAccount] = useState<Account | undefined>(undefined);
 
     const { data: accounts } = useBillAccountsByType(utilityType);
     const { data: pagedBills } = useBillsByUtilityType(utilityType, pageNumber, pageSize, filter);
 
     const numberOfPages = pagedBills ? getNumberOfPages(pagedBills.total, pageSize) : 0;
+
+    // Built from the accounts, which carry how often they are billed. The two bill-relative periods
+    // carry no dates: they go to the server by name and it answers from the bills.
+    const presets = useMemo(() => billPeriodOptions(accounts, filter.accountId), [accounts, filter.accountId]);
+
+    const editBill = (bill: Bill) => {
+        setEditingBill(bill);
+        setEditingAccount(accounts?.find(a => a.id === bill.accountId));
+    };
 
     const rowClick = (bill: Bill) => {
         setSelectedBill(bill);
@@ -51,7 +64,7 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
 
     return (
         <div className="utility-bills-tab">
-            <BillFilterPanel accounts={accounts} filter={filter} onFilterChange={handleFilterChange} />
+            <BillFilterPanel accounts={accounts} filter={filter} onFilterChange={handleFilterChange} presets={presets} />
 
             <BillsChart utilityType={utilityType} filter={filter} />
 
@@ -61,6 +74,10 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                 <BillDetails account={selectedAccount} bill={selectedBill!} show={showDetails} onHide={() => setShowDetails(false)} />
             )}
 
+            {editingBill && editingAccount && (
+                <EditBill accountId={editingAccount.id} bill={editingBill} show onHide={() => setEditingBill(undefined)} />
+            )}
+
             <Table striped className="section">
                 <thead>
                     <tr>
@@ -68,6 +85,7 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                         <th>Date</th>
                         <th>Cost</th>
                         <th>Usage ({getUnit(utilityType)})</th>
+                        <th className="row-action column-5"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,19 +94,24 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                             <td>{bill.accountName}</td>
                             <td>{formatDateShort(bill.issueDate)}</td>
                             <td><Amount amount={bill.cost} currencyCode="AUD" /></td>
-                            <td>{bill.periods?.reduce((sum, p) => sum + p.totalUsage, 0).toLocaleString() ?? "-"}</td>
+                            <td>{bill.periods?.reduce((sum, p) =>
+                                sum + p.usages.filter(u => u.usageType === "Consumption").reduce((units, u) => units + u.totalUsage, 0), 0).toLocaleString() ?? "-"}</td>
+                            <td className="row-action column-5">
+                                {/* The row opens the drawer, so the edit icon has to keep its click to itself. */}
+                                <Icon icon="pen-to-square" title="Edit Bill" onClick={e => { e.stopPropagation(); editBill(bill); }} />
+                            </td>
                         </tr>
                     ))}
                     {(!pagedBills || pagedBills.results.length === 0) && (
                         <tr>
-                            <td colSpan={4} className="no-bills">No bills found</td>
+                            <td colSpan={5} className="no-bills">No bills found</td>
                         </tr>
                     )}
                 </tbody>
                 {pagedBills && pagedBills.total > 0 && (
                     <tfoot>
                         <tr>
-                            <td colSpan={3} className="page-totals">
+                            <td colSpan={4} className="page-totals">
                                 Page {pageNumber} of {numberOfPages} ({pagedBills.total} bills)
                             </td>
                             <td>

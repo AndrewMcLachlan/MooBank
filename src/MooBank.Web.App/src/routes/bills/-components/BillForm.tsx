@@ -1,0 +1,270 @@
+import React, { useState } from "react";
+import { Button, DeleteIcon, Form, Icon, Modal, Section } from "@andrewmclachlan/moo-ds";
+import type { Control, UseFormReturn } from "react-hook-form";
+import { useFieldArray, useWatch } from "react-hook-form";
+
+import type { ChargeType } from "api/types.gen";
+import type { CreateBill, CreatePeriod, CreateServiceCharge, CreateUsage } from "models/bills";
+import { UsageTypes } from "models/bills";
+import { amountStep } from "utils/currency";
+import type { DayRangeSelection } from "components/DayRangeSelector";
+import { DayRangeSelector, isPresetSelection } from "components/DayRangeSelector";
+import type { Period as DateRange } from "models/dateFns";
+import { formatISODate } from "utils/dateFns";
+import { parseISO } from "date-fns";
+
+const defaultServiceCharge: CreateServiceCharge = { chargeTypeId: 1, chargePerDay: 0 };
+
+const defaultUsage: CreateUsage = { usageType: "Consumption", pricePerUnit: 0, totalUsage: 0 };
+
+export const emptyPeriod = (): CreatePeriod => ({
+    // Dated today rather than left blank, so the range control has something to show and the two
+    // dates are never half-set.
+    periodStart: formatISODate(new Date()),
+    periodEnd: formatISODate(new Date()),
+    usages: [{ ...defaultUsage }],
+    serviceCharges: [{ ...defaultServiceCharge }],
+});
+
+/**
+ * A group of repeated rows within a period.
+ *
+ * A fieldset, but never a nested one: the outer groups are sections, because a fieldset inside a
+ * fieldset lays out badly and reads as a box inside a box.
+ */
+const FieldGroup: React.FC<React.PropsWithChildren<{ legend: string; addTitle: string; onAdd: () => void }>> = ({ legend, addTitle, onAdd, children }) => (
+    <fieldset>
+        <legend>
+            <span>{legend}</span>
+            <Icon icon="plus" title={addTitle} onClick={onAdd} />
+        </legend>
+        {children}
+    </fieldset>
+);
+
+/** A top-level group of the dialog. */
+const FormSection: React.FC<React.PropsWithChildren<{ title: string; addTitle: string; onAdd: () => void }>> = ({ title, addTitle, onAdd, children }) => (
+    <Section header={
+        <span className="section-header">
+            <span>{title}</span>
+            <Icon icon="plus" title={addTitle} onClick={onAdd} />
+        </span>
+    }>
+        {children}
+    </Section>
+);
+
+interface PeriodDatesProps {
+    form: UseFormReturn<CreateBill>;
+    periodIndex: number;
+}
+
+/**
+ * A period's start and end, as one range.
+ *
+ * Driven through the form rather than by a Form.Group, because one control stands for two fields
+ * and a group binds to a single one.
+ */
+const PeriodDates: React.FC<PeriodDatesProps> = ({ form, periodIndex }) => {
+
+    const start = useWatch({ control: form.control, name: `periods.${periodIndex}.periodStart` });
+    const end = useWatch({ control: form.control, name: `periods.${periodIndex}.periodEnd` });
+
+    // Only a bill stored without dates reaches the fallback; read once rather than on every render.
+    const [today] = useState(() => new Date());
+
+    const value: DateRange = {
+        startDate: start ? parseISO(start) : today,
+        endDate: end ? parseISO(end) : today,
+    };
+
+    const change = (range: DayRangeSelection) => {
+        // No presets are offered here, so a named period cannot arrive.
+        if (isPresetSelection(range)) return;
+
+        form.setValue(`periods.${periodIndex}.periodStart`, formatISODate(range.startDate), { shouldDirty: true });
+        form.setValue(`periods.${periodIndex}.periodEnd`, formatISODate(range.endDate), { shouldDirty: true });
+    };
+
+    return (
+        <div className="period-dates">
+            <Form.Label htmlFor={`period-${periodIndex}-dates`}>Period</Form.Label>
+            {/* No presets: "Last 3 months" is not a thing a bill is billed for. */}
+            <DayRangeSelector id={`period-${periodIndex}-dates`} value={value} onChange={change} presets={[]} />
+        </div>
+    );
+};
+
+interface UsagesProps {
+    control: Control<CreateBill>;
+    periodIndex: number;
+}
+
+const Usages: React.FC<UsagesProps> = ({ control, periodIndex }) => {
+
+    const { fields, append, remove } = useFieldArray({ control, name: `periods.${periodIndex}.usages` });
+
+    return (
+        <FieldGroup legend="Usage" addTitle="Add export" onAdd={() => append({ ...defaultUsage, usageType: "Export" })}>
+            {fields.map((field, index) => (
+                <div key={field.id} className="entry-row usage-row">
+                    <Form.Group groupId={`periods.${periodIndex}.usages.${index}.usageType`}>
+                        <Form.Select>
+                            {UsageTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                        </Form.Select>
+                    </Form.Group>
+                    <Form.Group groupId={`periods.${periodIndex}.usages.${index}.pricePerUnit`}>
+                        <Form.Input type="number" step="0.00001" required placeholder="Price/unit" />
+                    </Form.Group>
+                    <Form.Group groupId={`periods.${periodIndex}.usages.${index}.totalUsage`}>
+                        <Form.Input type="number" step="0.001" required placeholder="Units" />
+                    </Form.Group>
+                    <span className="entry-action">
+                        {fields.length > 1 && <DeleteIcon onClick={() => remove(index)} />}
+                    </span>
+                </div>
+            ))}
+        </FieldGroup>
+    );
+};
+
+interface ServiceChargesProps {
+    control: Control<CreateBill>;
+    periodIndex: number;
+    chargeTypes: ChargeType[];
+}
+
+const ServiceCharges: React.FC<ServiceChargesProps> = ({ control, periodIndex, chargeTypes }) => {
+
+    const { fields, append, remove } = useFieldArray({ control, name: `periods.${periodIndex}.serviceCharges` });
+
+    return (
+        <FieldGroup legend="Service Charges" addTitle="Add service charge" onAdd={() => append({ ...defaultServiceCharge })}>
+            {fields.map((field, index) => (
+                <div key={field.id} className="entry-row charge-row">
+                    <Form.Group groupId={`periods.${periodIndex}.serviceCharges.${index}.chargeTypeId`}>
+                        <Form.Select>
+                            {chargeTypes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        </Form.Select>
+                    </Form.Group>
+                    <Form.Group groupId={`periods.${periodIndex}.serviceCharges.${index}.chargePerDay`}>
+                        <Form.Input type="number" step="0.00001" required placeholder="Charge/day" />
+                    </Form.Group>
+                    <span className="entry-action">
+                        {fields.length > 1 && <DeleteIcon onClick={() => remove(index)} />}
+                    </span>
+                </div>
+            ))}
+        </FieldGroup>
+    );
+};
+
+export interface BillFormProps {
+    form: UseFormReturn<CreateBill>;
+    chargeTypes: ChargeType[];
+    submitLabel: string;
+    pending: boolean;
+    onSubmit: (bill: CreateBill) => void | Promise<void>;
+    onCancel: () => void;
+    /** Rendered above the bill fields, for the account picker when adding. */
+    header?: React.ReactNode;
+}
+
+/**
+ * The body and footer of a bill dialog, shared by adding and editing.
+ *
+ * The form wraps both, as the transaction dialog does, so that the submit button can live in the
+ * modal footer where the dialog's actions belong.
+ *
+ * Rows are added and removed with icons rather than buttons, which is how the rest of the app
+ * handles a repeating row -- see the transaction split editor.
+ *
+ * A bill's cost and total usage are not among the fields: the database derives the cost from the
+ * periods and the total from the readings, so both are ignored on the way in. Offering them as
+ * inputs would mean typing a figure and watching it be discarded.
+ */
+export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLabel, pending, onSubmit, onCancel, header }) => {
+
+    const { fields: periodFields, append: appendPeriod, remove: removePeriod } = useFieldArray({
+        control: form.control,
+        name: "periods",
+    });
+
+    const { fields: discountFields, append: appendDiscount, remove: removeDiscount } = useFieldArray({
+        control: form.control,
+        name: "discounts",
+    });
+
+    return (
+        <Form form={form} onSubmit={onSubmit} className="bill-form">
+            <Modal.Body>
+                {header}
+                <div className="form-row">
+                    <Form.Group groupId="invoiceNumber">
+                        <Form.Label>Invoice Number</Form.Label>
+                        <Form.Input type="text" maxLength={11} />
+                    </Form.Group>
+                    <Form.Group groupId="issueDate">
+                        <Form.Label>Issue Date</Form.Label>
+                        <Form.Input type="date" required />
+                    </Form.Group>
+                </div>
+                <div className="form-row-3">
+                    <Form.Group groupId="previousReading">
+                        <Form.Label>Previous Reading</Form.Label>
+                        <Form.Input type="number" />
+                    </Form.Group>
+                    <Form.Group groupId="currentReading">
+                        <Form.Label>Current Reading</Form.Label>
+                        <Form.Input type="number" />
+                    </Form.Group>
+                    <Form.Group groupId="costsIncludeGST" className="form-check">
+                        <Form.Check />
+                        <Form.Label className="form-check-label">Costs Include GST</Form.Label>
+                    </Form.Group>
+                </div>
+
+                <FormSection title="Billing Periods" addTitle="Add period" onAdd={() => appendPeriod(emptyPeriod())}>
+                    {periodFields.map((field, index) => (
+                        <div key={field.id} className="period-entry">
+                            <div className="entry-row period-row">
+                                <PeriodDates form={form} periodIndex={index} />
+                                <span className="entry-action">
+                                    {periodFields.length > 1 && <DeleteIcon onClick={() => removePeriod(index)} />}
+                                </span>
+                            </div>
+                            <Usages control={form.control} periodIndex={index} />
+                            <ServiceCharges control={form.control} periodIndex={index} chargeTypes={chargeTypes} />
+                        </div>
+                    ))}
+                </FormSection>
+
+                <FormSection title="Discounts" addTitle="Add discount" onAdd={() => appendDiscount({ discountPercent: undefined, discountAmount: undefined, reason: "" })}>
+                    {discountFields.length === 0 && (
+                        <p className="empty-message">No discounts added.</p>
+                    )}
+                    {discountFields.map((field, index) => (
+                        <div key={field.id} className="entry-row discount-row">
+                            <Form.Group groupId={`discounts.${index}.discountPercent`}>
+                                <Form.Input type="number" min={0} max={100} placeholder="Discount %" />
+                            </Form.Group>
+                            <Form.Group groupId={`discounts.${index}.discountAmount`}>
+                                <Form.Input type="number" step={amountStep} placeholder="Amount" />
+                            </Form.Group>
+                            <Form.Group groupId={`discounts.${index}.reason`}>
+                                <Form.Input type="text" maxLength={255} placeholder="Reason" />
+                            </Form.Group>
+                            <span className="entry-action">
+                                <DeleteIcon onClick={() => removeDiscount(index)} />
+                            </span>
+                        </div>
+                    ))}
+                </FormSection>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="outline-primary" onClick={onCancel}>Cancel</Button>
+                <Button variant="primary" type="submit" disabled={pending}>{submitLabel}</Button>
+            </Modal.Footer>
+        </Form>
+    );
+};

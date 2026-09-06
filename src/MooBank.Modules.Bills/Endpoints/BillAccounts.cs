@@ -27,5 +27,9 @@ internal class BillAccounts : EndpointGroupBase
         builder.MapPostCreate<Commands.Bills.Create, Models.Bill>("/bills", "Get Bill".ToMachine(), b => b.Id, RequestBinding.Parameters)
             .WithNames("Create Bill")
             .RequireAuthorization(Policies.GetInstrumentOwnerPolicy());
+
+        builder.MapPatchCommand<Commands.Bills.Update, Models.Bill>("/bills/{id}", binding: RequestBinding.Parameters)
+            .WithNames("Update Bill")
+            .RequireAuthorization(Policies.GetInstrumentOwnerPolicy());
     }
 }

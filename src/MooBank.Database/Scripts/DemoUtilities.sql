@@ -250,11 +250,14 @@ CROSS APPLY (
     SELECT @SeweragePerDay, 3 WHERE b.Utility = 'W'                                            -- Sewerage Service
 ) c;
 
-INSERT INTO utilities.[Usage] (PeriodId, PricePerUnit, TotalUsage)
+-- Consumption, stated rather than left to default: the column is nullable until the follow-up
+-- tightens it, and a null read back through the non-nullable UsageType throws.
+INSERT INTO utilities.[Usage] (PeriodId, PricePerUnit, TotalUsage, UsageTypeId)
 SELECT
     p.PeriodId,
     CASE WHEN b.Utility = 'E' THEN @ElectricityPricePerUnit ELSE @WaterPricePerUnit END,
-    b.Usage
+    b.Usage,
+    1                                                        -- UsageType.Consumption
 FROM @PeriodMap p
 INNER JOIN @BillMap m ON m.BillId = p.BillId
 INNER JOIN @Bills b ON b.InvoiceNumber = m.InvoiceNumber;

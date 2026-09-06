@@ -725,6 +725,13 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "Period",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/BillPeriod"
+            }
           }
         ],
         "responses": {
@@ -938,6 +945,54 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Bills"
+        ],
+        "operationId": "update-bill",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBill"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bill"
+                }
+              }
+            }
           }
         }
       }
@@ -6123,6 +6178,13 @@
             ],
             "format": "date"
           },
+          "billingIntervalDays": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -6487,6 +6549,13 @@
           }
         }
       },
+      "BillPeriod": {
+        "enum": [
+          "Last",
+          "Previous",
+          null
+        ]
+      },
       "BreakdownReport": {
         "required": [
           "tags",
@@ -6770,6 +6839,7 @@
         "required": [
           "date",
           "accountName",
+          "usageType",
           "averagePricePerUnit",
           "totalUsage"
         ],
@@ -6781,6 +6851,9 @@
           },
           "accountName": {
             "type": "string"
+          },
+          "usageType": {
+            "$ref": "#/components/schemas/UsageType"
           },
           "averagePricePerUnit": {
             "type": "number",
@@ -8443,8 +8516,7 @@
         "required": [
           "periodStart",
           "periodEnd",
-          "pricePerUnit",
-          "totalUsage",
+          "usages",
           "serviceCharges"
         ],
         "type": "object",
@@ -8471,20 +8543,11 @@
             ],
             "format": "int32"
           },
-          "pricePerUnit": {
-            "type": "number",
-            "format": "double"
-          },
-          "totalUsage": {
-            "type": "number",
-            "format": "double"
-          },
-          "cost": {
-            "type": [
-              "null",
-              "number"
-            ],
-            "format": "double"
+          "usages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Usage"
+            }
           },
           "serviceCharges": {
             "type": "array",
@@ -10938,6 +11001,72 @@
           }
         }
       },
+      "UpdateBill": {
+        "required": [
+          "issueDate",
+          "periods",
+          "discounts"
+        ],
+        "type": "object",
+        "properties": {
+          "invoiceNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "issueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "currentReading": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "previousReading": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "total": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "costsIncludeGST": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "cost": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Period"
+            }
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Discount"
+            }
+          }
+        }
+      },
       "UpdateFamily": {
         "required": [
           "name"
@@ -11178,10 +11307,39 @@
           }
         }
       },
+      "Usage": {
+        "required": [
+          "usageType",
+          "pricePerUnit",
+          "totalUsage"
+        ],
+        "type": "object",
+        "properties": {
+          "usageType": {
+            "$ref": "#/components/schemas/UsageType"
+          },
+          "pricePerUnit": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalUsage": {
+            "type": "number",
+            "format": "double"
+          },
+          "cost": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "UsageDataPoint": {
         "required": [
           "date",
           "accountName",
+          "usageType",
           "usagePerDay"
         ],
         "type": "object",
@@ -11192,6 +11350,9 @@
           },
           "accountName": {
             "type": "string"
+          },
+          "usageType": {
+            "$ref": "#/components/schemas/UsageType"
           },
           "usagePerDay": {
             "type": "number",
@@ -11222,6 +11383,12 @@
             }
           }
         }
+      },
+      "UsageType": {
+        "enum": [
+          "Consumption",
+          "Export"
+        ]
       },
       "User": {
         "required": [

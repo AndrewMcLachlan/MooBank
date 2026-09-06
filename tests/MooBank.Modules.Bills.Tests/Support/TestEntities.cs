@@ -99,7 +99,8 @@ internal static class TestEntities
         decimal? pricePerUnit = null,
         int? totalUsage = null,
         int chargeTypeId = 1,
-        string chargeTypeName = "Supply")
+        string chargeTypeName = "Supply",
+        UsageType usageType = UsageType.Consumption)
     {
         var start = periodStart ?? DateTime.UtcNow.AddMonths(-1);
         var end = periodEnd ?? DateTime.UtcNow;
@@ -118,11 +119,15 @@ internal static class TestEntities
                     ChargePerDay = chargePerDay ?? Faker.Random.Decimal(0.5m, 2m),
                 },
             ],
-            Usage = new Usage
-            {
-                PricePerUnit = pricePerUnit ?? Faker.Random.Decimal(0.1m, 0.5m),
-                TotalUsage = totalUsage ?? Faker.Random.Int(100, 1000),
-            },
+            Usages =
+            [
+                new Usage
+                {
+                    UsageType = usageType,
+                    PricePerUnit = pricePerUnit ?? Faker.Random.Decimal(0.1m, 0.5m),
+                    TotalUsage = totalUsage ?? Faker.Random.Int(100, 1000),
+                },
+            ],
         };
     }
 
@@ -237,8 +242,7 @@ internal static class TestEntities
             PeriodStart = periodStart ?? DateTime.UtcNow.AddMonths(-1),
             PeriodEnd = periodEnd ?? DateTime.UtcNow,
             ServiceCharges = [new BillModels.ServiceCharge { ChargeTypeId = chargeTypeId, ChargePerDay = chargePerDay }],
-            PricePerUnit = pricePerUnit,
-            TotalUsage = totalUsage,
+            Usages = [new BillModels.Usage { UsageType = UsageType.Consumption, PricePerUnit = pricePerUnit, TotalUsage = totalUsage }],
         };
     }
 

@@ -39,6 +39,119 @@ public class GetByUtilityTypeTests
         Assert.Single(result.Results);
     }
 
+    /// <summary>
+    /// Given an account with several bills
+    /// When the last period is asked for by name
+    /// Then the most recently issued bill is returned, and only that one.
+    /// </summary>
+    /// <remarks>
+    /// Which days that period covers is something only the bills know. A caller that had to work it
+    /// out first would be fetching bills to decide what to ask for, and would lose the entry the
+    /// moment its own filter excluded everything.
+    /// </remarks>
+    [Fact]
+    public async Task Handle_LastPeriod_ReturnsTheMostRecentBill()
+    {
+        var result = await HandlePeriod(Asm.MooBank.Modules.Bills.Models.BillPeriod.Last);
+
+        Assert.Equal(1, result.Total);
+        Assert.Equal(new DateOnly(2026, 8, 25), result.Results.Single().IssueDate);
+    }
+
+    /// <summary>
+    /// Given an account with several bills
+    /// When the previous period is asked for
+    /// Then the bill before the most recent is returned.
+    /// </summary>
+    [Fact]
+    public async Task Handle_PreviousPeriod_ReturnsTheBillBeforeIt()
+    {
+        var result = await HandlePeriod(Asm.MooBank.Modules.Bills.Models.BillPeriod.Previous);
+
+        Assert.Equal(1, result.Total);
+        Assert.Equal(new DateOnly(2026, 7, 25), result.Results.Single().IssueDate);
+    }
+
+    /// <summary>
+    /// Given an account with a single bill
+    /// When the previous period is asked for
+    /// Then nothing is returned rather than the wrong bill.
+    /// </summary>
+    [Fact]
+    public async Task Handle_PreviousPeriodWithOneBill_ReturnsEmpty()
+    {
+        var account = TestEntities.CreateAccountWithOwner(
+            ownerId: _mocks.User.Id,
+            utilityType: UtilityType.Electricity,
+            bills: [TestEntities.CreateBill(id: 1, issueDate: new DateOnly(2026, 8, 25))]);
+
+        var handler = new GetByUtilityTypeHandler(TestEntities.CreateAccountQueryable(account), _mocks.User);
+
+        var result = await handler.Handle(new GetByUtilityType
+        {
+            UtilityType = UtilityType.Electricity,
+            PageSize = 10,
+            PageNumber = 1,
+            Period = Asm.MooBank.Modules.Bills.Models.BillPeriod.Previous,
+        }, TestContext.Current.CancellationToken);
+
+        Assert.Equal(0, result.Total);
+        Assert.Empty(result.Results);
+    }
+
+    /// <summary>
+    /// Given a named period and a date range that excludes it
+    /// When both are supplied
+    /// Then the named period wins: it is the request, not a narrowing of one.
+    /// </summary>
+    [Fact]
+    public async Task Handle_PeriodAndDates_TheNamedPeriodWins()
+    {
+        var account = TestEntities.CreateAccountWithOwner(
+            ownerId: _mocks.User.Id,
+            utilityType: UtilityType.Electricity,
+            bills: [
+                TestEntities.CreateBill(id: 1, issueDate: new DateOnly(2026, 8, 25)),
+                TestEntities.CreateBill(id: 2, issueDate: new DateOnly(2026, 7, 25)),
+            ]);
+
+        var handler = new GetByUtilityTypeHandler(TestEntities.CreateAccountQueryable(account), _mocks.User);
+
+        var result = await handler.Handle(new GetByUtilityType
+        {
+            UtilityType = UtilityType.Electricity,
+            PageSize = 10,
+            PageNumber = 1,
+            Period = Asm.MooBank.Modules.Bills.Models.BillPeriod.Last,
+            StartDate = new DateOnly(2020, 1, 1),
+            EndDate = new DateOnly(2020, 12, 31),
+        }, TestContext.Current.CancellationToken);
+
+        Assert.Equal(new DateOnly(2026, 8, 25), result.Results.Single().IssueDate);
+    }
+
+    private async Task<PagedResult<Asm.MooBank.Modules.Bills.Models.Bill>> HandlePeriod(Asm.MooBank.Modules.Bills.Models.BillPeriod period)
+    {
+        var account = TestEntities.CreateAccountWithOwner(
+            ownerId: _mocks.User.Id,
+            utilityType: UtilityType.Electricity,
+            bills: [
+                TestEntities.CreateBill(id: 1, issueDate: new DateOnly(2026, 6, 25)),
+                TestEntities.CreateBill(id: 2, issueDate: new DateOnly(2026, 8, 25)),
+                TestEntities.CreateBill(id: 3, issueDate: new DateOnly(2026, 7, 25)),
+            ]);
+
+        var handler = new GetByUtilityTypeHandler(TestEntities.CreateAccountQueryable(account), _mocks.User);
+
+        return await handler.Handle(new GetByUtilityType
+        {
+            UtilityType = UtilityType.Electricity,
+            PageSize = 10,
+            PageNumber = 1,
+            Period = period,
+        }, TestContext.Current.CancellationToken);
+    }
+
     [Fact]
     public async Task Handle_NonMatchingUtilityType_ReturnsEmpty()
     {

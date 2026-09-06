@@ -8,6 +8,7 @@ export type Account = {
     utilityType: UtilityType;
     firstBill?: null | string;
     latestBill?: null | string;
+    billingIntervalDays?: null | number;
     id: string;
     name: string;
     description?: null | string;
@@ -83,6 +84,8 @@ export type Bill = {
     periods: Array<Period>;
     discounts: Array<Discount>;
 };
+
+export type BillPeriod = 'Last' | 'Previous';
 
 export type BreakdownReport = {
     tags: Array<TagValue>;
@@ -164,6 +167,7 @@ export type Controller = 'Manual' | 'Virtual' | 'Import';
 export type CostDataPoint = {
     date: string;
     accountName: string;
+    usageType: UsageType;
     averagePricePerUnit: number;
     totalUsage: number;
 };
@@ -549,9 +553,7 @@ export type Period = {
     periodEnd: string;
     daysInclusive?: null | number;
     days?: null | number;
-    pricePerUnit: number;
-    totalUsage: number;
-    cost?: null | number;
+    usages: Array<Usage>;
     serviceCharges: Array<ServiceCharge>;
 };
 
@@ -1103,6 +1105,18 @@ export type UpdateBalance = {
     balance: number;
 };
 
+export type UpdateBill = {
+    invoiceNumber?: null | string;
+    issueDate: string;
+    currentReading?: null | number;
+    previousReading?: null | number;
+    total?: null | number;
+    costsIncludeGST?: null | boolean;
+    cost?: null | number;
+    periods: Array<Period>;
+    discounts: Array<Discount>;
+};
+
 export type UpdateFamily = {
     name: string;
 };
@@ -1164,9 +1178,17 @@ export type UpdateVirtualInstrument = {
     currentBalance: number;
 };
 
+export type Usage = {
+    usageType: UsageType;
+    pricePerUnit: number;
+    totalUsage: number;
+    cost?: null | number;
+};
+
 export type UsageDataPoint = {
     date: string;
     accountName: string;
+    usageType: UsageType;
     usagePerDay: number;
 };
 
@@ -1175,6 +1197,8 @@ export type UsageReport = {
     end: string;
     dataPoints: Array<UsageDataPoint>;
 };
+
+export type UsageType = 'Consumption' | 'Export';
 
 export type User = {
     id: string;
@@ -1608,6 +1632,7 @@ export type GetBillsByUtilityTypeData = {
         StartDate?: string;
         EndDate?: string;
         AccountId?: string;
+        Period?: BillPeriod;
     };
     url: '/bills/types/{utilityType}/bills';
 };
@@ -1726,6 +1751,25 @@ export type GetBillResponses = {
 };
 
 export type GetBillResponse = GetBillResponses[keyof GetBillResponses];
+
+export type UpdateBillData = {
+    body: UpdateBill;
+    path: {
+        instrumentId: string;
+        id: number;
+    };
+    query?: never;
+    url: '/bills/accounts/{instrumentId}/bills/{id}';
+};
+
+export type UpdateBillResponses = {
+    /**
+     * OK
+     */
+    200: Bill;
+};
+
+export type UpdateBillResponse = UpdateBillResponses[keyof UpdateBillResponses];
 
 export type GetCostPerUnitReportData = {
     body?: never;
