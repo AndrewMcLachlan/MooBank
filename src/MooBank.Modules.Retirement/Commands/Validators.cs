@@ -29,9 +29,6 @@ public class RetirementPlanBaseValidator : AbstractValidator<RetirementPlanBase>
 
         // Wide bounds deliberately: the point is to stop nonsense reaching the projection, not to
         // second-guess what someone wants to model.
-        RuleFor(x => x.ExpectedReturnRate)
-            .InclusiveBetween(-1m, 1m).WithMessage("Expected return must be between -100% and 100%");
-
         RuleFor(x => x.InflationRate)
             .InclusiveBetween(-1m, 1m).WithMessage("Inflation must be between -100% and 100%");
 
@@ -49,9 +46,6 @@ public class RetirementPlanBaseValidator : AbstractValidator<RetirementPlanBase>
 
         RuleFor(x => x.CashBucketYears)
             .InclusiveBetween(0, 40).WithMessage("Years switched to cash must be between 0 and 40");
-
-        RuleFor(x => x.CashReturnRate)
-            .InclusiveBetween(-1m, 1m).WithMessage("Cash return rate must be between -100% and 100%");
 
         RuleForEach(x => x.Members).SetValidator(new RetirementPlanMemberValidator());
     }
@@ -85,5 +79,19 @@ public class RetirementPlanMemberValidator : AbstractValidator<RetirementPlanMem
 
         RuleFor(x => x.GrowthStrategy)
             .IsInEnum().WithMessage("Unknown growth strategy");
+
+        // Custom means "this figure", so there has to be one. A named strategy carrying a rate is
+        // the same mistake from the other side: it would be stored and never read.
+        RuleFor(x => x.CustomReturnRate)
+            .NotNull().WithMessage("A custom strategy needs a return rate")
+            .When(x => x.GrowthStrategy == GrowthStrategy.Custom);
+
+        RuleFor(x => x.CustomReturnRate)
+            .Null().WithMessage("Only a custom strategy carries its own return rate")
+            .When(x => x.GrowthStrategy != GrowthStrategy.Custom);
+
+        RuleFor(x => x.CustomReturnRate)
+            .InclusiveBetween(-1m, 1m).WithMessage("The return rate must be between -100% and 100%")
+            .When(x => x.CustomReturnRate is not null);
     }
 }

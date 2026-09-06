@@ -42,14 +42,12 @@ vi.mock("../-retirement-hooks/useFamilyMembers", () => ({
 const plan = (): RetirementPlan => ({
     id: "66666666-6666-6666-6666-666666666666",
     name: "Retirement",
-    expectedReturnRate: 0.065,
     inflationRate: 0.025,
     superGuaranteeRate: 0.12,
     contributionsTaxRate: 0.15,
     lifeExpectancy: 85,
     targetRetirementIncome: 138_000,
     cashBucketYears: 2,
-    cashReturnRate: 0.03,
     createdUtc: "2026-01-01T00:00:00Z",
     updatedUtc: "2026-01-01T00:00:00Z",
     members: [

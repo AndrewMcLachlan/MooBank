@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Api.Tests.Infrastructure;
 using Asm.MooBank.Domain.Entities.Retirement;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +32,6 @@ public class RetirementAuthorizationTests(MooBankWebApplicationFactory factory)
                 {
                     Name = "Plan",
                     FamilyId = FamilyId,
-                    ExpectedReturnRate = 0.065m,
                     InflationRate = 0.025m,
                     SuperGuaranteeRate = 0.12m,
                     ContributionsTaxRate = 0.15m,

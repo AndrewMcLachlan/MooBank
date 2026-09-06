@@ -22,14 +22,12 @@ interface RetirementSettingsModalProps {
  */
 interface RetirementSettingsFormValues {
     name: string;
-    expectedReturnPercent: number;
     inflationPercent: number;
     superGuaranteePercent: number;
     contributionsTaxPercent: number;
     lifeExpectancy: number;
     targetRetirementIncome: number;
     cashBucketYears: number;
-    cashReturnPercent: number;
     members: {
         id?: string;
         userId: string;
@@ -46,14 +44,12 @@ interface RetirementSettingsFormValues {
 
 const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
     name: plan?.name ?? "",
-    expectedReturnPercent: toPercent(plan?.expectedReturnRate),
     inflationPercent: toPercent(plan?.inflationRate),
     superGuaranteePercent: toPercent(plan?.superGuaranteeRate),
     contributionsTaxPercent: toPercent(plan?.contributionsTaxRate),
     lifeExpectancy: plan?.lifeExpectancy ?? 90,
     targetRetirementIncome: plan?.targetRetirementIncome ?? 0,
     cashBucketYears: plan?.cashBucketYears ?? 2,
-    cashReturnPercent: toPercent(plan?.cashReturnRate),
     members: (plan?.members ?? []).map(m => ({
         id: m.id,
         userId: m.userId,
@@ -70,14 +66,12 @@ const toFormValues = (plan?: RetirementPlan): RetirementSettingsFormValues => ({
 
 const toRequest = (data: RetirementSettingsFormValues): SimpleRetirementPlan => ({
     name: data.name,
-    expectedReturnRate: fromPercent(data.expectedReturnPercent),
     inflationRate: fromPercent(data.inflationPercent),
     superGuaranteeRate: fromPercent(data.superGuaranteePercent),
     contributionsTaxRate: fromPercent(data.contributionsTaxPercent),
     lifeExpectancy: Number(data.lifeExpectancy) || 0,
     targetRetirementIncome: Number(data.targetRetirementIncome) || 0,
     cashBucketYears: Number(data.cashBucketYears) || 0,
-    cashReturnRate: fromPercent(data.cashReturnPercent),
     members: data.members.map(m => ({
         id: m.id,
         // Null rather than the empty string the select carries for "not chosen yet": an empty string
@@ -182,10 +176,6 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                     <fieldset className="retirement-fieldset">
                         <legend>Assumptions</legend>
                         <div className="retirement-assumptions">
-                            <Form.Group groupId="expectedReturnPercent">
-                                <Form.Label>Expected Return (% a year)</Form.Label>
-                                <Form.Input type="number" step="0.1" />
-                            </Form.Group>
                             <Form.Group groupId="inflationPercent">
                                 <Form.Label>Inflation (% a year)</Form.Label>
                                 <Form.Input type="number" step="0.1" />
@@ -215,10 +205,6 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                             <Form.Group groupId="cashBucketYears">
                                 <Form.Label>Years of Spending Held in Cash</Form.Label>
                                 <Form.Input type="number" step="1" min="0" />
-                            </Form.Group>
-                            <Form.Group groupId="cashReturnPercent">
-                                <Form.Label>Cash Return (% a year)</Form.Label>
-                                <Form.Input type="number" step="0.1" />
                             </Form.Group>
                         </div>
                     </fieldset>

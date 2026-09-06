@@ -24,7 +24,7 @@ internal class CreatePlanHandler(
 
         foreach (var member in request.Plan.Members)
         {
-            entity.AddMember(member.UserId!.Value, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.AnnualFees, member.InsurancePremium, member.InstrumentIds);
+            entity.AddMember(member.UserId!.Value, member.CurrentAge, member.CurrentIncome, member.SalarySacrifice, member.RetirementAge, member.GrowthStrategy, member.CustomReturnRate, member.AnnualFees, member.InsurancePremium, member.InstrumentIds);
         }
 
         retirementRepository.Add(entity);

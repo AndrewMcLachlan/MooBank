@@ -368,7 +368,13 @@ export type GroupOrder = {
     groupIds: Array<string>;
 };
 
-export type GrowthStrategy = 'Custom' | 'Conservative' | 'Balanced' | 'Growth' | 'HighGrowth';
+export type GrowthStrategy = 'Custom' | 'Conservative' | 'Balanced' | 'Growth' | 'HighGrowth' | 'Cash' | 'Moderate';
+
+export type GrowthStrategyRates = {
+    strategy: GrowthStrategy;
+    description: string;
+    rate?: null | number;
+};
 
 export type HexColour = unknown;
 
@@ -652,6 +658,7 @@ export type RetirementMemberOverride = {
     insurancePremium?: null | number;
     retirementAge?: null | number;
     growthStrategy?: null | GrowthStrategy;
+    customReturnRate?: null | number;
 };
 
 export type RetirementMemberYear = {
@@ -677,14 +684,12 @@ export type RetirementPlan = {
     createdUtc: string;
     updatedUtc: string;
     name: string;
-    expectedReturnRate: number;
     inflationRate: number;
     superGuaranteeRate: number;
     contributionsTaxRate: number;
     lifeExpectancy: number;
     targetRetirementIncome: number;
     cashBucketYears: number;
-    cashReturnRate: number;
     members: Array<RetirementPlanMember>;
 };
 
@@ -699,6 +704,7 @@ export type RetirementPlanMember = {
     annualFees: number;
     insurancePremium: number;
     growthStrategy: GrowthStrategy;
+    customReturnRate?: null | number;
     instrumentIds: Array<string>;
 };
 
@@ -710,14 +716,12 @@ export type RetirementProjection = {
 };
 
 export type RetirementProjectionOverrides = {
-    expectedReturnRate?: null | number;
     inflationRate?: null | number;
     superGuaranteeRate?: null | number;
     contributionsTaxRate?: null | number;
     lifeExpectancy?: null | number;
     targetRetirementIncome?: null | number;
     cashBucketYears?: null | number;
-    cashReturnRate?: null | number;
     members: Array<RetirementMemberOverride>;
     excludedMemberIds: Array<string>;
 };
@@ -763,6 +767,10 @@ export type Rule = {
     contains: string;
     description?: null | string;
     tags: Array<Tag>;
+};
+
+export type SaveGrowthStrategyRate = {
+    rate: GrowthStrategyRates;
 };
 
 export type SavePensionRates = {
@@ -848,14 +856,12 @@ export type SimplePlannedItem = {
 
 export type SimpleRetirementPlan = {
     name: string;
-    expectedReturnRate: number;
     inflationRate: number;
     superGuaranteeRate: number;
     contributionsTaxRate: number;
     lifeExpectancy: number;
     targetRetirementIncome: number;
     cashBucketYears: number;
-    cashReturnRate: number;
     members: Array<RetirementPlanMember>;
 };
 
@@ -3243,6 +3249,45 @@ export type SavePensionRatesResponses = {
 };
 
 export type SavePensionRatesResponse = SavePensionRatesResponses[keyof SavePensionRatesResponses];
+
+export type GrowthStrategyRatesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/reference-data/growth-strategy-rates';
+};
+
+export type GrowthStrategyRatesErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GrowthStrategyRatesResponses = {
+    /**
+     * OK
+     */
+    200: Array<GrowthStrategyRates>;
+};
+
+export type GrowthStrategyRatesResponse = GrowthStrategyRatesResponses[keyof GrowthStrategyRatesResponses];
+
+export type SaveGrowthStrategyRateData = {
+    body: SaveGrowthStrategyRate;
+    path?: never;
+    query?: never;
+    url: '/reference-data/growth-strategy-rates';
+};
+
+export type SaveGrowthStrategyRateResponses = {
+    /**
+     * OK
+     */
+    200: GrowthStrategyRates;
+};
+
+export type SaveGrowthStrategyRateResponse = SaveGrowthStrategyRateResponses[keyof SaveGrowthStrategyRateResponses];
 
 export type InOutReportData = {
     body?: never;

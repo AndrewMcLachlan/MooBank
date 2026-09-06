@@ -111,6 +111,8 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 
     public virtual DbSet<PensionRate> PensionRates { get; set; }
 
+    public virtual DbSet<GrowthStrategyRate> GrowthStrategyRates { get; set; }
+
     [AllowNull]
     public virtual DbSet<ForecastPlan> ForecastPlans { get; set; }
 

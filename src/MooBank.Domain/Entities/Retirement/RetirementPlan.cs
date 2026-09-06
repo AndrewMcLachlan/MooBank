@@ -42,12 +42,6 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     public required string Name { get; set; }
 
     /// <summary>
-    /// The assumed nominal return on superannuation balances, as a rate (0.065 is 6.5% a year).
-    /// </summary>
-    [Precision(6, 4)]
-    public decimal ExpectedReturnRate { get; set; }
-
-    /// <summary>
     /// The assumed rate of inflation, used to express projections in today's dollars.
     /// </summary>
     [Precision(6, 4)]
@@ -87,11 +81,6 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     [Column("PreRetirementSwitchYears")]
     public int CashBucketYears { get; set; }
 
-    /// <summary>
-    /// The nominal return earned on the part of a balance held in cash.
-    /// </summary>
-    public decimal CashReturnRate { get; set; }
-
     public DateTime CreatedUtc { get; set; }
 
     public DateTime UpdatedUtc { get; set; }
@@ -120,7 +109,7 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     /// Thrown when that person is already on the plan. Two members for one person would double
     /// their balance in the projection.
     /// </exception>
-    public RetirementPlanMember AddMember(Guid userId, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal annualFees, decimal insurancePremium, IEnumerable<Guid> instrumentIds)
+    public RetirementPlanMember AddMember(Guid userId, int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal? customReturnRate, decimal annualFees, decimal insurancePremium, IEnumerable<Guid> instrumentIds)
     {
         if (_members.Any(m => m.UserId == userId))
         {
@@ -136,6 +125,7 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
             SalarySacrifice = salarySacrifice,
             RetirementAge = retirementAge,
             GrowthStrategy = growthStrategy,
+            CustomReturnRate = customReturnRate,
             AnnualFees = annualFees,
             InsurancePremium = insurancePremium,
         };
@@ -162,21 +152,18 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
 
     private void ApplyAssumptions(RetirementAssumptions assumptions)
     {
-        ExpectedReturnRate = assumptions.ExpectedReturnRate;
         InflationRate = assumptions.InflationRate;
         SuperGuaranteeRate = assumptions.SuperGuaranteeRate;
         ContributionsTaxRate = assumptions.ContributionsTaxRate;
         LifeExpectancy = assumptions.LifeExpectancy;
         TargetRetirementIncome = assumptions.TargetRetirementIncome;
         CashBucketYears = assumptions.CashBucketYears;
-        CashReturnRate = assumptions.CashReturnRate;
     }
 }
 
 /// <summary>
 /// The economic assumptions a projection is run under.
 /// </summary>
-/// <param name="ExpectedReturnRate">Nominal return on the balance, as a rate.</param>
 /// <param name="InflationRate">Inflation, as a rate. Also used as wage growth.</param>
 /// <param name="SuperGuaranteeRate">Employer contribution rate applied to income.</param>
 /// <param name="ContributionsTaxRate">Tax withheld on contributions entering the fund.</param>
@@ -189,13 +176,10 @@ public class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
 /// How many years of spending each member keeps in cash, so a market fall never forces them to sell
 /// cheaply to live on. The rest of the balance stays invested.
 /// </param>
-/// <param name="CashReturnRate">The nominal return earned on the part held in cash.</param>
 public readonly record struct RetirementAssumptions(
-    decimal ExpectedReturnRate,
     decimal InflationRate,
     decimal SuperGuaranteeRate,
     decimal ContributionsTaxRate,
     int LifeExpectancy,
     decimal TargetRetirementIncome,
-    int CashBucketYears,
-    decimal CashReturnRate);
+    int CashBucketYears);

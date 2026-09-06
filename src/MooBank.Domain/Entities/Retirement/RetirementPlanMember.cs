@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Retirement;
 
@@ -66,15 +66,28 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
     [Column("GrowthStrategyId")]
     public GrowthStrategy GrowthStrategy { get; set; }
 
+    /// <summary>
+    /// The nominal return this member's balance is assumed to earn, when they are on
+    /// <see cref="GrowthStrategy.Custom"/>.
+    /// </summary>
+    /// <remarks>
+    /// Held here rather than looked up, which is the whole difference between Custom and a named
+    /// strategy: a named one follows the reference rate and moves when it is corrected, while a
+    /// custom one is the figure this person chose and stays where they put it.
+    /// </remarks>
+    [Precision(6, 4)]
+    public decimal? CustomReturnRate { get; set; }
+
     public IReadOnlyCollection<RetirementPlanMemberAccount> Accounts { get => _accounts; internal init => _accounts = [.. value]; }
 
-    public void Update(int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal annualFees, decimal insurancePremium)
+    public void Update(int currentAge, decimal currentIncome, decimal salarySacrifice, int retirementAge, GrowthStrategy growthStrategy, decimal? customReturnRate, decimal annualFees, decimal insurancePremium)
     {
         CurrentAge = currentAge;
         CurrentIncome = currentIncome;
         SalarySacrifice = salarySacrifice;
         RetirementAge = retirementAge;
         GrowthStrategy = growthStrategy;
+        CustomReturnRate = customReturnRate;
         AnnualFees = annualFees;
         InsurancePremium = insurancePremium;
     }

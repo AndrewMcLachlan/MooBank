@@ -8,13 +8,6 @@ public record RetirementPlanBase
     public required string Name { get; init; }
 
     /// <summary>
-    /// Assumed nominal return on the balance, as a rate (0.065 is 6.5% a year). Applies to members
-    /// whose growth strategy is <see cref="GrowthStrategy.Custom"/>; the named strategies carry
-    /// their own assumed return.
-    /// </summary>
-    public decimal ExpectedReturnRate { get; init; }
-
-    /// <summary>
     /// Assumed inflation, as a rate. Also stands in for wage growth.
     /// </summary>
     public decimal InflationRate { get; init; }
@@ -44,11 +37,6 @@ public record RetirementPlanBase
     /// How many years before retiring a member's balance moves to cash. Nought turns the glide off.
     /// </summary>
     public int CashBucketYears { get; init; }
-
-    /// <summary>
-    /// The nominal return a balance earns once it has moved to cash.
-    /// </summary>
-    public decimal CashReturnRate { get; init; }
 
     public IEnumerable<RetirementPlanMember> Members { get; init; } = [];
 }
@@ -116,6 +104,13 @@ public sealed record RetirementPlanMember
     public decimal InsurancePremium { get; init; }
 
     public GrowthStrategy GrowthStrategy { get; init; }
+
+    /// <summary>
+    /// The nominal return to run this member at, set only when their strategy is
+    /// <see cref="GrowthStrategy.Custom"/>. A named strategy takes its rate from reference data,
+    /// so correcting that rate reaches every plan using it.
+    /// </summary>
+    public decimal? CustomReturnRate { get; init; }
 
     /// <summary>
     /// The superannuation instruments belonging to this member.

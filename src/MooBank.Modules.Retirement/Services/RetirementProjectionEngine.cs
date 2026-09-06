@@ -43,38 +43,16 @@ namespace Asm.MooBank.Modules.Retirement.Services;
 /// </remarks>
 internal class RetirementProjectionEngine : IRetirementProjectionEngine
 {
-    /// <summary>
-    /// Assumed long-run nominal returns for the named investment options.
-    /// </summary>
-    /// <remarks>
-    /// Illustrative figures in the range Australian funds publish for options of each risk level,
-    /// not a quote from any particular fund. A member set to <see cref="GrowthStrategy.Custom"/>
-    /// uses the rate on the plan instead.
-    /// </remarks>
-    private static readonly Dictionary<GrowthStrategy, decimal> StrategyReturns = new()
-    {
-        [GrowthStrategy.Conservative] = 0.045m,
-        [GrowthStrategy.Balanced] = 0.060m,
-        [GrowthStrategy.Growth] = 0.070m,
-        [GrowthStrategy.HighGrowth] = 0.080m,
-    };
-
-    /// <summary>
-    /// The assumed nominal return for a strategy, falling back to the plan's own rate.
-    /// </summary>
-    internal static decimal ReturnRateFor(GrowthStrategy strategy, decimal planRate) =>
-        StrategyReturns.TryGetValue(strategy, out var rate) ? rate : planRate;
-
-    public RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, ProjectionOverrides? overrides = null)
+    public RetirementProjection Calculate(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, ProjectionOverrides? overrides = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
 
-        var projection = Project(plan, today, pensionRates, overrides);
+        var projection = Project(plan, today, pensionRates, strategyRates, overrides);
 
         // Nobody to project is nobody to pay: with no members there is no drawdown, so no target is
         // ever unaffordable and the search would run to its own ceiling.
         var sustainable = projection.Members.Any()
-            ? SolveSustainableIncome(plan, today, pensionRates, overrides)
+            ? SolveSustainableIncome(plan, today, pensionRates, strategyRates, overrides)
             : 0m;
 
         return projection with
@@ -108,7 +86,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
     /// Each pass is a few dozen years of arithmetic over a handful of people, so the whole solve costs
     /// far less than the request that carried it.
     /// </remarks>
-    private decimal SolveSustainableIncome(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, ProjectionOverrides? overrides)
+    private decimal SolveSustainableIncome(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, ProjectionOverrides? overrides)
     {
         decimal affordable = 0m, tooMuch = 1_000_000m;
 
@@ -119,14 +97,14 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 ? new ProjectionOverrides { TargetRetirementIncome = candidate }
                 : overrides with { TargetRetirementIncome = candidate };
 
-            if (Project(plan, today, pensionRates, trial).Summary.MoneyRunsOutYear is null) affordable = candidate;
+            if (Project(plan, today, pensionRates, strategyRates, trial).Summary.MoneyRunsOutYear is null) affordable = candidate;
             else tooMuch = candidate;
         }
 
         return Math.Floor(affordable / 100m) * 100m;
     }
 
-    private RetirementProjection Project(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, ProjectionOverrides? overrides)
+    private RetirementProjection Project(DomainEntities.RetirementPlan plan, DateOnly today, AgePensionRates pensionRates, GrowthStrategyRates strategyRates, ProjectionOverrides? overrides)
     {
 
         var assumptions = ResolvedAssumptions.From(plan, overrides);
@@ -142,12 +120,12 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
 
         var members = included
             .Select(m => ResolvedMember.From(m, overrides, CurrentBalance(m)))
-            .Select(m => new MemberState(m, assumptions))
+            .Select(m => new MemberState(m, assumptions, strategyRates))
             .ToList();
 
         if (members.Count == 0)
         {
-            return EmptyProjection(plan, assumptions, startYear);
+            return EmptyProjection(plan, assumptions, strategyRates, startYear);
         }
 
         var yearsToAllRetired = members.Max(m => m.YearsToRetirement);
@@ -313,8 +291,8 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
                 BalanceAtRetirementInTodaysDollars = retirementYear.ClosingBalanceInTodaysDollars,
                 RetirementYear = startYear + yearsToAllRetired,
                 RetirementAge = retirementAge,
-                RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
-                DrawdownRealReturnRate = RealReturnRate(assumptions.CashReturnRate, assumptions.InflationRate),
+                RealReturnRate = RealReturnRate(WeightedReturnRate(members), assumptions.InflationRate),
+                DrawdownRealReturnRate = RealReturnRate(strategyRates.Cash, assumptions.InflationRate),
                 TotalCosts = years.Sum(y => y.Costs),
                 FinalBalance = finalYear.ClosingBalance,
                 FinalBalanceInTodaysDollars = finalYear.ClosingBalanceInTodaysDollars,
@@ -382,7 +360,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
               .OfType<TransactionInstrument>()
               .Sum(i => i.Balance);
 
-    private static RetirementProjection EmptyProjection(DomainEntities.RetirementPlan plan, ResolvedAssumptions assumptions, int startYear) =>
+    private static RetirementProjection EmptyProjection(DomainEntities.RetirementPlan plan, ResolvedAssumptions assumptions, GrowthStrategyRates strategyRates, int startYear) =>
         new()
         {
             PlanId = plan.Id,
@@ -391,10 +369,32 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             Summary = new RetirementProjectionSummary
             {
                 RetirementYear = startYear,
-                RealReturnRate = RealReturnRate(assumptions.ExpectedReturnRate, assumptions.InflationRate),
-                DrawdownRealReturnRate = RealReturnRate(assumptions.CashReturnRate, assumptions.InflationRate),
+                RealReturnRate = 0m,
+                DrawdownRealReturnRate = RealReturnRate(strategyRates.Cash, assumptions.InflationRate),
             },
         };
+
+    /// <summary>
+    /// The household's return, as one figure: each member's rate weighted by what they hold.
+    /// </summary>
+    /// <remarks>
+    /// A household of one Growth member and one Balanced member earns neither rate, and reporting
+    /// either would describe a portfolio nobody holds. Weighting by balance is what makes the
+    /// headline agree with the projection beside it.
+    ///
+    /// With nothing invested there is no weight to go on, so the plain average answers what the
+    /// household would earn if it held anything.
+    /// </remarks>
+    private static decimal WeightedReturnRate(IReadOnlyCollection<MemberState> members)
+    {
+        if (members.Count == 0) return 0m;
+
+        var total = members.Sum(m => m.StartingBalance);
+
+        return total > 0m
+            ? members.Sum(m => m.StartingBalance * m.ReturnRate) / total
+            : members.Average(m => m.ReturnRate);
+    }
 
     private static decimal Round(decimal value) => Math.Round(value, 2, MidpointRounding.AwayFromZero);
 
@@ -434,7 +434,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
     {
         private readonly ResolvedMember _member;
 
-        public MemberState(ResolvedMember member, ResolvedAssumptions assumptions)
+        public MemberState(ResolvedMember member, ResolvedAssumptions assumptions, GrowthStrategyRates strategyRates)
         {
             _member = member;
             StartingBalance = member.Balance;
@@ -442,7 +442,8 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
             BalanceAtRetirement = member.Balance;
             YearsToRetirement = Math.Max(0, member.RetirementAge - member.CurrentAge);
             YearsToLifeExpectancy = Math.Max(0, assumptions.LifeExpectancy - member.CurrentAge);
-            ReturnRate = ReturnRateFor(member.GrowthStrategy, assumptions.ExpectedReturnRate);
+            ReturnRate = strategyRates.For(member.GrowthStrategy, member.CustomReturnRate);
+            CashReturnRate = strategyRates.Cash;
         }
 
         public int YearsToRetirement { get; }
@@ -458,6 +459,11 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
         /// which they may set independently of the rest of the household.
         /// </summary>
         public decimal ReturnRate { get; }
+
+        /// <summary>
+        /// The nominal return on the part of the balance sitting in the cash bucket.
+        /// </summary>
+        public decimal CashReturnRate { get; }
 
         /// <summary>
         /// The age this member reaches in the given projection year.
@@ -500,7 +506,7 @@ internal class RetirementProjectionEngine : IRetirementProjectionEngine
 
             var cash = CashHeld(yearOffset, balance, expectedDrawdown, assumptions);
 
-            return ((cash * assumptions.CashReturnRate) + ((balance - cash) * ReturnRate)) / balance;
+            return ((cash * CashReturnRate) + ((balance - cash) * ReturnRate)) / balance;
         }
 
         /// <summary>

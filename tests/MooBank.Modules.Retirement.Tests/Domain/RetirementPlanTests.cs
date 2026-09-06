@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.Retirement;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
 
@@ -10,7 +10,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Domain;
 [Trait("Category", "Unit")]
 public class RetirementPlanTests
 {
-    private static readonly RetirementAssumptions Assumptions = new(0.065m, 0.025m, 0.12m, 0.15m, 90, 60_000m, 2, 0.03m);
+    private static readonly RetirementAssumptions Assumptions = new(0.025m, 0.12m, 0.15m, 90, 60_000m, 2);
 
     /// <summary>
     /// Given a family and a set of assumptions
@@ -29,7 +29,6 @@ public class RetirementPlanTests
         // Assert
         Assert.Equal(familyId, plan.FamilyId);
         Assert.Equal("Retirement", plan.Name);
-        Assert.Equal(0.065m, plan.ExpectedReturnRate);
         Assert.Equal(0.025m, plan.InflationRate);
         Assert.Equal(0.12m, plan.SuperGuaranteeRate);
         Assert.Equal(0.15m, plan.ContributionsTaxRate);
@@ -51,7 +50,7 @@ public class RetirementPlanTests
         var instrumentId = Guid.NewGuid();
 
         // Act
-        var member = plan.AddMember(Guid.NewGuid(), 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, 0m, 0m, [instrumentId]);
+        var member = plan.AddMember(Guid.NewGuid(), 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, null, 0m, 0m, [instrumentId]);
 
         // Assert
         Assert.Equal(plan.Id, member.RetirementPlanId);
@@ -69,7 +68,7 @@ public class RetirementPlanTests
     {
         // Arrange
         var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
-        var member = plan.AddMember(Guid.NewGuid(), 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, 0m, 0m, []);
+        var member = plan.AddMember(Guid.NewGuid(), 45, 100_000m, 0m, 65, GrowthStrategy.Balanced, null, 0m, 0m, []);
 
         // Act
         plan.RemoveMember(member.Id);
@@ -105,15 +104,13 @@ public class RetirementPlanTests
         var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
 
         // Act
-        plan.Update("Renamed", new RetirementAssumptions(0.08m, 0.03m, 0.11m, 0.15m, 95, 70_000m, 5, 0.035m));
+        plan.Update("Renamed", new RetirementAssumptions(0.03m, 0.11m, 0.15m, 95, 70_000m, 5));
 
         // Assert
         Assert.Equal("Renamed", plan.Name);
-        Assert.Equal(0.08m, plan.ExpectedReturnRate);
         Assert.Equal(95, plan.LifeExpectancy);
         Assert.Equal(70_000m, plan.TargetRetirementIncome);
         Assert.Equal(5, plan.CashBucketYears);
-        Assert.Equal(0.035m, plan.CashReturnRate);
     }
 
     /// <summary>
@@ -147,7 +144,7 @@ public class RetirementPlanTests
         var member = TestEntities.CreateMember(name: "Self", currentAge: 45, currentIncome: 100_000m, salarySacrifice: 0m, retirementAge: 65, growthStrategy: GrowthStrategy.Balanced);
 
         // Act
-        member.Update(50, 130_000m, 12_000m, 62, GrowthStrategy.Conservative, 250m, 300m);
+        member.Update(50, 130_000m, 12_000m, 62, GrowthStrategy.Conservative, null, 250m, 300m);
 
         // Assert
         Assert.Equal(50, member.CurrentAge);

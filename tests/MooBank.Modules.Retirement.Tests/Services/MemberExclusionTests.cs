@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Modules.Retirement.Models;
 using Asm.MooBank.Modules.Retirement.Services;
 using Asm.MooBank.Modules.Retirement.Tests.Support;
@@ -127,11 +127,11 @@ public class MemberExclusionTests
         // Arrange: retired, and inside both free areas so the full rate applies either way.
         var self = TestEntities.CreateMember(name: "Self", currentAge: 67, retirementAge: 67, currentIncome: 0m, accountBalances: [150_000m]);
         var spouse = TestEntities.CreateMember(name: "Spouse", currentAge: 67, retirementAge: 67, currentIncome: 0m, accountBalances: [100_000m]);
-        var plan = TestEntities.CreatePlan(inflationRate: 0m, cashReturnRate: 0m, targetRetirementIncome: 60_000m, members: [self, spouse]);
+        var plan = TestEntities.CreatePlan(inflationRate: 0m, targetRetirementIncome: 60_000m, members: [self, spouse]);
 
         // Act
-        var asCouple = _engine.Calculate(plan, Today, Rates).Years.ElementAt(1);
-        var asSingle = _engine.Calculate(plan, Today, Rates, new ProjectionOverrides { ExcludedMemberIds = [spouse.Id] }).Years.ElementAt(1);
+        var asCouple = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan)).Years.ElementAt(1);
+        var asSingle = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), new ProjectionOverrides { ExcludedMemberIds = [spouse.Id] }).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(45_080m, asCouple.Pension);

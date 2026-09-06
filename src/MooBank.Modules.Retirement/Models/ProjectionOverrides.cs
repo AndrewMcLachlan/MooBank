@@ -15,8 +15,6 @@ namespace Asm.MooBank.Modules.Retirement.Models;
 [DisplayName("RetirementProjectionOverrides")]
 public sealed record ProjectionOverrides
 {
-    public decimal? ExpectedReturnRate { get; init; }
-
     public decimal? InflationRate { get; init; }
 
     public decimal? SuperGuaranteeRate { get; init; }
@@ -28,8 +26,6 @@ public sealed record ProjectionOverrides
     public decimal? TargetRetirementIncome { get; init; }
 
     public int? CashBucketYears { get; init; }
-
-    public decimal? CashReturnRate { get; init; }
 
     public IEnumerable<MemberOverride> Members { get; init; } = [];
 
@@ -74,4 +70,10 @@ public sealed record MemberOverride
     public int? RetirementAge { get; init; }
 
     public GrowthStrategy? GrowthStrategy { get; init; }
+
+    /// <summary>
+    /// The rate to run this member at, which is only meaningful alongside
+    /// <see cref="GrowthStrategy.Custom"/>.
+    /// </summary>
+    public decimal? CustomReturnRate { get; init; }
 }

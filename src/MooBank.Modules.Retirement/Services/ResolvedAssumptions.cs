@@ -1,4 +1,4 @@
-using Asm.MooBank.Modules.Retirement.Models;
+﻿using Asm.MooBank.Modules.Retirement.Models;
 using DomainEntities = Asm.MooBank.Domain.Entities.Retirement;
 
 namespace Asm.MooBank.Modules.Retirement.Services;
@@ -13,8 +13,6 @@ namespace Asm.MooBank.Modules.Retirement.Services;
 /// </remarks>
 internal sealed record ResolvedAssumptions
 {
-    public required decimal ExpectedReturnRate { get; init; }
-
     public required decimal InflationRate { get; init; }
 
     public required decimal SuperGuaranteeRate { get; init; }
@@ -27,19 +25,15 @@ internal sealed record ResolvedAssumptions
 
     public required int CashBucketYears { get; init; }
 
-    public required decimal CashReturnRate { get; init; }
-
     public static ResolvedAssumptions From(DomainEntities.RetirementPlan plan, ProjectionOverrides? overrides) =>
         new()
         {
-            ExpectedReturnRate = overrides?.ExpectedReturnRate ?? plan.ExpectedReturnRate,
             InflationRate = overrides?.InflationRate ?? plan.InflationRate,
             SuperGuaranteeRate = overrides?.SuperGuaranteeRate ?? plan.SuperGuaranteeRate,
             ContributionsTaxRate = overrides?.ContributionsTaxRate ?? plan.ContributionsTaxRate,
             LifeExpectancy = overrides?.LifeExpectancy ?? plan.LifeExpectancy,
             TargetRetirementIncome = overrides?.TargetRetirementIncome ?? plan.TargetRetirementIncome,
             CashBucketYears = overrides?.CashBucketYears ?? plan.CashBucketYears,
-            CashReturnRate = overrides?.CashReturnRate ?? plan.CashReturnRate,
         };
 }
 
@@ -66,6 +60,11 @@ internal sealed record ResolvedMember
 
     public required GrowthStrategy GrowthStrategy { get; init; }
 
+    /// <summary>
+    /// The rate behind <see cref="GrowthStrategy.Custom"/>, and nothing at all otherwise.
+    /// </summary>
+    public required decimal? CustomReturnRate { get; init; }
+
     public required decimal Balance { get; init; }
 
     public static ResolvedMember From(DomainEntities.RetirementPlanMember member, ProjectionOverrides? overrides, decimal balance)
@@ -84,6 +83,11 @@ internal sealed record ResolvedMember
             InsurancePremium = over?.InsurancePremium ?? member.InsurancePremium,
             RetirementAge = over?.RetirementAge ?? member.RetirementAge,
             GrowthStrategy = over?.GrowthStrategy ?? member.GrowthStrategy,
+            // Moving the rate is what puts a member on Custom, so the two arrive together and
+            // an override of one must not be read beside the other's saved value.
+            CustomReturnRate = over is not null && (over.GrowthStrategy is not null || over.CustomReturnRate is not null)
+                ? over.CustomReturnRate
+                : member.CustomReturnRate,
             Balance = balance,
         };
     }
