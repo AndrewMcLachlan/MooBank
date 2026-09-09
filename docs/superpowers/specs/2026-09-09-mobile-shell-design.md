@@ -53,7 +53,9 @@ Savings" wrapped to three lines in the reported bug. It ellipsises rather than w
 never grow past its own height — the failure mode that produced the overlap.
 
 The first band goes entirely on mobile. It carries a logo, a search box that the mobile header
-already renders empty, and a user menu that belongs in the drawer.
+already renders empty, and a user menu that belongs in the drawer — so the drawer has to take that
+menu in the same change. Profile, settings, the theme toggle and sign out move to a section below
+the navigation; dropping the band without moving them would put sign out out of reach on a phone.
 
 ## Three defects that force this
 
@@ -86,24 +88,46 @@ cannot re-render an opaque node as a menu item, so an overflow menu is impossibl
 knowing what an action *is*.
 
 ```ts
-export interface PageAction {
+interface PageActionBase {
+    id: string;
     label: string;
     icon?: React.ReactNode;
-    onClick: () => void;
-    /** Present makes it a toggle; the menu shows a tick and the desktop header a switch. */
-    checked?: boolean;
-    /** "read" sorts above the separator, "write" below. Defaults to "read". */
+    /** "read" sorts above the menu's separator, "write" below. Defaults to "read". */
     group?: "read" | "write";
     disabled?: boolean;
     variant?: "primary" | "secondary";
 }
 
+interface PageCommand extends PageActionBase {
+    onClick: () => void;
+    /** Present makes it a toggle; the menu shows a tick and the desktop header a switch. */
+    checked?: boolean;
+    to?: never;
+}
+
+interface PageLink extends PageActionBase {
+    to: string;
+    onClick?: never;
+    checked?: never;
+}
+
+export type PageAction = PageCommand | PageLink;
+
 export interface PageProps {
     actions?: PageAction[];
-    /** Escape hatch for controls that are not a label and a handler. */
+    /** Escape hatch for controls that are not a label and a destination or handler. */
     customActions?: React.ReactNode[];
 }
 ```
+
+A union rather than one shape with optional everything, because a third of the call sites are
+`IconLinkButton` with a `to` rather than a handler — adding a family, an institution, a group. Those
+have to stay anchors: collapsing them to `onClick: () => navigate(...)` costs middle-click,
+open-in-new-tab and copy-link, and nothing is gained by pretending navigation is a command. The
+union makes the two kinds impossible to confuse and gives each renderer an unambiguous test.
+
+`id` is required rather than derived from the label: it is the React key, and the desktop switch
+needs an `id` to pair its input with its label.
 
 This is a **breaking change**: `actions` no longer accepts nodes. That is deliberate. An additive
 union would leave a silent second-class path where a bare node works on desktop and vanishes on
@@ -145,8 +169,8 @@ Between them, a tablet gets drawer navigation with desktop content, which is cor
 is ample room for a full card and inline filters. Today's arrangement is roughly this by accident,
 which is why the two numbers were never noticed disagreeing.
 
-moo-ds exports both as tokens and a `useBreakpoint` hook reading the same values its CSS uses, so a
-consuming app never writes a pixel figure again.
+moo-ds exports both as tokens and a `useIsAtLeast(breakpoint)` hook reading the same values its CSS
+uses, so a consuming app never writes a pixel figure again.
 
 ## The filter shell
 
@@ -252,15 +276,18 @@ Basis `0` with no minimum, so once the row wraps `#filter-tags` (basis 175px) an
 (`1 1 12rem`). This still matters after the sheet lands, because `MiniFilterPanel` remains the
 desktop compact filter.
 
-**A hook with one call site.** `useIsDesktop` is used in exactly one place — `Transactions.tsx`,
-to choose between `<TransactionList />` and `<TransactionList compact />`. But `TransactionList`
-already carries `d-md-*` classes that do the same switch in CSS, so the variant is decided twice by
-two mechanisms that could disagree. The hook call goes; the classes stay.
+**The variant is decided twice.** `useIsDesktop` has exactly one call site — `Transactions.tsx`,
+choosing between `<TransactionList />` and `<TransactionList compact />` — and `TransactionList`
+then labels whichever one it rendered `d-none d-md-table` or `d-table d-md-none`.
 
-That leaves `useIsDesktop` and its tests unused, and they should move upstream rather than linger:
-moo-ds's `useBreakpoint` replaces them, and `src/hooks/useMediaQuery.ts` is deleted with its test
-file. `useMediaQuery` itself is worth keeping upstream — it is a general utility, and moo-ds is
-where a general utility belongs once a second app needs it.
+The classes are the redundant half, not the hook. `compact` changes the markup — `colSpan`, and
+which cells carry `hidden` — and only one table is ever rendered, so CSS cannot make that choice;
+all the classes can do is hide the one table that exists at a width where the hook has already
+picked the other. Two mechanisms with the same job and no way to disagree usefully. The classes go.
+
+The hook stays but stops carrying its own number: `useIsDesktop` is replaced by moo-ds's
+`useIsAtLeast("md")`, and `src/hooks/useMediaQuery.ts` is deleted with its test file. `useMediaQuery`
+is a general utility and belongs upstream now that a second app needs it.
 
 ## Testing
 
