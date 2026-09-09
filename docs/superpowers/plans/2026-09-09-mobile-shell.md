@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-09-mobile-shell-design.md`
 
-**Depends on:** `K:/Dev/Libraries/MooApp/docs/superpowers/plans/2026-09-09-mobile-shell.md` — all nine tasks merged and published. Take the published version from that PR before starting.
+**Depends on:** `K:/Dev/Libraries/MooApp/docs/superpowers/plans/2026-09-09-mobile-shell.md` — all ten tasks merged and published. Take the published version from that PR before starting.
 
 ## Global Constraints
 
