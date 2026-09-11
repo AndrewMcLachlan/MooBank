@@ -54,8 +54,13 @@ never grow past its own height — the failure mode that produced the overlap.
 
 The first band goes entirely on mobile. It carries a logo, a search box that the mobile header
 already renders empty, and a user menu that belongs in the drawer — so the drawer has to take that
-menu in the same change. Profile, settings, the theme toggle and sign out move to a section below
-the navigation; dropping the band without moving them would put sign out out of reach on a phone.
+menu in the same change, or sign out becomes unreachable on a phone.
+
+The drawer opens with an identity strip: the avatar, the signed-in name, and the app's own header
+icons, with profile, theme and sign out behind the name in a menu. The icons have to sit in that
+strip rather than in the row list beneath it. They are icon-only controls carrying their meaning in
+an `aria-label`, which is legible in a compact horizontal strip and reads as a stray mark in a
+column of labelled rows.
 
 ## Three defects that force this
 
@@ -152,6 +157,27 @@ the third menu in the codebase being hand-rolled again.
 `ActionMenu` groups by `PageAction.group` with a divider between, so reading toggles never sit
 adjacent to a destructive or writing action and cannot be hit by mistake.
 
+## Touch targets cannot be rem
+
+moo-ds sets the root font-size in `_reset.css`:
+
+```css
+html { font-size: 14px; }
+@media (max-width: 767px), (max-device-width: 767px) {
+    html, html.compact { font-size: 12px; }
+}
+```
+
+The scale steps **down** below 768px — on the devices where a finger, not a pointer, does the
+tapping. So every rem-sized control shrinks by a quarter at exactly the wrong moment. Measured in
+the browser before this was fixed, the overflow toggle was **27px** against its intended 36px, and
+the hamburger 24px; a 44px minimum was never being met anywhere.
+
+Interactive chrome therefore takes `var(--touch-target)` (44px, declared in px) rather than a rem
+value: the overflow toggle, the identity strip's controls, the Filters button, and the chip's
+dismiss control, whose hit area is widened by a pseudo-element so the chip itself stays small. Type
+still scales with the system; only hit areas are pinned.
+
 ## Two breakpoints, both named
 
 "Mobile" currently means four different widths: 992px in the layout (`d-lg-*`), 768px in MooBank's
@@ -234,7 +260,8 @@ Below `md`, `FilterPanel` and `MiniFilterPanel` are both replaced by moo-ds's `F
 - a chip per active filter, individually dismissible, with a Clear.
 
 Tapping Filters opens a bottom `Drawer` holding description, tags, type as a segmented control, and
-the untagged / exclude-offset / show-net switches at touch size. Its primary button carries the
+the untagged / exclude-offset / show-net switches at touch size — `var(--touch-target)`, not a rem
+value. See *Touch targets cannot be rem*. Its primary button carries the
 result count — "Show 41 results" — so the effect is known before committing. That count is the
 existing `useTransactions` query against the pending filter.
 
