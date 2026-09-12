@@ -5,7 +5,16 @@
     padding-bottom: 1rem;
 }
 
-/* A finger, not a pointer. */
-.tx-filter-sheet .offcanvas-body :is(input, select, button) {
+/* A finger, not a pointer -- but a switch draws itself from its own box, so
+   stretching the control turns it into a blob. The row carries the height
+   instead. */
+.tx-filter-sheet .offcanvas-body :is(input:not(.form-check-input), select, button) {
     min-height: var(--touch-target);
+}
+
+.tx-filter-sheet .offcanvas-body .form-check {
+    display: flex;
+    align-items: center;
+    min-height: var(--touch-target);
+    margin: 0;
 }

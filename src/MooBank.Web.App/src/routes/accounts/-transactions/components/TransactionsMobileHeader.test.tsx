@@ -12,6 +12,7 @@ vi.mock("../hooks/useTransactionPeriodStats", () => ({
 
 import { TransactionsMobileHeader } from "./TransactionsMobileHeader";
 import { AccountProvider } from "components";
+import { LinkProvider } from "@andrewmclachlan/moo-ds";
 
 const account = {
     id: "acc-1",
@@ -20,11 +21,18 @@ const account = {
     currentBalance: 12480.22,
 } as LogicalAccount;
 
+// Section resolves links through LinkProvider, which the app supplies and a
+// bare render does not.
 const renderHeader = () =>
     render(
-        <AccountProvider account={account}>
-            <TransactionsMobileHeader />
-        </AccountProvider>,
+        <LinkProvider
+            LinkComponent={({ to, children, ...rest }: any) => <a href={to} {...rest}>{children}</a>}
+            NavLinkComponent={({ to, children, ...rest }: any) => <a href={to} {...rest}>{children}</a>}
+        >
+            <AccountProvider account={account}>
+                <TransactionsMobileHeader />
+            </AccountProvider>
+        </LinkProvider>,
     );
 
 describe("TransactionsMobileHeader", () => {

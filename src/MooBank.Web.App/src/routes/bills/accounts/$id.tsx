@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { Page, useIdParams } from "@andrewmclachlan/moo-app";
+import { useIdParams } from "@andrewmclachlan/moo-app";
 import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import type { Bill } from "api/types.gen";
 import { useBillAccount } from "../-hooks/useBillAccount";
@@ -12,6 +12,7 @@ import { AddBill } from "../-components/AddBill";
 import { BillDetails } from "../-components/BillDetails";
 import { BillRow } from "../-components/BillRow";
 import { EditBill } from "../-components/EditBill";
+import { BillsPage } from "../-components/BillsPage";
 
 export const Route = createFileRoute("/bills/accounts/$id")({
     component: Bills,
@@ -41,7 +42,7 @@ function Bills() {
     }
 
     return (
-        <Page title="Bills" actions={[{ id: "add", label: "Add Bill", icon: "plus", group: "write", onClick: () => setShowAddBill(true) }]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
+        <BillsPage title="Bills" actions={[{ id: "add", label: "Add Bill", icon: "plus", group: "write", onClick: () => setShowAddBill(true) }]} breadcrumbs={[{ text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
             <AddBill accountId={id} show={showAddBill} onHide={() => setShowAddBill(false)} />
             <BillDetails account={billAccount} bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} />
             {editingBill && <EditBill accountId={id} bill={editingBill} show onHide={() => setEditingBill(undefined)} />}
@@ -66,6 +67,6 @@ function Bills() {
                     </tr>
                 </tfoot>
             </Table>
-        </Page>
+        </BillsPage>
     );
 }

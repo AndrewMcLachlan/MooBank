@@ -226,25 +226,13 @@
 /* ===========================================
    Mobile transactions header
    =========================================== */
-.tx-mobile-header {
-    position: relative;
+.section.tx-mobile-header {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.5rem 0 0.55rem 0.75rem;
-    border-bottom: 1px solid var(--border-colour);
-}
-
-.tx-mobile-header::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.4rem;
-    bottom: 0.45rem;
-    width: 3px;
-    background: var(--primary);
-    border-radius: 2px;
+    padding: 0.6rem 0.9rem 0.7rem;
+    border-top: 2px solid var(--primary);
 }
 
 .tx-mobile-header .lbl {

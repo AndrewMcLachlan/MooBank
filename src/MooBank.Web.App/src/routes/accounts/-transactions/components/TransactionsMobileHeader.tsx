@@ -1,4 +1,5 @@
 import React from "react";
+import { Section } from "@andrewmclachlan/moo-ds";
 
 import { Amount, useAccount } from "components";
 import type { LogicalAccount } from "api/types.gen";
@@ -21,7 +22,7 @@ export const TransactionsMobileHeader: React.FC = () => {
     const balance = (account as LogicalAccount).currentBalance ?? 0;
 
     return (
-        <section className="tx-mobile-header">
+        <Section className="tx-mobile-header">
             <div className="tx-mobile-figure">
                 <div className="lbl">Balance</div>
                 <div className="val balance"><Amount amount={balance} currencyCode={account.currency} minus /></div>
@@ -30,7 +31,7 @@ export const TransactionsMobileHeader: React.FC = () => {
                 <div className="lbl">Net</div>
                 <div className="val"><Amount amount={stats.net} currencyCode={account.currency} plus minus positiveColour negativeColour zeroShowsAs="neutral" /></div>
             </div>
-        </section>
+        </Section>
     );
 };
 

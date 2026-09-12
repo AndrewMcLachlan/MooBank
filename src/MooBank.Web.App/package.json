@@ -14,8 +14,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@andrewmclachlan/moo-app": "^5.2.323",
-    "@andrewmclachlan/moo-ds": "^5.2.323",
+    "@andrewmclachlan/moo-app": "^5.2.334",
+    "@andrewmclachlan/moo-ds": "^5.2.334",
     "@andrewmclachlan/moo-icons": "^5.2.286",
     "@azure/msal-react": "^5.5.5",
     "@dnd-kit/core": "^6.3.1",
