@@ -53,7 +53,7 @@
     gap: 1rem;
 
     #filter-desc {
-        flex: 1 1 0;
+        flex: 1 1 12rem;
     }
 
     #filter-tags {
