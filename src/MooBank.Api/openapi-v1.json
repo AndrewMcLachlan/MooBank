@@ -813,6 +813,45 @@
             "description": "Not Found"
           }
         }
+      },
+      "patch": {
+        "tags": [
+          "Bills"
+        ],
+        "operationId": "update-bill-account",
+        "parameters": [
+          {
+            "name": "instrumentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBillAccount"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/bills/accounts/{instrumentId}/bills": {
@@ -6150,12 +6189,14 @@
     "schemas": {
       "Account": {
         "required": [
+          "accountNumber",
           "id",
           "name",
           "currentBalance",
           "currency",
           "controller",
           "utilityType",
+          "shareWithFamily",
           "balanceDate",
           "virtualInstruments"
         ],
@@ -6163,6 +6204,12 @@
         "properties": {
           "utilityType": {
             "$ref": "#/components/schemas/UtilityType"
+          },
+          "accountNumber": {
+            "type": "string"
+          },
+          "shareWithFamily": {
+            "type": "boolean"
           },
           "firstBill": {
             "type": [
@@ -11064,6 +11111,31 @@
             "items": {
               "$ref": "#/components/schemas/Discount"
             }
+          }
+        }
+      },
+      "UpdateBillAccount": {
+        "required": [
+          "name",
+          "accountNumber",
+          "shareWithFamily"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "accountNumber": {
+            "type": "string"
+          },
+          "shareWithFamily": {
+            "type": "boolean"
           }
         }
       },

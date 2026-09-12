@@ -6,6 +6,10 @@ public record Account : Instrument
 {
     public UtilityType UtilityType { get; internal set; }
 
+    public required string AccountNumber { get; init; }
+
+    public bool ShareWithFamily { get; internal set; }
+
     public DateOnly? FirstBill { get; internal set; }
 
     public DateOnly? LatestBill { get; internal set; }
@@ -33,11 +37,14 @@ public static class AccountExtensions
         {
             Id = account.Id,
             Name = account.Name,
+            Description = account.Description,
             Currency = account.Currency,
             Controller = account.Controller,
             CurrentBalance = 0,
             CurrentBalanceLocalCurrency = 0,
             UtilityType = account.UtilityType,
+            AccountNumber = account.AccountNumber,
+            ShareWithFamily = account.ShareWithFamily,
             FirstBill = account.Bills.Count != 0 ? account.Bills.Min(b => b.IssueDate) : null,
             LatestBill = account.Bills.Count != 0 ? account.Bills.Max(b => b.IssueDate) : null,
             BillingIntervalDays = recent.Count == 2 ? recent[0].IssueDate.DayNumber - recent[1].IssueDate.DayNumber : null,

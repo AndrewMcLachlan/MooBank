@@ -18,6 +18,10 @@ internal class BillAccounts : EndpointGroupBase
         builder.MapQuery<Queries.Accounts.Get, Models.Account>("/")
             .WithNames("Get Bill Account");
 
+        builder.MapPatchCommand<Commands.Accounts.Update, Models.Account>("/", binding: RequestBinding.Parameters)
+            .WithNames("Update Bill Account")
+            .RequireAuthorization(Policies.GetInstrumentOwnerPolicy());
+
         builder.MapPagedQuery<Queries.Bills.GetForAccount, Models.Bill>("/bills")
             .WithNames("Get Bills For An Account");
 

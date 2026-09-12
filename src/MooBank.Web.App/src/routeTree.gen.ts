@@ -40,7 +40,6 @@ import { Route as AccountsIdTransactionsRouteImport } from "./routes/accounts/$i
 import { Route as AssetsIdIndexRouteImport } from "./routes/assets/$id/index"
 import { Route as AssetsIdManageRouteImport } from "./routes/assets/$id/manage"
 import { Route as BillsAccountsIndexRouteImport } from "./routes/bills/accounts/index"
-import { Route as BillsAccountsIdRouteImport } from "./routes/bills/accounts/$id"
 import { Route as BillsAccountsCreateRouteImport } from "./routes/bills/accounts/create"
 import { Route as BudgetReportIndexRouteImport } from "./routes/budget/report/index"
 import { Route as GroupsIdManageRouteImport } from "./routes/groups/$id/manage"
@@ -67,6 +66,8 @@ import { Route as AccountsIdReportsSavingsInterestRouteImport } from "./routes/a
 import { Route as AccountsIdReportsSuperContributionsRouteImport } from "./routes/accounts/$id/reports/super-contributions"
 import { Route as AccountsIdReportsSuperReturnsRouteImport } from "./routes/accounts/$id/reports/super-returns"
 import { Route as AccountsIdVirtualVirtualIdRouteRouteImport } from "./routes/accounts/$id/virtual.$virtualId/route"
+import { Route as BillsAccountsIdIndexRouteImport } from "./routes/bills/accounts/$id/index"
+import { Route as BillsAccountsIdEditRouteImport } from "./routes/bills/accounts/$id/edit"
 import { Route as BudgetReportYearIndexRouteImport } from "./routes/budget/report/$year/index"
 import { Route as BudgetReportYearMonthRouteImport } from "./routes/budget/report/$year/$month"
 import { Route as GroupsIdReportsMonthlyBalancesRouteImport } from "./routes/groups/$id/reports.monthly-balances"
@@ -240,11 +241,6 @@ const BillsAccountsIndexRoute = BillsAccountsIndexRouteImport.update({
   path: "/bills/accounts/",
   getParentRoute: () => rootRouteImport,
 } as any)
-const BillsAccountsIdRoute = BillsAccountsIdRouteImport.update({
-  id: "/bills/accounts/$id",
-  path: "/bills/accounts/$id",
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BillsAccountsCreateRoute = BillsAccountsCreateRouteImport.update({
   id: "/bills/accounts/create",
   path: "/bills/accounts/create",
@@ -384,6 +380,16 @@ const AccountsIdVirtualVirtualIdRouteRoute =
     path: "/virtual/$virtualId",
     getParentRoute: () => AccountsIdRouteRoute,
   } as any)
+const BillsAccountsIdIndexRoute = BillsAccountsIdIndexRouteImport.update({
+  id: "/bills/accounts/$id/",
+  path: "/bills/accounts/$id/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BillsAccountsIdEditRoute = BillsAccountsIdEditRouteImport.update({
+  id: "/bills/accounts/$id/edit",
+  path: "/bills/accounts/$id/edit",
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BudgetReportYearIndexRoute = BudgetReportYearIndexRouteImport.update({
   id: "/budget/report/$year/",
   path: "/budget/report/$year/",
@@ -512,7 +518,6 @@ export interface FileRoutesByFullPath {
   "/accounts/$id/rules": typeof AccountsIdRulesRoute
   "/accounts/$id/transactions": typeof AccountsIdTransactionsRoute
   "/assets/$id/manage": typeof AssetsIdManageRoute
-  "/bills/accounts/$id": typeof BillsAccountsIdRoute
   "/bills/accounts/create": typeof BillsAccountsCreateRoute
   "/groups/$id/manage": typeof GroupsIdManageRoute
   "/settings/families/$id": typeof SettingsFamiliesIdRoute
@@ -539,12 +544,14 @@ export interface FileRoutesByFullPath {
   "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
   "/accounts/$id/reports/super-contributions": typeof AccountsIdReportsSuperContributionsRoute
   "/accounts/$id/reports/super-returns": typeof AccountsIdReportsSuperReturnsRoute
+  "/bills/accounts/$id/edit": typeof BillsAccountsIdEditRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
   "/shares/$id/transactions/add": typeof SharesIdTransactionsAddRoute
   "/accounts/$id/manage/": typeof AccountsIdManageIndexRoute
   "/accounts/$id/reports/": typeof AccountsIdReportsIndexRoute
+  "/bills/accounts/$id/": typeof BillsAccountsIdIndexRoute
   "/budget/report/$year/": typeof BudgetReportYearIndexRoute
   "/shares/$id/reports/": typeof SharesIdReportsIndexRoute
   "/shares/$id/transactions/": typeof SharesIdTransactionsIndexRoute
@@ -583,7 +590,6 @@ export interface FileRoutesByTo {
   "/accounts/$id/rules": typeof AccountsIdRulesRoute
   "/accounts/$id/transactions": typeof AccountsIdTransactionsRoute
   "/assets/$id/manage": typeof AssetsIdManageRoute
-  "/bills/accounts/$id": typeof BillsAccountsIdRoute
   "/bills/accounts/create": typeof BillsAccountsCreateRoute
   "/groups/$id/manage": typeof GroupsIdManageRoute
   "/settings/families/$id": typeof SettingsFamiliesIdRoute
@@ -608,12 +614,14 @@ export interface FileRoutesByTo {
   "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
   "/accounts/$id/reports/super-contributions": typeof AccountsIdReportsSuperContributionsRoute
   "/accounts/$id/reports/super-returns": typeof AccountsIdReportsSuperReturnsRoute
+  "/bills/accounts/$id/edit": typeof BillsAccountsIdEditRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
   "/shares/$id/transactions/add": typeof SharesIdTransactionsAddRoute
   "/accounts/$id/manage": typeof AccountsIdManageIndexRoute
   "/accounts/$id/reports": typeof AccountsIdReportsIndexRoute
+  "/bills/accounts/$id": typeof BillsAccountsIdIndexRoute
   "/budget/report/$year": typeof BudgetReportYearIndexRoute
   "/shares/$id/reports": typeof SharesIdReportsIndexRoute
   "/shares/$id/transactions": typeof SharesIdTransactionsIndexRoute
@@ -659,7 +667,6 @@ export interface FileRoutesById {
   "/accounts/$id/rules": typeof AccountsIdRulesRoute
   "/accounts/$id/transactions": typeof AccountsIdTransactionsRoute
   "/assets/$id/manage": typeof AssetsIdManageRoute
-  "/bills/accounts/$id": typeof BillsAccountsIdRoute
   "/bills/accounts/create": typeof BillsAccountsCreateRoute
   "/groups/$id/manage": typeof GroupsIdManageRoute
   "/settings/families/$id": typeof SettingsFamiliesIdRoute
@@ -686,12 +693,14 @@ export interface FileRoutesById {
   "/accounts/$id/reports/savings-interest": typeof AccountsIdReportsSavingsInterestRoute
   "/accounts/$id/reports/super-contributions": typeof AccountsIdReportsSuperContributionsRoute
   "/accounts/$id/reports/super-returns": typeof AccountsIdReportsSuperReturnsRoute
+  "/bills/accounts/$id/edit": typeof BillsAccountsIdEditRoute
   "/budget/report/$year/$month": typeof BudgetReportYearMonthRoute
   "/groups/$id/reports/monthly-balances": typeof GroupsIdReportsMonthlyBalancesRoute
   "/shares/$id/reports/value": typeof SharesIdReportsValueRoute
   "/shares/$id/transactions/add": typeof SharesIdTransactionsAddRoute
   "/accounts/$id/manage/": typeof AccountsIdManageIndexRoute
   "/accounts/$id/reports/": typeof AccountsIdReportsIndexRoute
+  "/bills/accounts/$id/": typeof BillsAccountsIdIndexRoute
   "/budget/report/$year/": typeof BudgetReportYearIndexRoute
   "/shares/$id/reports/": typeof SharesIdReportsIndexRoute
   "/shares/$id/transactions/": typeof SharesIdTransactionsIndexRoute
@@ -738,7 +747,6 @@ export interface FileRouteTypes {
     | "/accounts/$id/rules"
     | "/accounts/$id/transactions"
     | "/assets/$id/manage"
-    | "/bills/accounts/$id"
     | "/bills/accounts/create"
     | "/groups/$id/manage"
     | "/settings/families/$id"
@@ -765,12 +773,14 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/savings-interest"
     | "/accounts/$id/reports/super-contributions"
     | "/accounts/$id/reports/super-returns"
+    | "/bills/accounts/$id/edit"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
     | "/shares/$id/transactions/add"
     | "/accounts/$id/manage/"
     | "/accounts/$id/reports/"
+    | "/bills/accounts/$id/"
     | "/budget/report/$year/"
     | "/shares/$id/reports/"
     | "/shares/$id/transactions/"
@@ -809,7 +819,6 @@ export interface FileRouteTypes {
     | "/accounts/$id/rules"
     | "/accounts/$id/transactions"
     | "/assets/$id/manage"
-    | "/bills/accounts/$id"
     | "/bills/accounts/create"
     | "/groups/$id/manage"
     | "/settings/families/$id"
@@ -834,12 +843,14 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/savings-interest"
     | "/accounts/$id/reports/super-contributions"
     | "/accounts/$id/reports/super-returns"
+    | "/bills/accounts/$id/edit"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
     | "/shares/$id/transactions/add"
     | "/accounts/$id/manage"
     | "/accounts/$id/reports"
+    | "/bills/accounts/$id"
     | "/budget/report/$year"
     | "/shares/$id/reports"
     | "/shares/$id/transactions"
@@ -884,7 +895,6 @@ export interface FileRouteTypes {
     | "/accounts/$id/rules"
     | "/accounts/$id/transactions"
     | "/assets/$id/manage"
-    | "/bills/accounts/$id"
     | "/bills/accounts/create"
     | "/groups/$id/manage"
     | "/settings/families/$id"
@@ -911,12 +921,14 @@ export interface FileRouteTypes {
     | "/accounts/$id/reports/savings-interest"
     | "/accounts/$id/reports/super-contributions"
     | "/accounts/$id/reports/super-returns"
+    | "/bills/accounts/$id/edit"
     | "/budget/report/$year/$month"
     | "/groups/$id/reports/monthly-balances"
     | "/shares/$id/reports/value"
     | "/shares/$id/transactions/add"
     | "/accounts/$id/manage/"
     | "/accounts/$id/reports/"
+    | "/bills/accounts/$id/"
     | "/budget/report/$year/"
     | "/shares/$id/reports/"
     | "/shares/$id/transactions/"
@@ -956,13 +968,14 @@ export interface RootRouteChildren {
   GroupsIndexRoute: typeof GroupsIndexRoute
   PlanningIndexRoute: typeof PlanningIndexRoute
   TagsIndexRoute: typeof TagsIndexRoute
-  BillsAccountsIdRoute: typeof BillsAccountsIdRoute
   BillsAccountsCreateRoute: typeof BillsAccountsCreateRoute
   GroupsIdManageRoute: typeof GroupsIdManageRoute
   BillsAccountsIndexRoute: typeof BillsAccountsIndexRoute
   BudgetReportIndexRoute: typeof BudgetReportIndexRoute
+  BillsAccountsIdEditRoute: typeof BillsAccountsIdEditRoute
   BudgetReportYearMonthRoute: typeof BudgetReportYearMonthRoute
   GroupsIdReportsMonthlyBalancesRoute: typeof GroupsIdReportsMonthlyBalancesRoute
+  BillsAccountsIdIndexRoute: typeof BillsAccountsIdIndexRoute
   BudgetReportYearIndexRoute: typeof BudgetReportYearIndexRoute
 }
 
@@ -1185,13 +1198,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof BillsAccountsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/bills/accounts/$id": {
-      id: "/bills/accounts/$id"
-      path: "/bills/accounts/$id"
-      fullPath: "/bills/accounts/$id"
-      preLoaderRoute: typeof BillsAccountsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     "/bills/accounts/create": {
       id: "/bills/accounts/create"
       path: "/bills/accounts/create"
@@ -1373,6 +1379,20 @@ declare module "@tanstack/react-router" {
       fullPath: "/accounts/$id/virtual/$virtualId"
       preLoaderRoute: typeof AccountsIdVirtualVirtualIdRouteRouteImport
       parentRoute: typeof AccountsIdRouteRoute
+    }
+    "/bills/accounts/$id/": {
+      id: "/bills/accounts/$id/"
+      path: "/bills/accounts/$id"
+      fullPath: "/bills/accounts/$id/"
+      preLoaderRoute: typeof BillsAccountsIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/bills/accounts/$id/edit": {
+      id: "/bills/accounts/$id/edit"
+      path: "/bills/accounts/$id/edit"
+      fullPath: "/bills/accounts/$id/edit"
+      preLoaderRoute: typeof BillsAccountsIdEditRouteImport
+      parentRoute: typeof rootRouteImport
     }
     "/budget/report/$year/": {
       id: "/budget/report/$year/"
@@ -1701,13 +1721,14 @@ const rootRouteChildren: RootRouteChildren = {
   GroupsIndexRoute: GroupsIndexRoute,
   PlanningIndexRoute: PlanningIndexRoute,
   TagsIndexRoute: TagsIndexRoute,
-  BillsAccountsIdRoute: BillsAccountsIdRoute,
   BillsAccountsCreateRoute: BillsAccountsCreateRoute,
   GroupsIdManageRoute: GroupsIdManageRoute,
   BillsAccountsIndexRoute: BillsAccountsIndexRoute,
   BudgetReportIndexRoute: BudgetReportIndexRoute,
+  BillsAccountsIdEditRoute: BillsAccountsIdEditRoute,
   BudgetReportYearMonthRoute: BudgetReportYearMonthRoute,
   GroupsIdReportsMonthlyBalancesRoute: GroupsIdReportsMonthlyBalancesRoute,
+  BillsAccountsIdIndexRoute: BillsAccountsIdIndexRoute,
   BudgetReportYearIndexRoute: BudgetReportYearIndexRoute,
 }
 export const routeTree = rootRouteImport

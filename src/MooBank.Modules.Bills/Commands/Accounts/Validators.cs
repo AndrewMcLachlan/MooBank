@@ -23,3 +23,21 @@ public class CreateValidator : AbstractValidator<Create>
             .Length(3).WithMessage("Currency must be a 3-letter ISO code");
     }
 }
+
+public class UpdateValidator : AbstractValidator<Update>
+{
+    public UpdateValidator()
+    {
+        RuleFor(x => x.Account.Name)
+            .NotEmpty().WithMessage("Name is required")
+            .MaximumLength(50).WithMessage("Name must not exceed 50 characters");
+
+        RuleFor(x => x.Account.Description)
+            .MaximumLength(255).WithMessage("Description must not exceed 255 characters")
+            .When(x => x.Account.Description != null);
+
+        RuleFor(x => x.Account.AccountNumber)
+            .NotEmpty().WithMessage("Account number is required")
+            .MaximumLength(15).WithMessage("Account number must not exceed 15 characters");
+    }
+}

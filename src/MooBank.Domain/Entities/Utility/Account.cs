@@ -42,4 +42,22 @@ public class Account : Instrument.Instrument
     public UtilityType UtilityType { get; set; }
 
     public virtual ICollection<Bill> Bills { get; set; } = [];
+
+    /// <summary>
+    /// Replaces the account's details with those supplied.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="UtilityType"/> is fixed for the life of the account: charge types are scoped to a
+    /// utility type, so the bills already held only read correctly against the one they were
+    /// entered under.
+    /// </remarks>
+    public void Update(string name, string? description, string accountNumber, bool shareWithFamily)
+    {
+        Name = name;
+        Description = description;
+        AccountNumber = accountNumber;
+        ShareWithFamily = shareWithFamily;
+
+        MarkUpdated();
+    }
 }

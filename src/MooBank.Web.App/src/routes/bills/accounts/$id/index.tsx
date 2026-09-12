@@ -4,17 +4,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useIdParams } from "@andrewmclachlan/moo-app";
 import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import type { Bill } from "api/types.gen";
-import { useBillAccount } from "../-hooks/useBillAccount";
-import { useBills } from "../-hooks/useBills";
+import { useBillAccount } from "../../-hooks/useBillAccount";
+import { useBills } from "../../-hooks/useBills";
 
 import { Table } from "@andrewmclachlan/moo-ds";
-import { AddBill } from "../-components/AddBill";
-import { BillDetails } from "../-components/BillDetails";
-import { BillRow } from "../-components/BillRow";
-import { EditBill } from "../-components/EditBill";
-import { BillsPage } from "../-components/BillsPage";
+import { AddBill } from "../../-components/AddBill";
+import { BillDetails } from "../../-components/BillDetails";
+import { BillRow } from "../../-components/BillRow";
+import { EditBill } from "../../-components/EditBill";
+import { BillsPage } from "../../-components/BillsPage";
 
-export const Route = createFileRoute("/bills/accounts/$id")({
+export const Route = createFileRoute("/bills/accounts/$id/")({
     component: Bills,
 });
 
@@ -42,7 +42,10 @@ function Bills() {
     }
 
     return (
-        <BillsPage title="Bills" actions={[{ id: "add", label: "Add Bill", icon: "plus", group: "write", onClick: () => setShowAddBill(true) }]} breadcrumbs={[{ text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
+        <BillsPage title="Bills" actions={[
+            { id: "add", label: "Add Bill", icon: "plus", group: "write", onClick: () => setShowAddBill(true) },
+            { id: "edit", label: "Edit Account", icon: "pen-to-square", group: "write", to: `/bills/accounts/${id}/edit` },
+        ]} breadcrumbs={[{ text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
             <AddBill accountId={id} show={showAddBill} onHide={() => setShowAddBill(false)} />
             <BillDetails account={billAccount} bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} />
             {editingBill && <EditBill accountId={id} bill={editingBill} show onHide={() => setEditingBill(undefined)} />}
