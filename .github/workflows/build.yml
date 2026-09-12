@@ -274,12 +274,13 @@ jobs:
   # for environment approval once per job, so the gate has to be a job by itself or every job
   # behind it asks again. Approving this approves the release; what follows is the release.
   approve-production:
-    # In the same group as the release it gates, so a newer run queues behind a pending approval
-    # rather than reaching the environment and superseding it -- which cancels the run that was
-    # waiting, approval and all.
+    # The gate waits for a human while holding its group, so it must be the newest commit that waits:
+    # a run superseded while queued would otherwise be approved and deploy stale code. Its group is
+    # separate from the release's -- a run that has been approved has already left this one, so a
+    # newer arrival can only cancel runs still waiting at the gate, never a release in flight.
     concurrency:
-      group: moobank-production
-      cancel-in-progress: false
+      group: moobank-production-approval
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     environment: Production
     needs: staging
@@ -288,7 +289,8 @@ jobs:
       - run: echo "::notice::Starting production deployment"
 
   # The production schema lands after staging has exercised it, and before the swap puts the new
-  # code in front of it.
+  # code in front of it. Approved releases queue here rather than cancelling: SqlPackage killed part
+  # way through a schema change is not recoverable.
   database-production:
     concurrency:
       group: moobank-production
