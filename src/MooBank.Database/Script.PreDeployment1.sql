@@ -18,11 +18,18 @@
 IF COL_LENGTH('dbo.RetirementPlan', 'ExpectedReturnRate') IS NOT NULL
     AND OBJECT_ID('dbo.CustomReturnRateStaging') IS NULL
 BEGIN
-    SELECT m.[Id] AS [MemberId], p.[ExpectedReturnRate] AS [Rate]
-    INTO [dbo].[CustomReturnRateStaging]
-    FROM [dbo].[RetirementPlanMember] m
-    INNER JOIN [dbo].[RetirementPlan] p ON p.[Id] = m.[RetirementPlanId]
-    WHERE m.[GrowthStrategyId] = 0;
+    /*
+     Dynamic, because the guard is not enough on its own. A batch is bound before it runs, and a
+     column missing from a table that exists fails to bind -- unlike a missing table, which is
+     resolved late. So on a database that has already run this, the statement below would refuse to
+     compile however false the condition above is.
+    */
+    EXEC sp_executesql N'
+        SELECT m.[Id] AS [MemberId], p.[ExpectedReturnRate] AS [Rate]
+        INTO [dbo].[CustomReturnRateStaging]
+        FROM [dbo].[RetirementPlanMember] m
+        INNER JOIN [dbo].[RetirementPlan] p ON p.[Id] = m.[RetirementPlanId]
+        WHERE m.[GrowthStrategyId] = 0;';
 END
 
 GO
