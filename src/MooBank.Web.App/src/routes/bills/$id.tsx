@@ -4,9 +4,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { Account } from "api/types.gen";
 import { useBillAccountsByType } from "./-hooks/useBillAccountsByType";
 
-import { Page, useIdParams } from "@andrewmclachlan/moo-app";
+import { useIdParams } from "@andrewmclachlan/moo-app";
 import { SectionTable } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
+import { BillsPage } from "./-components/BillsPage";
 
 export const Route = createFileRoute("/bills/$id")({
     component: BillAccounts,
@@ -25,7 +26,7 @@ function BillAccounts() {
     }
 
     return (
-        <Page title="Bills" actions={[]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: id, route: `/bills/${id}` }]}>
+        <BillsPage title="Bills" breadcrumbs={[{ text: id, route: `/bills/${id}` }]}>
             <SectionTable striped>
                 <thead>
                     <tr>
@@ -47,6 +48,6 @@ function BillAccounts() {
                     }
                 </tbody>
             </SectionTable>
-        </Page>
+        </BillsPage>
     );
 }

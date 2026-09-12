@@ -1,7 +1,6 @@
 import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { IconLinkButton } from "@andrewmclachlan/moo-ds";
 
 import { FilterPanel } from "./-components/FilterPanel";
 import { StockHoldingCard } from "./-components/StockHoldingCard";
@@ -9,6 +8,7 @@ import { StockTransactionList } from "./-components/StockTransactionList";
 import { StockHoldingPage } from "../../-components/StockHoldingPage";
 import { useStockHolding } from "../../-components/StockHoldingProvider";
 import { validateStockTransactionSearch } from "./-stockTransactionSearch";
+import type { PageAction } from "@andrewmclachlan/moo-app";
 
 export const Route = createFileRoute("/shares/$id/transactions/")({
     validateSearch: validateStockTransactionSearch,
@@ -21,8 +21,8 @@ function StockTransactions() {
 
     if (!stockHolding) return null;
 
-    const actions = stockHolding.controller === "Manual"
-        ? [<IconLinkButton badge key="add" variant="primary" icon="plus" to={`/shares/${stockHolding.id}/transactions/add`}>Add Transaction</IconLinkButton>]
+    const actions: PageAction[] = stockHolding.controller === "Manual"
+        ? [{ id: "add", label: "Add Transaction", icon: "plus", variant: "primary", group: "write", to: `/shares/${stockHolding.id}/transactions/add` }]
         : [];
 
     return (

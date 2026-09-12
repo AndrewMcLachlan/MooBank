@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { changeSortDirection, IconLinkButton, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, useLocalStorage, Badge } from "@andrewmclachlan/moo-ds";
+import { changeSortDirection, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, useLocalStorage, Badge } from "@andrewmclachlan/moo-ds";
 import type { BadgeHue, SortDirection } from "@andrewmclachlan/moo-ds";
 import { institutionTypeOptions } from "models/institutions";
 import { useNavigate } from "@tanstack/react-router";
@@ -69,7 +69,7 @@ function Institutions() {
     }, [JSON.stringify(institutions), search, pageSize, pageNumber, sortDirection]);
 
     return (
-        <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }]} actions={[<IconLinkButton badge variant="primary" key="add" to="/settings/institutions/add" icon="plus">Add Institution</IconLinkButton>]}>
+        <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }]} actions={[{ id: "add", label: "Add Institution", icon: "plus", variant: "primary", group: "write", to: "/settings/institutions/add" }]}>
             <Section>
                 <input className="form-control" type="text" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
             </Section>

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 
 import { useIdParams } from "@andrewmclachlan/moo-app";
-import { Icon, IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
+import { Icon, SectionTable } from "@andrewmclachlan/moo-ds";
 
 import { AccountPage, useAccount } from "components";
 import type { Controller, InstitutionAccount, LogicalAccount } from "api/types.gen";
@@ -15,6 +15,7 @@ import { useState } from "react";
 import { InstitutionAccountEdit } from "./-components/InstitutionAccountEdit";
 import { ReportTagSettings } from "./-components/ReportTagSettings";
 import { ReprocessModal } from "./-components/ReprocessModal";
+import type { PageAction } from "@andrewmclachlan/moo-app";
 
 export const Route = createFileRoute("/accounts/$id/manage/")({
     component: ManageAccount,
@@ -48,13 +49,13 @@ function ManageAccount() {
 
     const getActions = (accountController: Controller) => {
 
-        const actions = [
-            <IconButton badge key="aba" onClick={() => navigate({ to: `/accounts/${id}/manage/bank/create` })} icon="plus">Add Bank Account</IconButton>,
-            <IconButton badge key="ava" onClick={() => navigate({ to: `/accounts/${id}/manage/virtual/create` })} icon="plus">Add Virtual Account</IconButton>,
+        const actions: PageAction[] = [
+            { id: "aba", label: "Add Bank Account", icon: "plus", group: "write", to: `/accounts/${id}/manage/bank/create` },
+            { id: "ava", label: "Add Virtual Account", icon: "plus", group: "write", to: `/accounts/${id}/manage/virtual/create` },
         ];
 
         if (accountController === "Import") {
-            actions.push(<IconButton badge key="rpt" onClick={() => reprocessClick(id)} icon="arrows-rotate">Reprocess Transactions</IconButton>);
+            actions.push({ id: "rpt", label: "Reprocess Transactions", icon: "arrows-rotate", group: "write", onClick: () => reprocessClick(id) });
         }
 
         return actions;

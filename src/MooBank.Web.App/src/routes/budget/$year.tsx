@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { Col, IconButton, Row, SectionTable, Stack, Tab, Tabs } from "@andrewmclachlan/moo-ds";
+import { Col, Row, SectionTable, Stack, Tab, Tabs } from "@andrewmclachlan/moo-ds";
 import { Sparkle } from "@andrewmclachlan/moo-icons";
 import { useBudget } from "./-hooks/useBudget";
 import { useBudgetYears } from "./-hooks/useBudgetYears";
@@ -44,12 +44,19 @@ function Budget() {
     };
 
     return (
-        <BudgetPage title={title} actions={[
-            <BudgetYearPicker key="year" year={year} years={budgetYears} onChange={setYear} />,
-            <IconButton key="generate" badge variant="primary" icon={Sparkle} onClick={onGenerate} disabled={isGenerating} title="Build budget lines from your transaction history">
-                {isGenerating ? "Generating…" : "Generate from history"}
-            </IconButton>
-        ]}>
+        <BudgetPage
+            title={title}
+            customActions={[<BudgetYearPicker key="year" year={year} years={budgetYears} onChange={setYear} />]}
+            actions={[{
+                id: "generate",
+                label: isGenerating ? "Generating…" : "Generate from history",
+                icon: Sparkle,
+                variant: "primary",
+                group: "write",
+                disabled: isGenerating,
+                onClick: onGenerate,
+            }]}
+        >
             <Tabs defaultActiveKey="summary">
                 <Tab eventKey="summary" title="Summary">
                     <Stack>

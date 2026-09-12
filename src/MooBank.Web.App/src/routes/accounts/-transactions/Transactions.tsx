@@ -1,7 +1,7 @@
 import React from "react";
-import { Col, Input } from "@andrewmclachlan/moo-ds";
+import { Col, useIsAtLeast } from "@andrewmclachlan/moo-ds";
 
-import { IconButton, SectionRow, useLocalStorage } from "@andrewmclachlan/moo-ds";
+import { SectionRow, useLocalStorage } from "@andrewmclachlan/moo-ds";
 
 import { useAccount } from "components";
 import { AccountPage } from "components";
@@ -13,8 +13,10 @@ import { MiniFilterPanel } from "./components/MiniFilterPanel";
 import { AddTransaction } from "./components/AddTransaction";
 import { TransactionsAccountCard } from "./components/TransactionsAccountCard";
 import { TransactionsCompactWidgets } from "./components/TransactionsCompactWidgets";
+import { TransactionsMobileHeader } from "./components/TransactionsMobileHeader";
+import { TransactionsFilterBar } from "./components/TransactionsFilterBar";
 import { useTransactionList } from "components";
-import { useIsDesktop } from "hooks";
+import type { PageAction } from "@andrewmclachlan/moo-app";
 
 export const Transactions: React.FC = () => {
 
@@ -24,27 +26,30 @@ export const Transactions: React.FC = () => {
     const [compactMode, setCompactMode] = useLocalStorage("compact-mode", false);
     const { showNet, setShowNet } = useTransactionList();
     const [show, setShow] = React.useState(false);
-    const isDesktop = useIsDesktop();
+    const isPhone = !useIsAtLeast("md");
 
     if (!account) return null;
 
-    let actions: React.ReactNode[] = [
-        <Input.Switch key="show-net" id="show-net-amount" checked={showNet} onChange={() => setShowNet(!showNet)} label="Show Net Amount" />,
-        <Input.Switch key="compact" id="compact-mode" checked={compactMode} onChange={() => setCompactMode(!compactMode)} label="Compact" />,
+    let actions: PageAction[] = [
+        { id: "show-net-amount", label: "Show Net Amount", checked: showNet, onClick: () => setShowNet(!showNet) },
     ];
+
+    if (!isPhone) {
+        actions = [...actions, { id: "compact-mode", label: "Compact", checked: compactMode, onClick: () => setCompactMode(!compactMode) }];
+    }
 
     switch (account.controller) {
         case "Manual":
         case "Virtual":
             actions = [
                 ...actions,
-                <IconButton badge key="add" variant="primary" icon="plus" onClick={() => setShow(true)}>Add</IconButton>,
+                { id: "add", label: "Add", icon: "plus", variant: "primary", group: "write", onClick: () => setShow(true) },
             ];
             break;
         case "Import":
             actions = [
                 ...actions,
-                <IconButton badge key="import" variant="primary" icon="upload" onClick={() => setShowImport(true)}>Import</IconButton>,
+                { id: "import", label: "Import", icon: "upload", variant: "primary", group: "write", onClick: () => setShowImport(true) },
             ];
             break;
         default:
@@ -54,7 +59,17 @@ export const Transactions: React.FC = () => {
     return (
         <AccountPage title="Transactions" actions={actions}>
             <AddTransaction show={show} onClose={() => setShow(false)} onSave={() => setShow(false)} />
-            {!compactMode && (
+            {isPhone ? (
+                <>
+                    <TransactionsMobileHeader />
+                    <TransactionsFilterBar />
+                </>
+            ) : compactMode ? (
+                <>
+                    <TransactionsCompactWidgets />
+                    <MiniFilterPanel />
+                </>
+            ) : (
                 <SectionRow>
                     <Col xxl={5} xl={12} lg={12} md={12} sm={12}>
                         <TransactionsAccountCard />
@@ -64,13 +79,7 @@ export const Transactions: React.FC = () => {
                     </Col>
                 </SectionRow>
             )}
-            {compactMode && (
-                <>
-                    <TransactionsCompactWidgets />
-                    <MiniFilterPanel />
-                </>
-            )}
-            {isDesktop ? <TransactionList /> : <TransactionList compact />}
+            <TransactionList compact={isPhone} />
             {account.controller === "Import" && <Import show={showImport} accountId={account.id} onClose={() => setShowImport(false)} />}
         </AccountPage>
     );

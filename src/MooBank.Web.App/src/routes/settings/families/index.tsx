@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { IconLinkButton, SectionTable } from "@andrewmclachlan/moo-ds";
+import { SectionTable } from "@andrewmclachlan/moo-ds";
 import { useFamilies } from "./-hooks/useFamilies";
 import { SettingsPage } from "../-components/SettingsPage";
 import { useNavigate } from "@tanstack/react-router";
@@ -15,7 +15,7 @@ function Families() {
     const navigate = useNavigate();
 
     return (
-        <SettingsPage title="Families" breadcrumbs={[{ text: "Families", route: "/settings/families" }]} actions={[<IconLinkButton badge key="add" variant="primary" to="/settings/families/add" icon="plus">Add Family</IconLinkButton>]}>
+        <SettingsPage title="Families" breadcrumbs={[{ text: "Families", route: "/settings/families" }]} actions={[{ id: "add", label: "Add Family", icon: "plus", variant: "primary", group: "write", to: "/settings/families/add" }]}>
             <SectionTable striped hover>
                 <thead>
                     <tr>

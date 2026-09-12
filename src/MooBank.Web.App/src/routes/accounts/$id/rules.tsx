@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 import { LoadingTableRows, Table } from "@andrewmclachlan/moo-ds";
 
-import { IconButton, PageSize, Pagination, PaginationControls, PaginationTh, SearchBox, Section, SortableTh, changeSortDirection, getNumberOfPages, useLocalStorage } from "@andrewmclachlan/moo-ds";
+import { PageSize, Pagination, PaginationControls, PaginationTh, SearchBox, Section, SortableTh, changeSortDirection, getNumberOfPages, useLocalStorage } from "@andrewmclachlan/moo-ds";
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
 import { AccountPage, useAccount } from "components";
 
@@ -67,7 +67,7 @@ function Rules() {
     if (!account) return (null);
 
     return (
-        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${account.id}/rules` }]} actions={[<IconButton badge key="run" icon="check" onClick={runRules}>Run Rules</IconButton>]}>
+        <AccountPage title="Rules" breadcrumbs={[{ text: "Rules", route: `/accounts/${account.id}/rules` }]} actions={[{ id: "run", label: "Run Rules", icon: "check", onClick: runRules }]}>
             <Section>
                 <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
             </Section>
