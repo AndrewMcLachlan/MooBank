@@ -230,13 +230,13 @@ jobs:
         cache-from: type=registry,ref=ghcr.io/andrewmclachlan/moobank:latest
         cache-to: type=inline
 
-  # Schema goes first, and holds the staging concurrency group alone: SqlPackage killed part way
-  # through a schema change is not recoverable, so this queues rather than cancels. Exactly one job
-  # per run may sit in the group -- the queue holds one running plus one pending, so a second member
-  # would evict the other run's pending job. Ordering comes from `needs`, not from the group.
+  # Schema and app deploy in parallel; each takes its own concurrency group so neither waits on the
+  # other. A group holds one running job plus one pending, so a group with two members would have
+  # each run evicting the other's pending job.
+  # SqlPackage killed part way through a schema change is not recoverable: this queues, never cancels.
   database-staging:
     concurrency:
-      group: moobank-staging
+      group: moobank-staging-database
       cancel-in-progress: false
     needs: [build, test, test-frontend, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
@@ -253,8 +253,12 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+  # A superseded app deploy is harmless -- the next run redeploys over it.
   staging:
-    needs: [build, test, test-frontend, docker-push, database-staging]
+    concurrency:
+      group: moobank-staging-app
+      cancel-in-progress: true
+    needs: [build, test, test-frontend, docker-push]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
@@ -283,17 +287,16 @@ jobs:
       cancel-in-progress: true
     runs-on: ubuntu-latest
     environment: Production
-    needs: staging
+    needs: [staging, database-staging]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     steps:
       - run: echo "::notice::Starting production deployment"
 
-  # The production schema lands after staging has exercised it, and before the swap puts the new
-  # code in front of it. Approved releases queue here rather than cancelling: SqlPackage killed part
-  # way through a schema change is not recoverable.
+  # The production schema lands after staging has exercised it, in parallel with the swap.
+  # Approved releases queue here rather than cancelling.
   database-production:
     concurrency:
-      group: moobank-production
+      group: moobank-production-database
       cancel-in-progress: false
     needs: approve-production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
@@ -310,7 +313,10 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
   production:
-    needs: database-production
+    concurrency:
+      group: moobank-production-app
+      cancel-in-progress: false
+    needs: approve-production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v4
     with:
