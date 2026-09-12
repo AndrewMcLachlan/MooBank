@@ -6,6 +6,8 @@ export type ClientOptions = {
 
 export type Account = {
     utilityType: UtilityType;
+    accountNumber: string;
+    shareWithFamily: boolean;
     firstBill?: null | string;
     latestBill?: null | string;
     billingIntervalDays?: null | number;
@@ -1117,6 +1119,13 @@ export type UpdateBill = {
     discounts: Array<Discount>;
 };
 
+export type UpdateBillAccount = {
+    name: string;
+    description?: null | string;
+    accountNumber: string;
+    shareWithFamily: boolean;
+};
+
 export type UpdateFamily = {
     name: string;
 };
@@ -1686,6 +1695,24 @@ export type GetBillAccountResponses = {
 };
 
 export type GetBillAccountResponse = GetBillAccountResponses[keyof GetBillAccountResponses];
+
+export type UpdateBillAccountData = {
+    body: UpdateBillAccount;
+    path: {
+        instrumentId: string;
+    };
+    query?: never;
+    url: '/bills/accounts/{instrumentId}';
+};
+
+export type UpdateBillAccountResponses = {
+    /**
+     * OK
+     */
+    200: Account;
+};
+
+export type UpdateBillAccountResponse = UpdateBillAccountResponses[keyof UpdateBillAccountResponses];
 
 export type GetBillsForAnAccountData = {
     body?: never;

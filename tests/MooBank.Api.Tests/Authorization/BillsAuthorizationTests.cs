@@ -43,6 +43,24 @@ public class BillsAuthorizationTests
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    /// <summary>
+    /// Given I am not authenticated
+    /// When I attempt to PATCH a bill account
+    /// Then the response status should be 401 Unauthorized
+    /// </summary>
+    [Fact]
+    public async Task UpdateBillAccount_Unauthenticated_Returns401()
+    {
+        // Arrange
+        var client = _factory.CreateUnauthenticatedClient();
+
+        // Act
+        var response = await client.PatchAsync($"/api/bills/accounts/{_testInstrumentId}", UpdateBillAccountContent(), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
     #endregion
 
     #region Authorization Denied Tests (403)
@@ -95,6 +113,52 @@ public class BillsAuthorizationTests
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
+    /// <summary>
+    /// Given I am authenticated but own a different account
+    /// When I attempt to PATCH a bill account I don't own
+    /// Then the response status should be 403 Forbidden
+    /// </summary>
+    [Fact]
+    public async Task UpdateBillAccount_NonOwner_Returns403()
+    {
+        // Arrange
+        var user = new TestUser
+        {
+            FamilyId = _testFamilyId,
+            AccountIds = [_otherInstrumentId],
+        };
+        var client = _factory.CreateAuthenticatedClient(user);
+
+        // Act
+        var response = await client.PatchAsync($"/api/bills/accounts/{_testInstrumentId}", UpdateBillAccountContent(), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Given I am authenticated with shared access (not owner) to the account
+    /// When I attempt to PATCH the bill account (which requires owner access)
+    /// Then the response status should be 403 Forbidden
+    /// </summary>
+    [Fact]
+    public async Task UpdateBillAccount_SharedUser_Returns403()
+    {
+        // Arrange
+        var user = new TestUser
+        {
+            FamilyId = _testFamilyId,
+            SharedAccountIds = [_testInstrumentId],
+        };
+        var client = _factory.CreateAuthenticatedClient(user);
+
+        // Act
+        var response = await client.PatchAsync($"/api/bills/accounts/{_testInstrumentId}", UpdateBillAccountContent(), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
     #endregion
 
     #region Authorization Allowed Tests
@@ -120,5 +184,28 @@ public class BillsAuthorizationTests
         Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
+    /// <summary>
+    /// Given I am authenticated as the account owner
+    /// When I request PATCH to update my bill account
+    /// Then authorization should pass
+    /// </summary>
+    [Fact]
+    public async Task UpdateBillAccount_Owner_PassesAuth()
+    {
+        // Arrange
+        var user = TestUser.WithAccount(_testInstrumentId, _testFamilyId);
+        var client = _factory.CreateAuthenticatedClient(user);
+
+        // Act
+        var response = await client.PatchAsync($"/api/bills/accounts/{_testInstrumentId}", UpdateBillAccountContent(), TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.NotEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.NotEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
     #endregion
+
+    private static StringContent UpdateBillAccountContent() =>
+        new("{\"name\":\"Renamed\",\"accountNumber\":\"ELEC001\",\"shareWithFamily\":true}", System.Text.Encoding.UTF8, "application/json");
 }
