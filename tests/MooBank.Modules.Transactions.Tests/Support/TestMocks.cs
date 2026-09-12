@@ -21,6 +21,7 @@ public class TestMocks
         TransactionRepositoryMock = new Mock<ITransactionRepository>();
         InstrumentRepositoryMock = new Mock<IInstrumentRepository>();
         TagRepositoryMock = new Mock<ITagRepository>();
+        SecurityMock = new Mock<ISecurity>();
         UserIdProviderMock = new Mock<IUserIdProvider>();
 
         var userId = Guid.NewGuid();
@@ -32,6 +33,8 @@ public class TestMocks
     public Mock<IUnitOfWork> UnitOfWorkMock { get; }
 
     public Mock<IAuditingUnitOfWork> AuditingUnitOfWorkMock { get; }
+
+    public Mock<ISecurity> SecurityMock { get; }
 
     public Mock<ITransactionRepository> TransactionRepositoryMock { get; }
 

@@ -15,4 +15,10 @@ public interface ISecurity
     Task AssertFamilyPermission(Guid familyId);
 
     Task AssertInstrumentViewer(Guid instrumentId);
+
+    /// <summary>
+    /// Asserts that every tag belongs to the current user's family. For tag ids that arrive in a
+    /// request body, where no route parameter exists for the endpoint policy to check.
+    /// </summary>
+    Task AssertTagPermission(IReadOnlyCollection<int> tagIds);
 }

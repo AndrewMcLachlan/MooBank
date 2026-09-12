@@ -13,6 +13,12 @@ public class AuthorisationReader(MooBankContext mooBankContext) : IAuthorisation
     public async Task<Guid?> GetTagFamilyId(int tagId, CancellationToken cancellationToken = default) =>
         await mooBankContext.Set<Domain.Entities.Tag.Tag>().IgnoreQueryFilters().Where(t => t.Id == tagId).Select(t => (Guid?)t.FamilyId).SingleOrDefaultAsync(cancellationToken);
 
+    public async Task<IReadOnlyDictionary<int, Guid>> GetTagFamilyIds(IEnumerable<int> tagIds, CancellationToken cancellationToken = default) =>
+        await mooBankContext.Set<Domain.Entities.Tag.Tag>().IgnoreQueryFilters()
+            .Where(t => tagIds.Contains(t.Id))
+            .Select(t => new { t.Id, t.FamilyId })
+            .ToDictionaryAsync(t => t.Id, t => t.FamilyId, cancellationToken);
+
     public async Task<Guid?> GetForecastPlanFamilyId(Guid planId, CancellationToken cancellationToken = default) =>
         await mooBankContext.ForecastPlans.Where(p => p.Id == planId).Select(p => (Guid?)p.FamilyId).SingleOrDefaultAsync(cancellationToken);
 

@@ -22,13 +22,16 @@ public record UpdateTransaction(Guid InstrumentId, Guid Id, string? Notes, IEnum
     }
 }
 
-internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdateTransaction, MooBank.Models.Transaction>
+internal class UpdateTransactionHandler(ITransactionRepository transactionRepository, ISecurity security, IUnitOfWork unitOfWork) : ICommandHandler<UpdateTransaction, MooBank.Models.Transaction>
 {
     public async ValueTask<MooBank.Models.Transaction> Handle(UpdateTransaction request, CancellationToken cancellationToken)
     {
         var transaction = await transactionRepository.Get(request.Id, new IncludeSplitsSpecification(), cancellationToken);
 
         if (transaction.AccountId != request.InstrumentId) throw new NotFoundException("Transaction not found");
+
+        // The tag ids arrive in the body, so no endpoint policy has seen them.
+        await security.AssertTagPermission([.. request.Splits.SelectMany(s => s.Tags).Select(t => t.Id).Distinct()]);
 
         transaction.UpdateSplits(request.Splits.ToEntities());
 

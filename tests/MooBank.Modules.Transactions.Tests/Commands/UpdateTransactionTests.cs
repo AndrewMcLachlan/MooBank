@@ -30,6 +30,7 @@ public class UpdateTransactionTests
 
         var handler = new UpdateTransactionHandler(
             _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var splits = new[] { TestEntities.CreateTransactionSplitModel() };
@@ -41,6 +42,69 @@ public class UpdateTransactionTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(transactionId, result.Id);
+    }
+
+    [Fact]
+    public async Task Handle_TagsInBody_AreAuthorisedBeforeTheyAreApplied()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var transactionId = Guid.NewGuid();
+
+        var existingTransaction = TestEntities.CreateTransaction(id: transactionId, accountId: instrumentId);
+
+        _mocks.TransactionRepositoryMock
+            .Setup(r => r.Get(transactionId, It.IsAny<IncludeSplitsSpecification>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingTransaction);
+
+        var handler = new UpdateTransactionHandler(
+            _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var splits = new[]
+        {
+            TestEntities.CreateTransactionSplitModel(tags: [new MooBank.Models.Tag { Id = 7, Name = "A" }]),
+            TestEntities.CreateTransactionSplitModel(tags: [new MooBank.Models.Tag { Id = 9, Name = "B" }]),
+        };
+
+        // Act
+        await handler.Handle(new UpdateTransaction(instrumentId, transactionId, null, splits), TestContext.Current.CancellationToken);
+
+        // Assert
+        _mocks.SecurityMock.Verify(s => s.AssertTagPermission(
+            It.Is<IReadOnlyCollection<int>>(ids => ids.Contains(7) && ids.Contains(9) && ids.Count == 2)), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_TagFromAnotherFamily_DoesNotSave()
+    {
+        // Arrange
+        var instrumentId = Guid.NewGuid();
+        var transactionId = Guid.NewGuid();
+
+        var existingTransaction = TestEntities.CreateTransaction(id: transactionId, accountId: instrumentId);
+
+        _mocks.TransactionRepositoryMock
+            .Setup(r => r.Get(transactionId, It.IsAny<IncludeSplitsSpecification>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingTransaction);
+
+        _mocks.SecurityMock
+            .Setup(s => s.AssertTagPermission(It.IsAny<IReadOnlyCollection<int>>()))
+            .ThrowsAsync(new NotAuthorisedException("nope"));
+
+        var handler = new UpdateTransactionHandler(
+            _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var splits = new[] { TestEntities.CreateTransactionSplitModel(tags: [new MooBank.Models.Tag { Id = 666, Name = "Theirs" }]) };
+
+        // Act / Assert
+        await Assert.ThrowsAsync<NotAuthorisedException>(() =>
+            handler.Handle(new UpdateTransaction(instrumentId, transactionId, null, splits), TestContext.Current.CancellationToken).AsTask());
+
+        _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -58,6 +122,7 @@ public class UpdateTransactionTests
 
         var handler = new UpdateTransactionHandler(
             _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var splits = new[] { TestEntities.CreateTransactionSplitModel() };
@@ -85,6 +150,7 @@ public class UpdateTransactionTests
 
         var handler = new UpdateTransactionHandler(
             _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var splits = new[] { TestEntities.CreateTransactionSplitModel() };
@@ -112,6 +178,7 @@ public class UpdateTransactionTests
 
         var handler = new UpdateTransactionHandler(
             _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var splits = new[] { TestEntities.CreateTransactionSplitModel() };
@@ -139,6 +206,7 @@ public class UpdateTransactionTests
 
         var handler = new UpdateTransactionHandler(
             _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var splits = new[] { TestEntities.CreateTransactionSplitModel() };
@@ -168,6 +236,7 @@ public class UpdateTransactionTests
 
         var handler = new UpdateTransactionHandler(
             _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var updatedSplits = new[] { TestEntities.CreateTransactionSplitModel(id: splitId, amount: 75m) };
@@ -201,6 +270,7 @@ public class UpdateTransactionTests
 
         var handler = new UpdateTransactionHandler(
             _mocks.TransactionRepositoryMock.Object,
+            _mocks.SecurityMock.Object,
             _mocks.UnitOfWorkMock.Object);
 
         var splits = new[] { TestEntities.CreateTransactionSplitModel() };

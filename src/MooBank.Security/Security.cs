@@ -33,6 +33,17 @@ public class Security(IAuthorizationService authorizationService, IPrincipalProv
         }
     }
 
+    public async Task AssertTagPermission(IReadOnlyCollection<int> tagIds)
+    {
+        var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, tagIds, new TagFamilyRequirement());
+
+        if (!authResult.Succeeded)
+        {
+            audit.AuthorizationDenied(user, "Tag", String.Join(", ", tagIds), nameof(TagFamilyRequirement));
+            throw new NotAuthorisedException("Not authorised to use one or more of these tags.");
+        }
+    }
+
     public async Task AssertInstrumentViewer(Guid instrumentId)
     {
         var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, instrumentId, new InstrumentViewerRequirement());
