@@ -230,8 +230,10 @@ jobs:
         cache-from: type=registry,ref=ghcr.io/andrewmclachlan/moobank:latest
         cache-to: type=inline
 
-  # Schema goes first, and in its own concurrency group: a superseded app deploy is harmless, but
-  # SqlPackage killed part way through a schema change is not. These queue rather than cancel.
+  # Schema goes first, and holds the staging concurrency group alone: SqlPackage killed part way
+  # through a schema change is not recoverable, so this queues rather than cancels. Exactly one job
+  # per run may sit in the group -- the queue holds one running plus one pending, so a second member
+  # would evict the other run's pending job. Ordering comes from `needs`, not from the group.
   database-staging:
     concurrency:
       group: moobank-staging
@@ -252,10 +254,7 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
   staging:
-    concurrency:
-      group: moobank-staging
-      cancel-in-progress: false
-    needs: [build, test, test-frontend, docker-push]
+    needs: [build, test, test-frontend, docker-push, database-staging]
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/deploy-azure.yml@v4
     with:
@@ -283,7 +282,7 @@ jobs:
       cancel-in-progress: false
     runs-on: ubuntu-latest
     environment: Production
-    needs: [staging, database-staging]
+    needs: staging
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     steps:
       - run: echo "::notice::Starting production deployment"
@@ -309,10 +308,7 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
   production:
-    concurrency:
-      group: moobank-production
-      cancel-in-progress: false
-    needs: approve-production
+    needs: database-production
     if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_target' && github.ref == 'refs/heads/main')
     uses: AndrewMcLachlan/actions/.github/workflows/azure-appservice-swap-slot.yml@v4
     with:
