@@ -14,6 +14,7 @@
 @import "css/form" layer(moobank);
 @import "css/transactions" layer(moobank);
 @import "css/transactions/transactionsHeader" layer(moobank);
+@import "css/transactions/transactionsFilterBar" layer(moobank);
 @import "css/forecast" layer(moobank);
 @import "css/retirement" layer(moobank);
 @import "css/pension" layer(moobank);
@@ -186,11 +187,6 @@
         }
     }
 
-    @media screen and (max-width: 767px) {
-        .container-fluid.second-header>.actions {
-            display: none;
-        }
-    }
 }
 
 h2 {
