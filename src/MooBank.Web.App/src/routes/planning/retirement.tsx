@@ -1,5 +1,4 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
-import { IconButton } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
 import { useMemo, useState } from "react";
 import { useRetirementPlans } from "./-retirement-hooks/useRetirementPlans";
@@ -19,6 +18,7 @@ import { RetirementTweaks } from "./-retirement-components/RetirementTweaks";
 import { CreateRetirementPlan } from "./-retirement-components/CreateRetirementPlan";
 import { applyDraftToPlan, emptyDraft, pruneDraft } from "./-retirement-utils/tweaks";
 import type { RetirementProjectionOverrides } from "api/types.gen";
+import type { PageAction } from "@andrewmclachlan/moo-app";
 
 export const Route = createFileRoute("/planning/retirement")({
     component: Retirement,
@@ -56,8 +56,8 @@ function Retirement() {
     // Page pushes actions into the layout by reference, so a fresh array on every render sets the
     // context every render, which re-renders and builds another array. Memoised, and declared
     // above the early returns so the hook order stays fixed.
-    const actions = useMemo(() => plan ? [
-        <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Plan</IconButton>
+    const actions = useMemo<PageAction[]>(() => plan ? [
+        { id: "edit-settings", label: "Edit Plan", icon: Sliders, variant: "primary", onClick: () => setEditOpen(true) },
     ] : [], [plan]);
 
     // No early return while loading — see the note on the forecast page.

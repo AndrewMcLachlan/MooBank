@@ -2,7 +2,7 @@ import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 
-import { IconButton, SectionTable } from "@andrewmclachlan/moo-ds";
+import { SectionTable } from "@andrewmclachlan/moo-ds";
 
 import type { Account } from "api/types.gen";
 import { useBillAccounts } from "../-hooks/useBillAccounts";
@@ -25,7 +25,7 @@ function AllBillAccounts() {
             title="Accounts"
             breadcrumbs={[{ text: "Accounts", route: "/bills/accounts" }]}
             actions={[
-                <IconButton badge key="create" onClick={() => navigate({ to: "/bills/accounts/create" })} icon="plus">Add Account</IconButton>
+                { id: "create", label: "Add Account", icon: "plus", group: "write", to: "/bills/accounts/create" },
             ]}
         >
             <SectionTable striped>

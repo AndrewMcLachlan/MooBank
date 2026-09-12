@@ -52,7 +52,7 @@ function BillAccountSummaries() {
         <BillsPage
             title="Utilities"
             actions={availableTypes.length > 0 ? [
-                <IconButton badge key="add" onClick={() => setShowAddBill(true)} icon="plus">Add Bill</IconButton>
+                { id: "add", label: "Add Bill", icon: "plus", group: "write", onClick: () => setShowAddBill(true) },
             ] : []}
         >
             <AddBill show={showAddBill} onHide={() => setShowAddBill(false)} />

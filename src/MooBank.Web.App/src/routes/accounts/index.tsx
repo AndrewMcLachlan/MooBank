@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { AccountList } from "../../components";
 import { Page } from "@andrewmclachlan/moo-app";
-import { IconLinkButton } from "@andrewmclachlan/moo-ds";
 
 export const Route = createFileRoute("/accounts/")({
     component: Accounts,
@@ -11,11 +10,10 @@ export const Route = createFileRoute("/accounts/")({
 
 function Accounts() {
     return (
-        <Page title="Accounts" breadcrumbs={[{ text: "Accounts", route: "/accounts" }]} actions={
-            [
-                <IconLinkButton badge key="create-account" variant="primary" to="/accounts/create" icon="plus">Add Account</IconLinkButton>,
-                <IconLinkButton badge key="create-stock" variant="primary" to="/shares/create" icon="plus">Add Shares</IconLinkButton>,
-                <IconLinkButton badge key="create-asset" variant="primary" to="/assets/create" icon="plus" >Add Asset</IconLinkButton>,
+        <Page title="Accounts" breadcrumbs={[{ text: "Accounts", route: "/accounts" }]} actions={[
+                { id: "create-account", label: "Add Account", icon: "plus", variant: "primary", to: "/accounts/create" },
+                { id: "create-stock", label: "Add Shares", icon: "plus", variant: "primary", to: "/shares/create" },
+                { id: "create-asset", label: "Add Asset", icon: "plus", variant: "primary", to: "/assets/create" },
             ]}>
             <AccountList />
         </Page>

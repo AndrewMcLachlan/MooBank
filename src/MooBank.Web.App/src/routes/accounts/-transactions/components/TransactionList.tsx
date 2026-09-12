@@ -32,7 +32,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
 
     const PaginationControl = compact ? MiniPagination : Pagination;
 
-    const className = compact ? "transactions-mobile d-table d-md-none" : "transactions d-none d-md-table";
+    const className = compact ? "transactions-mobile" : "transactions";
 
     return (
         <>

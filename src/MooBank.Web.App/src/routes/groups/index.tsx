@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 
 import { Page } from "@andrewmclachlan/moo-app";
-import { IconButton, LoadingTableRows, SectionTable } from "@andrewmclachlan/moo-ds";
+import { LoadingTableRows, SectionTable } from "@andrewmclachlan/moo-ds";
 import { useGroups } from "./-hooks/useGroups";
 import { useReorderGroups } from "./-hooks/useReorderGroups";
 
@@ -59,7 +59,7 @@ function ManageGroups() {
     const groupRows: React.ReactNode[] = data?.map(a => <GroupRow key={a.id} group={a} />) ?? [<LoadingTableRows key={1} rows={5} cols={4} />];
 
     return (
-        <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/groups" }]} actions={[<IconButton badge key="add" onClick={() => navigate({ to: "/groups/create" })} icon="plus">Create Group</IconButton>]}>
+        <Page title="Groups" breadcrumbs={[{ text: "Groups", route: "/groups" }]} actions={[{ id: "add", label: "Create Group", icon: "plus", group: "write", to: "/groups/create" }]}>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
                 <SectionTable hover striped className="group-list">
                     <thead>

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { IconButton } from "@andrewmclachlan/moo-ds";
 import { Sliders } from "@andrewmclachlan/moo-icons";
 import { useEffect, useMemo, useState } from "react";
 import { useForecastPlans } from "./-hooks/useForecastPlans";
@@ -13,6 +12,7 @@ import { ForecastIncomeExpenseCharts } from "./-components/ForecastIncomeExpense
 import { PlannedItemsTable } from "./-components/PlannedItemsTable";
 import { ForecastSettingsModal } from "./-components/ForecastSettingsModal";
 import { CreateForecastPlan } from "./-components/CreateForecastPlan";
+import type { PageAction } from "@andrewmclachlan/moo-app";
 
 export const Route = createFileRoute("/planning/forecast")({
     component: Forecast,
@@ -42,8 +42,8 @@ function Forecast() {
     // Page pushes actions into the layout by reference, so a fresh array on every render sets the
     // context every render, which re-renders and builds another array. Memoised, and declared
     // above the early returns so the hook order stays fixed.
-    const actions = useMemo(() => plan ? [
-        <IconButton badge key="edit-settings" variant="primary" icon={Sliders} onClick={() => setEditOpen(true)}>Edit Settings</IconButton>
+    const actions = useMemo<PageAction[]>(() => plan ? [
+        { id: "edit-settings", label: "Edit Settings", icon: Sliders, variant: "primary", onClick: () => setEditOpen(true) },
     ] : [], [plan]);
 
     // No early return while loading: the page below renders its own placeholders in place, so the

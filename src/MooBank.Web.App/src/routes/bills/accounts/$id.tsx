@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Page, useIdParams } from "@andrewmclachlan/moo-app";
-import { getNumberOfPages, IconButton, Pagination } from "@andrewmclachlan/moo-ds";
+import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import type { Bill } from "api/types.gen";
 import { useBillAccount } from "../-hooks/useBillAccount";
 import { useBills } from "../-hooks/useBills";
@@ -41,7 +41,7 @@ function Bills() {
     }
 
     return (
-        <Page title="Bills" actions={[<IconButton badge key="add" onClick={() => setShowAddBill(true)} icon="plus">Add Bill</IconButton>]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
+        <Page title="Bills" actions={[{ id: "add", label: "Add Bill", icon: "plus", group: "write", onClick: () => setShowAddBill(true) }]} navItems={[]} breadcrumbs={[{ text: "Bills", route: "/bills" }, { text: "Accounts", route: "/bills/accounts" }, { text: billAccount?.name, route: `/bills/accounts/${id}` }]}>
             <AddBill accountId={id} show={showAddBill} onHide={() => setShowAddBill(false)} />
             <BillDetails account={billAccount} bill={selectedBill} show={showDetails} onHide={() => setShowDetails(false)} />
             {editingBill && <EditBill accountId={id} bill={editingBill} show onHide={() => setEditingBill(undefined)} />}
