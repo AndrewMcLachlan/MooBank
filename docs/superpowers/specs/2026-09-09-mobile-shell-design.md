@@ -96,7 +96,9 @@ knowing what an action *is*.
 interface PageActionBase {
     id: string;
     label: string;
-    icon?: React.ReactNode;
+    /** An IconType, so the design system draws it: a header can place it in a
+        badge panel and a menu inline. A node would only sit beside the label. */
+    icon?: IconType;
     /** "read" sorts above the menu's separator, "write" below. Defaults to "read". */
     group?: "read" | "write";
     disabled?: boolean;
@@ -174,9 +176,14 @@ the browser before this was fixed, the overflow toggle was **27px** against its 
 the hamburger 24px; a 44px minimum was never being met anywhere.
 
 Interactive chrome therefore takes `var(--touch-target)` (44px, declared in px) rather than a rem
-value: the overflow toggle, the identity strip's controls, the Filters button, and the chip's
-dismiss control, whose hit area is widened by a pseudo-element so the chip itself stays small. Type
-still scales with the system; only hit areas are pinned.
+value: the drawer toggle, the overflow toggle, the identity strip's controls, every menu row, the
+Filters button and its Clear. Type still scales with the system; only hit areas are pinned.
+
+The size goes on the axis that has room, not on both. A square target in a horizontal strip spends
+its width pushing its neighbours apart, so the strip's controls are 36px wide against the strip's
+full height. Widening a hit area past its box with a pseudo-element is worse again wherever controls
+are adjacent — the areas overlap and a tap near the boundary hits the wrong one, which is the defect
+still outstanding on `FilterChip`'s dismiss control.
 
 ## Two breakpoints, both named
 

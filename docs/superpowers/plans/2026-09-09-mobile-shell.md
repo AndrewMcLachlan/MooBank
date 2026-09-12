@@ -68,7 +68,7 @@ export interface InstrumentPageProps {
 
 - [ ] **Step 3: Convert the call sites**
 
-A command becomes an `onClick` action; a link becomes a `to` action; a switch stays a switch. Three worked examples covering all three shapes — apply the same treatment everywhere.
+A command becomes an `onClick` action; a link becomes a `to` action; a switch stays a switch. `icon` is an `IconType` — the same value `IconButton` takes, so `"plus"` rather than `<Icon icon="plus" />`; passing a node puts it beside the label and leaves the badge panel empty. Three worked examples covering all three shapes — apply the same treatment everywhere.
 
 `src/routes/accounts/-transactions/Transactions.tsx`:
 
@@ -81,10 +81,10 @@ A command becomes an `onClick` action; a link becomes a `to` action; a switch st
     switch (account.controller) {
         case "Manual":
         case "Virtual":
-            actions = [...actions, { id: "add", label: "Add", icon: <Icon icon="plus" />, group: "write", onClick: () => setShow(true) }];
+            actions = [...actions, { id: "add", label: "Add", icon: "plus", group: "write", onClick: () => setShow(true) }];
             break;
         case "Import":
-            actions = [...actions, { id: "import", label: "Import", icon: <Icon icon="upload" />, group: "write", onClick: () => setShowImport(true) }];
+            actions = [...actions, { id: "import", label: "Import", icon: "upload", group: "write", onClick: () => setShowImport(true) }];
             break;
         default:
             break;
@@ -97,14 +97,14 @@ A command becomes an `onClick` action; a link becomes a `to` action; a switch st
 <SettingsPage
     title="Families"
     breadcrumbs={[{ text: "Families", route: "/settings/families" }]}
-    actions={[{ id: "add-family", label: "Add Family", icon: <Icon icon="plus" />, group: "write", to: "/settings/families/add" }]}
+    actions={[{ id: "add-family", label: "Add Family", icon: "plus", group: "write", to: "/settings/families/add" }]}
 >
 ```
 
 `src/routes/accounts/$id/rules.tsx` — a plain command:
 
 ```tsx
-actions={[{ id: "run-rules", label: "Run Rules", icon: <Icon icon="check" />, onClick: runRules }]}
+actions={[{ id: "run-rules", label: "Run Rules", icon: "check", onClick: runRules }]}
 ```
 
 Anything that is genuinely a control rather than a command or a link goes to `customActions` unchanged.
