@@ -23,6 +23,7 @@ public static class IServiceCollectionExtensions
         services.AddScoped<IAuthorizationHandler, FamilyMemberAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, GroupOwnerAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, GroupOwnerResourceAuthorisationHandler>();
+        services.AddScoped<IAuthorizationHandler, TagFamilyResourceAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, BudgetLineAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, TagFamilyAuthorisationHandler>();
         services.AddScoped<IAuthorizationHandler, ForecastPlanAuthorisationHandler>();

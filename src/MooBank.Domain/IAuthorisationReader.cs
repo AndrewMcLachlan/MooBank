@@ -16,6 +16,12 @@ public interface IAuthorisationReader
 
     Task<Guid?> GetTagFamilyId(int tagId, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// The owning family of each of <paramref name="tagIds"/> that exists. An id absent from the
+    /// result does not exist; the caller decides what that means.
+    /// </summary>
+    Task<IReadOnlyDictionary<int, Guid>> GetTagFamilyIds(IEnumerable<int> tagIds, CancellationToken cancellationToken = default);
+
     Task<Guid?> GetForecastPlanFamilyId(Guid planId, CancellationToken cancellationToken = default);
 
     Task<Guid?> GetRetirementPlanFamilyId(Guid planId, CancellationToken cancellationToken = default);
