@@ -109,6 +109,9 @@ public static void MapTransactionEndpoints(this IEndpointRouteBuilder endpoints)
 - Note: the Transactions module intentionally applies `GetInstrumentViewerPolicy` to its whole
   endpoint group **including writes** (viewers may tag/annotate transactions). This is a settled
   decision — do not "tighten" it to the Owner policy.
+- The exception is destruction. `Delete Transaction` overrides the group with
+  `GetInstrumentOwnerPolicy("instrumentId")`: the viewer allowance covers describing a transaction,
+  not removing it and the splits, offsets and planned-item links that hang off it.
 
 ## Module Structure
 

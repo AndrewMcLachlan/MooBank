@@ -43,5 +43,12 @@ internal class TransactionsEndpoints : EndpointGroupBase
 
         builder.MapDeleteCommand<RemoveTag, Transaction>("{id}/tag/{tagId}")
             .WithNames("Remove Tag");
+
+        builder.MapQuery<GetDeleteImpact, Models.TransactionDeleteImpact>("{id}/delete-impact")
+            .WithNames("Get Transaction Delete Impact");
+
+        builder.MapDeleteCommand<Commands.Delete>("{id}")
+            .WithNames("Delete Transaction")
+            .RequireAuthorization(Policies.GetInstrumentOwnerPolicy("instrumentId"));
     }
 }

@@ -10,7 +10,10 @@ import { ExtraInfo } from "./ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
 import { notEquals } from "utils/equals";
 import { useUpdateTransaction } from "routes/accounts/-hooks/useUpdateTransaction";
+import { useDeleteTransaction } from "routes/accounts/-hooks/useDeleteTransaction";
 import { Amount } from "components/Amount";
+import { useAccount } from "components";
+import { DeleteTransaction } from "../components/DeleteTransaction";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
 
@@ -20,6 +23,20 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
     const [splits, setSplits] = useState<TransactionSplit[]>(transaction?.splits ?? []);
 
     const updateTransaction = useUpdateTransaction();
+    const deleteTransaction = useDeleteTransaction();
+
+    const account = useAccount();
+    const [showDelete, setShowDelete] = useState(false);
+
+    // Imported transactions come back on the next import, so deleting one only makes sense where
+    // the user is the source of the data.
+    const canDelete = account?.controller === "Manual" || account?.controller === "Virtual";
+
+    const onDelete = async () => {
+        await deleteTransaction.mutateAsync(transaction.accountId, transaction.id);
+        setShowDelete(false);
+        props.onHide();
+    };
 
     const onSave = (excludeFromReporting: boolean, notes: string, splits: TransactionSplit[]) => {
         updateTransaction.mutateAsync(transaction.accountId, transaction.id, { excludeFromReporting, notes, splits });
@@ -81,6 +98,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 </section>
             </Modal.Body>
             <Modal.Footer>
+                {canDelete && <Button variant="danger" onClick={() => setShowDelete(true)}>Delete</Button>}
                 <Button variant="outline-primary" onClick={props.onHide}>Close</Button>
                 {invalidSplits &&
                     <OverlayTrigger placement="top" overlay={<Popover id="splits-popover"><Popover.Body>The total of the splits must equal the transaction amount</Popover.Body></Popover>} >
@@ -89,6 +107,15 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                 }
                 {!invalidSplits && <Button variant="primary" disabled={updateTransaction.isPending} onClick={() => { onSave(excludeFromReporting, notes, splits) }}>Save</Button>}
             </Modal.Footer>
+            {canDelete &&
+                <DeleteTransaction
+                    transaction={transaction}
+                    show={showDelete}
+                    onCancel={() => setShowDelete(false)}
+                    onConfirm={onDelete}
+                    isDeleting={deleteTransaction.isPending}
+                />
+            }
         </Modal >
     );
 }

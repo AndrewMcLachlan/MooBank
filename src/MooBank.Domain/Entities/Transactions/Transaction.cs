@@ -181,6 +181,14 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
         EnsureMinimumSplit();
     }
 
+    /// <summary>
+    /// Readies the transaction for a hard delete.
+    /// </summary>
+    public void Delete()
+    {
+        Events.Add(new TransactionDeletedEvent(Id));
+    }
+
     public void UpdateProperties(string? notes, bool excludeFromReporting)
     {
         Notes = notes;
