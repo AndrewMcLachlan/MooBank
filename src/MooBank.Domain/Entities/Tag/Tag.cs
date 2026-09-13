@@ -12,8 +12,7 @@ public partial class Tag(int id) : KeyedEntity<int>(id), IEquatable<Tag>
 
     [Required]
     [MaxLength(50)]
-    [AllowNull]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     public bool Deleted { get; set; }
 

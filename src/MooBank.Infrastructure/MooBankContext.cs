@@ -55,89 +55,62 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         }
     }
 
-    [AllowNull]
     public virtual DbSet<BudgetLine> BudgetLines { get; set; }
 
-    [AllowNull]
     public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
 
-    [AllowNull]
     public virtual DbSet<Group> Groups { get; set; }
 
-    [AllowNull]
     public virtual DbSet<ImporterType> ImporterTypes { get; set; }
 
-    [AllowNull]
     public virtual DbSet<InstrumentOwner> InstrumentOwners { get; set; }
 
-    [AllowNull]
     public virtual DbSet<TransactionTagTotal> TransactionTagTotals { get; set; }
 
-    [AllowNull]
     public virtual DbSet<MonthlyTagTotal> MonthlyTagTotals { get; set; }
 
-    [AllowNull]
     public virtual DbSet<CreditDebitTotal> CreditDebitTotals { get; set; }
 
-    [AllowNull]
     public virtual DbSet<CreditDebitAverage> CreditDebitAverages { get; set; }
 
-    [AllowNull]
     public virtual DbSet<TagAverage> TopTagAverages { get; set; }
 
-    [AllowNull]
     public virtual DbSet<MonthlyBalance> MonthlyBalances { get; set; }
 
-    [AllowNull]
     public virtual DbSet<MonthlyCreditDebitTotal> MonthlyCreditDebitTotals { get; set; }
 
-    [AllowNull]
     public virtual DbSet<AccountCreditDebitTotal> AccountCreditDebitTotals { get; set; }
 
-    [AllowNull]
     public virtual DbSet<AccountMonthlyBalance> AccountMonthlyBalances { get; set; }
 
-    [AllowNull]
     public virtual DbSet<AccountMonthlyCreditDebitTotal> AccountMonthlyCreditDebitTotals { get; set; }
 
-    [AllowNull]
     public virtual DbSet<StockPriceHistory> StockPriceHistory { get; set; }
 
-    [AllowNull]
     public virtual DbSet<User> Users { get; set; }
 
-    [AllowNull]
     public virtual DbSet<CpiChange> CpiChanges { get; set; }
 
-    [AllowNull]
     public virtual DbSet<PensionRate> PensionRates { get; set; }
 
     public virtual DbSet<GrowthStrategyRate> GrowthStrategyRates { get; set; }
 
     public virtual DbSet<MinimumDrawdownRate> MinimumDrawdownRates { get; set; }
 
-    [AllowNull]
     public virtual DbSet<ForecastPlan> ForecastPlans { get; set; }
 
-    [AllowNull]
     public virtual DbSet<ForecastPlanAccount> ForecastPlanAccounts { get; set; }
 
-    [AllowNull]
     public virtual DbSet<ForecastPlannedItem> ForecastPlannedItems { get; set; }
 
-    [AllowNull]
     public virtual DbSet<PlannedItemFixedDate> PlannedItemFixedDates { get; set; }
 
-    [AllowNull]
     public virtual DbSet<PlannedItemSchedule> PlannedItemSchedules { get; set; }
 
-    [AllowNull]
     public virtual DbSet<RetirementPlan> RetirementPlans { get; set; }
 
-    [AllowNull]
     public virtual DbSet<RetirementPlanMember> RetirementPlanMembers { get; set; }
 
-    [AllowNull]
     public virtual DbSet<RetirementPlanMemberAccount> RetirementPlanMemberAccounts { get; set; }
 
     // Importer (and other) assemblies contribute their EF configurations to the shared model via this

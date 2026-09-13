@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.TagRelationships;
 
@@ -13,11 +12,9 @@ public class TagRelationship
 
     public long Ordinal { get; set; }
 
-    [AllowNull]
     [ForeignKey(nameof(Id))]
-    public virtual Tag.Tag Tag { get; set; }
+    public virtual Tag.Tag Tag { get; set; } = null!;
 
-    [AllowNull]
     [ForeignKey(nameof(ParentId))]
-    public virtual Tag.Tag ParentTag { get; set; }
+    public virtual Tag.Tag ParentTag { get; set; } = null!;
 }

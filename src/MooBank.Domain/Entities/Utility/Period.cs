@@ -28,7 +28,6 @@ public class Period : Entity
 
     public virtual ICollection<Usage> Usages { get; set; } = [];
 
-    [AllowNull]
     [ForeignKey("BillId")]
-    public virtual Bill Bill { get; set; }
+    public virtual Bill Bill { get; set; } = null!;
 }

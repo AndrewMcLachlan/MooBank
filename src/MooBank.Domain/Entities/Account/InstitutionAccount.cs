@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
@@ -20,10 +19,8 @@ public class InstitutionAccount(Guid id) : KeyedEntity<Guid>(id)
     public DateOnly? ClosedDate { get; set; }
 
     [ForeignKey(nameof(InstitutionId))]
-    [AllowNull]
-    public virtual Institution.Institution Institution { get; set; }
+    public virtual Institution.Institution Institution { get; set; } = null!;
 
     [ForeignKey(nameof(InstrumentId))]
-    [AllowNull]
-    public virtual LogicalAccount LogicalAccount { get; set; }
+    public virtual LogicalAccount LogicalAccount { get; set; } = null!;
 }
