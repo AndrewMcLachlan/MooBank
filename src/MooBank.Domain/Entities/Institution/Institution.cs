@@ -26,6 +26,5 @@ public class Institution : KeyedEntity<int>
     public int? ImporterTypeId { get; set; }
 
     [ForeignKey(nameof(ImporterTypeId))]
-    [AllowNull]
-    public virtual ImporterType ImporterType { get; set; }
+    public virtual ImporterType ImporterType { get; set; } = null!;
 }

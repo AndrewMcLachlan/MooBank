@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.Transactions;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Events;
 using Asm.MooBank.Domain.Tests.Support;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
@@ -988,8 +988,8 @@ public class TransactionTests
         // Add another split with different tag
         var updatedSplits = new List<TransactionSplit>
         {
-            new(existingSplit.Id) { Amount = 50m, Tags = [new DomainTag(1)] },
-            new(Guid.NewGuid()) { Amount = 50m, Tags = [new DomainTag(2)] },
+            new(existingSplit.Id) { Amount = 50m, Tags = [new DomainTag(1) { Name = null! }] },
+            new(Guid.NewGuid()) { Amount = 50m, Tags = [new DomainTag(2) { Name = null! }] },
         };
         transaction.UpdateSplits(updatedSplits);
 
@@ -1001,4 +1001,5 @@ public class TransactionTests
     }
 
     #endregion
+
 }

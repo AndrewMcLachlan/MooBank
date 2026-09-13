@@ -30,8 +30,7 @@ public class Bill(int id) : KeyedEntity<int>(id)
     public decimal? Cost { get; set; } // Computed column
 
     [ForeignKey("AccountId")]
-    [AllowNull]
-    public virtual Account Account { get; set; }
+    public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<Discount> Discounts { get; set; } = [];
 

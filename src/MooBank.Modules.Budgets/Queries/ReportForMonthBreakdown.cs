@@ -1,4 +1,5 @@
-﻿using Asm.MooBank.Domain.Entities.Tag;
+﻿using System.Diagnostics.CodeAnalysis;
+using Asm.MooBank.Domain.Entities.Tag;
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Domain.Entities.Transactions;
 using Asm.MooBank.Domain.Entities.Transactions.Specifications;
@@ -80,14 +81,15 @@ internal class ReportForMonthBreakdownHandler(IQueryable<Domain.Entities.Budget.
 /// </remarks>
 public class TagHierarchy : Domain.Entities.Tag.Tag
 {
+    [SetsRequiredMembers]
     public TagHierarchy(Domain.Entities.Tag.Tag tag) : base(tag.Id)
     {
         Name = tag.Name;
     }
 
-    public required int[] Ancestors { get; set; }
+    public required int[] Ancestors { get; set; } = [];
 
-    public required int[] Descendants { get; set; }
+    public required int[] Descendants { get; set; } = [];
 }
 
 public static class TagExtensions

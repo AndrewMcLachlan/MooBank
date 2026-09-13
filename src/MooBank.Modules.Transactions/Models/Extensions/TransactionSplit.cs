@@ -16,7 +16,9 @@ public static class TransactionSplitExtensions
         splits.Select(split => new Domain.Entities.Transactions.TransactionSplit(split.Id)
         {
             Amount = split.Amount,
-            Tags = [.. split.Tags.Select(tag => new Domain.Entities.Tag.Tag(tag.Id))],
+            // Name stays null: ExistingTagByIdInterceptor reads a nameless Tag as a reference to an
+            // existing row and leaves that row alone. A name here would be written.
+            Tags = [.. split.Tags.Select(tag => new Domain.Entities.Tag.Tag(tag.Id) { Name = null! })],
             OffsetBy = [.. split.OffsetBy.Select(offset => new Domain.Entities.Transactions.TransactionOffset
             {
                 OffsetTransactionId = offset.Transaction.Id,
