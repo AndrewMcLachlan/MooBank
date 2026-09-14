@@ -1,14 +1,20 @@
-using Asm.MooBank.Domain.Entities.Transactions;
+﻿using Asm.MooBank.Domain.Entities.Transactions;
 using Transaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 
 namespace Asm.MooBank.Infrastructure.Repositories;
 
-public class TransactionRepository(MooBankContext dataContext) : RepositoryWriteBase<MooBankContext, Transaction, Guid>(dataContext), ITransactionRepository
+public class TransactionRepository(MooBankContext dataContext) : RepositoryDeleteBase<MooBankContext, Transaction, Guid>(dataContext), ITransactionRepository
 {
     // Transaction loads serve write/system paths (rules, imports run without a user context), and a
     // transaction's EXISTING split tags are facts the split reconciliation must see in full — both
     // Tag filters are lifted. This cannot apply a soft-deleted tag: tags are only ever *added* from
     // rule loads, which keep the SoftDelete filter active.
+
+    public override void Delete(Guid id)
+    {
+        var transaction = Entities.Find(id) ?? throw new NotFoundException();
+        Entities.Remove(transaction);
+    }
 
     public async Task<IEnumerable<Transaction>> GetTransactions(Guid instrumentId, CancellationToken cancellationToken = default) =>
         await GetTransactionsQuery(instrumentId).ToListAsync(cancellationToken);

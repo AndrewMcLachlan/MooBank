@@ -107,6 +107,28 @@ public class ForecastPlan(Guid id) : KeyedEntity<Guid>(id)
         UpdatedUtc = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Drops a payment from whichever item claimed it, for a transaction that is going away.
+    /// </summary>
+    public void RemoveTransactionLinks(Guid transactionId)
+    {
+        var removed = false;
+
+        foreach (var item in PlannedItems)
+        {
+            foreach (var link in item.Transactions.Where(t => t.TransactionId == transactionId).ToList())
+            {
+                item.Transactions.Remove(link);
+                removed = true;
+            }
+        }
+
+        if (removed)
+        {
+            UpdatedUtc = DateTime.UtcNow;
+        }
+    }
+
     public void SetAccounts(IEnumerable<Guid> instrumentIds)
     {
         Accounts.Clear();

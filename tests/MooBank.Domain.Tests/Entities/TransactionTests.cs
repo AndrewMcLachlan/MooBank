@@ -1002,4 +1002,46 @@ public class TransactionTests
 
     #endregion
 
+    #region Transaction.Delete
+
+    /// <summary>
+    /// Given a transaction
+    /// When Delete is called
+    /// Then a TransactionDeletedEvent carrying its id should be raised
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Delete_RaisesTransactionDeletedEvent()
+    {
+        // Arrange
+        var transaction = _entities.CreateDebitTransaction(100m);
+
+        // Act
+        transaction.Delete();
+
+        // Assert
+        var deletedEvent = Assert.Single(transaction.Events.OfType<TransactionDeletedEvent>());
+        Assert.Equal(transaction.Id, deletedEvent.TransactionId);
+    }
+
+    /// <summary>
+    /// Given a transaction that offsets nothing
+    /// When Delete is called
+    /// Then it should leave the offset collection empty rather than throw
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Delete_WithNoOffsets_LeavesOffsetsEmpty()
+    {
+        // Arrange
+        var transaction = _entities.CreateDebitTransaction(100m);
+
+        // Act
+        transaction.Delete();
+
+        // Assert
+        Assert.Empty(transaction.OffsetFor);
+    }
+
+    #endregion
 }

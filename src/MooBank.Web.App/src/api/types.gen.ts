@@ -1064,6 +1064,21 @@ export type Transaction = {
     extraInfo?: unknown;
 };
 
+export type TransactionDeleteImpact = {
+    refunds: Array<TransactionDeleteImpactRefund>;
+    plannedItems: Array<TransactionDeleteImpactPlannedItem>;
+};
+
+export type TransactionDeleteImpactPlannedItem = {
+    planName: string;
+    itemName: string;
+};
+
+export type TransactionDeleteImpactRefund = {
+    amount: number;
+    description: null | string;
+};
+
 export type TransactionFilterType = 'None' | 'Credit' | 'Debit';
 
 export type TransactionOffsetBy = {
@@ -4545,6 +4560,25 @@ export type SetBalanceResponses = {
 
 export type SetBalanceResponse = SetBalanceResponses[keyof SetBalanceResponses];
 
+export type DeleteTransactionData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/accounts/{instrumentId}/transactions/{id}';
+};
+
+export type DeleteTransactionResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type DeleteTransactionResponse = DeleteTransactionResponses[keyof DeleteTransactionResponses];
+
 export type UpdateTransactionData = {
     body: UpdateTransaction;
     path?: never;
@@ -4600,6 +4634,32 @@ export type AddTagResponses = {
 };
 
 export type AddTagResponse = AddTagResponses[keyof AddTagResponses];
+
+export type GetTransactionDeleteImpactData = {
+    body?: never;
+    path: {
+        instrumentId: string;
+        id: string;
+    };
+    query?: never;
+    url: '/accounts/{instrumentId}/transactions/{id}/delete-impact';
+};
+
+export type GetTransactionDeleteImpactErrors = {
+    /**
+     * Not Found
+     */
+    404: unknown;
+};
+
+export type GetTransactionDeleteImpactResponses = {
+    /**
+     * OK
+     */
+    200: TransactionDeleteImpact;
+};
+
+export type GetTransactionDeleteImpactResponse = GetTransactionDeleteImpactResponses[keyof GetTransactionDeleteImpactResponses];
 
 export type GetUserData = {
     body?: never;
