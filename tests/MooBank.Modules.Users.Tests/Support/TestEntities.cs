@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Users.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainUser CreateDomainUser(
         Guid? id = null,
@@ -24,9 +24,9 @@ internal static class TestEntities
         var userId = id ?? Guid.NewGuid();
         var user = new DomainUser(userId)
         {
-            EmailAddress = email ?? Faker.Internet.Email(),
-            FirstName = firstName ?? Faker.Name.FirstName(),
-            LastName = lastName ?? Faker.Name.LastName(),
+            EmailAddress = email ?? _faker.Internet.Email(),
+            FirstName = firstName ?? _faker.Name.FirstName(),
+            LastName = lastName ?? _faker.Name.LastName(),
             Currency = currency,
             FamilyId = familyId ?? Guid.NewGuid(),
             PrimaryAccountId = primaryAccountId,
@@ -53,7 +53,7 @@ internal static class TestEntities
         {
             UserId = userId ?? Guid.NewGuid(),
             Last4Digits = last4Digits,
-            Name = name ?? Faker.Finance.CreditCardNumber()[^4..],
+            Name = name ?? _faker.Finance.CreditCardNumber()[^4..],
         };
     }
 

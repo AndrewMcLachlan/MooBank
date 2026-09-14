@@ -10,7 +10,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 [Trait("Category", "Unit")]
 public class MinimumDrawdownTests
 {
-    private static readonly DateOnly Today = new(2026, 1, 1);
+    private static readonly DateOnly _today = new(2026, 1, 1);
 
     private readonly RetirementProjectionEngine _engine = new();
 
@@ -21,7 +21,7 @@ public class MinimumDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 64, retirementAge: 65, currentIncome: 0m, accountBalances: [1_000_000m])]);
 
     private RetirementProjection Run(decimal target) =>
-        _engine.Calculate(Plan(target), Today, AgePensionRates.None, TestEntities.StrategyRates(Plan(target)), TestEntities.MinimumDrawdown());
+        _engine.Calculate(Plan(target), _today, AgePensionRates.None, TestEntities.StrategyRates(Plan(target)), TestEntities.MinimumDrawdown());
 
     /// <summary>
     /// Given a target well below the legislated minimum

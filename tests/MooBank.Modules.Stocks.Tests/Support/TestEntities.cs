@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Stocks.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainStockHolding CreateStockHolding(
         Guid? id = null,
@@ -26,9 +26,9 @@ internal static class TestEntities
         var holdingId = id ?? Guid.NewGuid();
         var stockHolding = new DomainStockHolding(holdingId)
         {
-            Name = name ?? Faker.Company.CompanyName(),
-            Description = description ?? Faker.Lorem.Sentence(),
-            Symbol = symbol ?? Faker.Finance.Currency().Code,
+            Name = name ?? _faker.Company.CompanyName(),
+            Description = description ?? _faker.Lorem.Sentence(),
+            Symbol = symbol ?? _faker.Finance.Currency().Code,
             CurrentPrice = currentPrice,
             Quantity = quantity,
             GainLoss = gainLoss,
@@ -64,7 +64,7 @@ internal static class TestEntities
             Quantity = quantity,
             Price = price,
             Fees = fees,
-            Description = description ?? Faker.Commerce.ProductName(),
+            Description = description ?? _faker.Commerce.ProductName(),
             TransactionDate = transactionDate ?? DateTime.UtcNow,
             TransactionType = transactionType,
         };

@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Assets.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static Asset CreateAsset(
         Guid? id = null,
@@ -24,8 +24,8 @@ internal static class TestEntities
 
         var asset = new Asset(assetId)
         {
-            Name = name ?? Faker.Commerce.ProductName(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Name = name ?? _faker.Commerce.ProductName(),
+            Description = description ?? _faker.Lorem.Sentence(),
             Value = value,
             PurchasePrice = purchasePrice,
             Currency = currency,

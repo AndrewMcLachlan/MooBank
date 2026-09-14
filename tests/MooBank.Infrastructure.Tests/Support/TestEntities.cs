@@ -15,7 +15,7 @@ namespace Asm.MooBank.Infrastructure.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainUser CreateUser(
         Guid? id = null,
@@ -27,9 +27,9 @@ internal static class TestEntities
     {
         return new DomainUser(id ?? Guid.NewGuid())
         {
-            EmailAddress = email ?? Faker.Internet.Email(),
-            FirstName = firstName ?? Faker.Name.FirstName(),
-            LastName = lastName ?? Faker.Name.LastName(),
+            EmailAddress = email ?? _faker.Internet.Email(),
+            FirstName = firstName ?? _faker.Name.FirstName(),
+            LastName = lastName ?? _faker.Name.LastName(),
             Currency = currency,
             FamilyId = familyId ?? Guid.NewGuid(),
         };
@@ -44,9 +44,9 @@ internal static class TestEntities
         return new Models.User
         {
             Id = id ?? Guid.NewGuid(),
-            EmailAddress = email ?? Faker.Internet.Email(),
-            FirstName = Faker.Name.FirstName(),
-            LastName = Faker.Name.LastName(),
+            EmailAddress = email ?? _faker.Internet.Email(),
+            FirstName = _faker.Name.FirstName(),
+            LastName = _faker.Name.LastName(),
             Currency = currency,
             FamilyId = familyId ?? Guid.NewGuid(),
             Accounts = [],
@@ -64,7 +64,7 @@ internal static class TestEntities
     {
         return new Group(id ?? Guid.NewGuid())
         {
-            Name = name ?? Faker.Commerce.Department(),
+            Name = name ?? _faker.Commerce.Department(),
             OwnerId = ownerId ?? Guid.NewGuid(),
             ShowPosition = showPosition,
             SortOrder = sortOrder,
@@ -105,7 +105,7 @@ internal static class TestEntities
     {
         var tag = new DomainTag(id)
         {
-            Name = name ?? Faker.Commerce.Department(),
+            Name = name ?? _faker.Commerce.Department(),
             FamilyId = familyId ?? Guid.NewGuid(),
             Deleted = deleted,
         };
@@ -134,7 +134,7 @@ internal static class TestEntities
     {
         return new LogicalAccount(id ?? Guid.NewGuid(), [])
         {
-            Name = name ?? Faker.Finance.AccountName(),
+            Name = name ?? _faker.Finance.AccountName(),
             Currency = currency,
             Balance = balance,
             AccountType = accountType,
@@ -199,7 +199,7 @@ internal static class TestEntities
     {
         var institution = new Institution(id)
         {
-            Name = name ?? Faker.Company.CompanyName(),
+            Name = name ?? _faker.Company.CompanyName(),
             InstitutionType = institutionType,
             ImporterTypeId = importerTypeId,
         };

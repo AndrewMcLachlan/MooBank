@@ -19,7 +19,7 @@ public class TagsAuthorizationTests(MooBankWebApplicationFactory factory)
     // Static so every test method (xUnit constructs a new class instance per test) agrees on the
     // seeded tag's family in the shared in-memory database. TagId is likewise unique across the
     // Authorization collection.
-    private static readonly Guid FamilyId = Guid.NewGuid();
+    private static readonly Guid _familyId = Guid.NewGuid();
     private const int TagId = 987_001;
 
     private Task SeedTagAsync() =>
@@ -27,7 +27,7 @@ public class TagsAuthorizationTests(MooBankWebApplicationFactory factory)
         {
             if (!await context.Set<Tag>().IgnoreQueryFilters().AnyAsync(t => t.Id == TagId))
             {
-                context.Add(new Tag(TagId) { Name = "Groceries", FamilyId = FamilyId });
+                context.Add(new Tag(TagId) { Name = "Groceries", FamilyId = _familyId });
                 await context.SaveChangesAsync();
             }
         });
@@ -73,7 +73,7 @@ public class TagsAuthorizationTests(MooBankWebApplicationFactory factory)
     public async Task GetTag_SameFamily_PassesAuth()
     {
         await SeedTagAsync();
-        var user = new TestUser { FamilyId = FamilyId };
+        var user = new TestUser { FamilyId = _familyId };
         var client = _factory.CreateAuthenticatedClient(user);
 
         var response = await client.GetAsync($"/api/tags/{TagId}", TestContext.Current.CancellationToken);

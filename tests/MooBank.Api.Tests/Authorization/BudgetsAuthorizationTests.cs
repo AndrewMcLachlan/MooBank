@@ -16,20 +16,20 @@ public class BudgetsAuthorizationTests(MooBankWebApplicationFactory factory)
 {
     private readonly MooBankWebApplicationFactory _factory = factory;
 
-    private static readonly Guid FamilyId = Guid.NewGuid();
-    private static readonly Guid BudgetId = Guid.NewGuid();
-    private static readonly Guid LineId = Guid.NewGuid();
+    private static readonly Guid _familyId = Guid.NewGuid();
+    private static readonly Guid _budgetId = Guid.NewGuid();
+    private static readonly Guid _lineId = Guid.NewGuid();
     private const short Year = 2026;
 
-    private string LineUrl => $"/api/budget/{Year}/lines/{LineId}";
+    private string LineUrl => $"/api/budget/{Year}/lines/{_lineId}";
 
     private Task SeedBudgetLineAsync() =>
         _factory.SeedDataAsync(async context =>
         {
-            if (!await context.Set<BudgetLine>().IgnoreQueryFilters().AnyAsync(bl => bl.Id == LineId))
+            if (!await context.Set<BudgetLine>().IgnoreQueryFilters().AnyAsync(bl => bl.Id == _lineId))
             {
-                context.Add(new Budget(BudgetId) { Year = Year, FamilyId = FamilyId });
-                context.Add(new BudgetLine(LineId) { BudgetId = BudgetId, TagId = 1, Amount = 100m });
+                context.Add(new Budget(_budgetId) { Year = Year, FamilyId = _familyId });
+                context.Add(new BudgetLine(_lineId) { BudgetId = _budgetId, TagId = 1, Amount = 100m });
                 await context.SaveChangesAsync();
             }
         });
@@ -75,7 +75,7 @@ public class BudgetsAuthorizationTests(MooBankWebApplicationFactory factory)
     public async Task GetBudgetLine_SameFamily_PassesAuth()
     {
         await SeedBudgetLineAsync();
-        var user = new TestUser { FamilyId = FamilyId };
+        var user = new TestUser { FamilyId = _familyId };
         var client = _factory.CreateAuthenticatedClient(user);
 
         var response = await client.GetAsync(LineUrl, TestContext.Current.CancellationToken);

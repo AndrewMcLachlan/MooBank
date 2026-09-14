@@ -11,9 +11,9 @@ namespace Asm.MooBank.Core.Tests.Security;
 /// </summary>
 public class SettableUserDataProviderTests
 {
-    private static readonly Guid TestUserId = Guid.NewGuid();
-    private static readonly Guid TestAccountId = Guid.NewGuid();
-    private static readonly Guid TestFamilyId = Guid.NewGuid();
+    private static readonly Guid _testUserId = Guid.NewGuid();
+    private static readonly Guid _testAccountId = Guid.NewGuid();
+    private static readonly Guid _testFamilyId = Guid.NewGuid();
 
     #region SetUser and GetCurrentUser
 
@@ -150,12 +150,12 @@ public class SettableUserDataProviderTests
     private static User CreateUser() =>
         new()
         {
-            Id = TestUserId,
+            Id = _testUserId,
             EmailAddress = "test@test.com",
             FirstName = "Test",
             LastName = "User",
             Currency = "AUD",
-            FamilyId = TestFamilyId,
-            Accounts = [TestAccountId],
+            FamilyId = _testFamilyId,
+            Accounts = [_testAccountId],
         };
 }

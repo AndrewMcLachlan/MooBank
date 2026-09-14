@@ -17,8 +17,8 @@ public class MacquarieImporterTests
 {
     private const string Header = "Transaction Date,Details,Account,Category,Subcategory,Tags,Notes,Debit,Credit,Balance,Original Description";
 
-    private static readonly Guid InstrumentId = Guid.NewGuid();
-    private static readonly Guid InstitutionAccountId = Guid.NewGuid();
+    private static readonly Guid _instrumentId = Guid.NewGuid();
+    private static readonly Guid _institutionAccountId = Guid.NewGuid();
 
     private readonly Mock<ITransactionRawRepository> _rawRepositoryMock = new();
     private readonly Mock<MooBank.Domain.Entities.Transactions.ITransactionRepository> _transactionRepositoryMock = new();
@@ -47,7 +47,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        var result = await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        var result = await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Salary,Account,Income,Wages,,,,1500.00,5000.00,Salary"),
             TestContext.Current.CancellationToken);
 
@@ -68,7 +68,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Groceries,Account,Food,Supermarket,,,45.50,,4954.50,Woolworths"),
             TestContext.Current.CancellationToken);
 
@@ -87,7 +87,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Payment,Account,Bills,Electricity,,,80.00,,4920.00,BPAY"),
             TestContext.Current.CancellationToken);
 
@@ -105,7 +105,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Move money,Account,Transfer,Transfers,,,100.00,,4900.00,Transfer"),
             TestContext.Current.CancellationToken);
 
@@ -127,7 +127,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,No amount,Account,Cat,Sub,,,,,4900.00,Desc"),
             TestContext.Current.CancellationToken);
 
@@ -144,7 +144,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Both amounts,Account,Cat,Sub,,,10.00,20.00,4900.00,Desc"),
             TestContext.Current.CancellationToken);
 
@@ -161,7 +161,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,,Account,Cat,Sub,,,45.00,,4900.00,Desc"),
             TestContext.Current.CancellationToken);
 
@@ -178,7 +178,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "not-a-date,Groceries,Account,Cat,Sub,,,45.00,,4900.00,Desc"),
             TestContext.Current.CancellationToken);
 
@@ -195,7 +195,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        var result = await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        var result = await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Pending,Account,Cat,Sub,,,45.00,,,Desc"),
             TestContext.Current.CancellationToken);
 
@@ -213,7 +213,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        var result = await importer.Import(InstrumentId, InstitutionAccountId, ToStream(), TestContext.Current.CancellationToken);
+        var result = await importer.Import(_instrumentId, _institutionAccountId, ToStream(), TestContext.Current.CancellationToken);
 
         Assert.Empty(result.Transactions);
         Assert.Null(result.EndBalance);
@@ -232,12 +232,12 @@ public class MacquarieImporterTests
     public async Task Import_ExactDuplicate_IsSkipped()
     {
         _rawRepositoryMock
-            .Setup(r => r.GetSummaries(InstrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetSummaries(_instrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([new TransactionRawSummary("Groceries", new DateOnly(2024, 6, 20), 0m, 45.50m, 4954.50m)]);
 
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Groceries,Account,Food,Supermarket,,,45.50,,4954.50,Woolworths"),
             TestContext.Current.CancellationToken);
 
@@ -253,17 +253,17 @@ public class MacquarieImporterTests
     public async Task Import_PendingMatch_UpdatesBalanceAndSkips()
     {
         _rawRepositoryMock
-            .Setup(r => r.GetSummaries(InstrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetSummaries(_instrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([new TransactionRawSummary("Groceries", new DateOnly(2024, 6, 20), 0m, 45.50m, null)]);
 
         var pending = new TransactionRaw(Guid.NewGuid()) { Balance = null };
         _rawRepositoryMock
-            .Setup(r => r.GetZeroBalance(InstrumentId, "Groceries", new DateOnly(2024, 6, 20), 45.50m, 0m, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetZeroBalance(_instrumentId, "Groceries", new DateOnly(2024, 6, 20), 45.50m, 0m, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pending);
 
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Groceries,Account,Food,Supermarket,,,45.50,,4954.50,Woolworths"),
             TestContext.Current.CancellationToken);
 
@@ -280,7 +280,7 @@ public class MacquarieImporterTests
     public async Task Import_AmountMatchButNoPendingRow_InsertsAsNew()
     {
         _rawRepositoryMock
-            .Setup(r => r.GetSummaries(InstrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetSummaries(_instrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([new TransactionRawSummary("Groceries", new DateOnly(2024, 6, 20), 0m, 45.50m, 9999.00m)]);
 
         _rawRepositoryMock
@@ -289,7 +289,7 @@ public class MacquarieImporterTests
 
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,Groceries,Account,Food,Supermarket,,,45.50,,4954.50,Woolworths"),
             TestContext.Current.CancellationToken);
 
@@ -314,7 +314,7 @@ public class MacquarieImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20 Jun 2024,First,Account,Cat,Sub,,,10.00,,4990.00,d1a",
             "20 Jun 2024,Second,Account,Cat,Sub,,,10.00,,4980.00,d1b",
             "19 Jun 2024,Third,Account,Cat,Sub,,,10.00,,4970.00,d2a"),
@@ -340,7 +340,7 @@ public class MacquarieImporterTests
     {
         var transactionId = Guid.NewGuid();
         var transaction = MooBank.Domain.Entities.Transactions.Transaction.Create(
-            InstrumentId, null, 1m, "Stale", new DateTime(2024, 1, 1), null, "Macquarie Import", InstitutionAccountId,
+            _instrumentId, null, 1m, "Stale", new DateTime(2024, 1, 1), null, "Macquarie Import", _institutionAccountId,
             transactionType: DomainTransactionType.Credit);
 
         var raw = new TransactionRaw(Guid.NewGuid())
@@ -355,15 +355,15 @@ public class MacquarieImporterTests
         };
 
         _transactionRepositoryMock
-            .Setup(r => r.GetTransactionIds(InstrumentId, InstitutionAccountId, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetTransactionIds(_instrumentId, _institutionAccountId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([transactionId]);
         _rawRepositoryMock
-            .Setup(r => r.GetAll(InstrumentId, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetAll(_instrumentId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([raw]);
 
         var importer = CreateImporter();
 
-        await importer.Reprocess(InstrumentId, InstitutionAccountId, TestContext.Current.CancellationToken);
+        await importer.Reprocess(_instrumentId, _institutionAccountId, TestContext.Current.CancellationToken);
 
         Assert.Equal(DomainTransactionType.Debit, transaction.TransactionType);
         Assert.Equal(-45.50m, transaction.Amount);

@@ -19,7 +19,7 @@ internal class CreatePlanHandler(
     IUnitOfWork unitOfWork,
     User user) : ICommandHandler<CreatePlan, Models.ForecastPlan>
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
     /// <summary>
     /// How far back the expense model is fitted over by default. Two years rather than one: the fit
     /// needs enough months, and enough variation in income, to find a slope at all.
@@ -69,8 +69,8 @@ internal class CreatePlanHandler(
             StartingBalanceMode = request.Plan.StartingBalanceMode,
             StartingBalanceAmount = startingBalance,
             CurrencyCode = request.Plan.CurrencyCode ?? user.Currency,
-            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
-            AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, JsonOptions) : null,
+            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, _jsonOptions),
+            AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, _jsonOptions) : null,
             CreatedUtc = DateTime.UtcNow,
             UpdatedUtc = DateTime.UtcNow
         };

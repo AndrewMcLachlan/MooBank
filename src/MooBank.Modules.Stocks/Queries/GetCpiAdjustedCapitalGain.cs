@@ -3,14 +3,14 @@ using Asm.MooBank.Services;
 
 namespace Asm.MooBank.Modules.Stocks.Queries;
 
-public record GetCpiAdjustedCapitalGain(Guid instrumentId) : IQuery<decimal>;
+public record GetCpiAdjustedCapitalGain(Guid InstrumentId) : IQuery<decimal>;
 
 internal class GetCpiAdjustedCapitalGainHandler(IQueryable<StockHolding> stockHoldings, ICpiService cpiService) : IQueryHandler<GetCpiAdjustedCapitalGain, decimal>
 {
     public async ValueTask<decimal> Handle(GetCpiAdjustedCapitalGain request, CancellationToken cancellationToken)
     {
-        var stockHolding = await stockHoldings.Include(t => t.Transactions).Where(t => t.Id == request.instrumentId).SingleOrDefaultAsync(cancellationToken)
-            ?? throw new NotFoundException($"Stock holding with ID {request.instrumentId} not found.");
+        var stockHolding = await stockHoldings.Include(t => t.Transactions).Where(t => t.Id == request.InstrumentId).SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException($"Stock holding with ID {request.InstrumentId} not found.");
 
         decimal totalAdjustedGain = 0;
 

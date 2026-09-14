@@ -45,11 +45,11 @@ internal class GetHandler(IQueryable<Domain.Entities.Transactions.StockTransacti
 
 file static class IQueryableExtensions
 {
-    private static readonly PropertyInfo[] TransactionProperties;
+    private static readonly PropertyInfo[] _transactionProperties;
 
     static IQueryableExtensions()
     {
-        TransactionProperties = typeof(StockTransaction).GetProperties();
+        _transactionProperties = typeof(StockTransaction).GetProperties();
     }
 
     public static IQueryable<Domain.Entities.Transactions.StockTransaction> Where(this IQueryable<Domain.Entities.Transactions.StockTransaction> queryable, Get query)
@@ -65,7 +65,7 @@ file static class IQueryableExtensions
     {
         if (!String.IsNullOrWhiteSpace(field))
         {
-            PropertyInfo? property = TransactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
+            PropertyInfo? property = _transactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
 
             // Hiding implementation details from the front-end
             if (field == "User") field = "User.FirstName";

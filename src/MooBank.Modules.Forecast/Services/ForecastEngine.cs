@@ -15,7 +15,7 @@ internal class ForecastEngine(
     IPlannedItemMatcher plannedItemMatcher,
     User user) : IForecastEngine
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public async Task<ForecastResult> Calculate(DomainForecastPlan plan, CancellationToken cancellationToken = default)
     {
@@ -49,7 +49,7 @@ internal class ForecastEngine(
         //    income items and nowhere else.
         var outgoingStrategy = String.IsNullOrEmpty(plan.OutgoingStrategySerialized)
             ? new OutgoingStrategy()
-            : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions)!;
+            : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, _jsonOptions)!;
 
         // 6. Determine starting balance (uses all selected accounts)
         var startingBalance = await CalculateStartingBalance(plan, allInstruments, accountIds, cancellationToken);

@@ -11,18 +11,18 @@ public class SortSpecification(ISortable sort) : ISpecification<Transaction>
 
 file static class Extensions
 {
-    private static readonly PropertyInfo[] TransactionProperties;
+    private static readonly PropertyInfo[] _transactionProperties;
 
     static Extensions()
     {
-        TransactionProperties = typeof(Transaction).GetProperties();
+        _transactionProperties = typeof(Transaction).GetProperties();
     }
 
     public static IOrderedQueryable<Transaction> Sort(this IQueryable<Transaction> query, string? field, SortDirection direction)
     {
         if (!String.IsNullOrWhiteSpace(field))
         {
-            //PropertyInfo? property = TransactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
+            //PropertyInfo? property = _transactionProperties.SingleOrDefault(p => p.Name.Equals(field, StringComparison.OrdinalIgnoreCase)) ?? throw new ArgumentException($"Unknown field {field}", nameof(field));
 
             ParameterExpression param = Expression.Parameter(typeof(Transaction), String.Empty);
 

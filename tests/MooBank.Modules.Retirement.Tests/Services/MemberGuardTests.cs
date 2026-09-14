@@ -18,26 +18,26 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 [Trait("Category", "Unit")]
 public class MemberGuardTests
 {
-    private static readonly Guid FamilyId = Guid.NewGuid();
-    private static readonly Guid SelfId = Guid.NewGuid();
-    private static readonly Guid SpouseId = Guid.NewGuid();
-    private static readonly Guid OutsiderId = Guid.NewGuid();
-    private static readonly Guid SelfInstrument = Guid.NewGuid();
-    private static readonly Guid SpouseInstrument = Guid.NewGuid();
+    private static readonly Guid _familyId = Guid.NewGuid();
+    private static readonly Guid _selfId = Guid.NewGuid();
+    private static readonly Guid _spouseId = Guid.NewGuid();
+    private static readonly Guid _outsiderId = Guid.NewGuid();
+    private static readonly Guid _selfInstrument = Guid.NewGuid();
+    private static readonly Guid _spouseInstrument = Guid.NewGuid();
 
     private static MemberGuard CreateGuard() =>
         new(
             QueryableHelper.CreateAsyncQueryable<DomainUser>([
-                new(SelfId) { EmailAddress = "self@example.com", FamilyId = FamilyId },
-                new(SpouseId) { EmailAddress = "spouse@example.com", FamilyId = FamilyId },
+                new(_selfId) { EmailAddress = "self@example.com", FamilyId = _familyId },
+                new(_spouseId) { EmailAddress = "spouse@example.com", FamilyId = _familyId },
                 // Same application, different household.
-                new(OutsiderId) { EmailAddress = "outsider@example.com", FamilyId = Guid.NewGuid() },
+                new(_outsiderId) { EmailAddress = "outsider@example.com", FamilyId = Guid.NewGuid() },
             ]),
             QueryableHelper.CreateAsyncQueryable<InstrumentOwner>([
-                new() { UserId = SelfId, InstrumentId = SelfInstrument },
-                new() { UserId = SpouseId, InstrumentId = SpouseInstrument },
+                new() { UserId = _selfId, InstrumentId = _selfInstrument },
+                new() { UserId = _spouseId, InstrumentId = _spouseInstrument },
             ]),
-            TestEntities.CreateUser(SelfId, FamilyId));
+            TestEntities.CreateUser(_selfId, _familyId));
 
     private static RetirementPlanMember Member(Guid userId, params Guid[] instrumentIds) =>
         new() { UserId = userId, CurrentAge = 45, CurrentIncome = 100_000m, RetirementAge = 65, InstrumentIds = instrumentIds };
@@ -50,7 +50,7 @@ public class MemberGuardTests
     [Fact]
     public async Task Assert_OwnFamilyWithTheirOwnAccounts_IsAllowed()
     {
-        await CreateGuard().Assert([Member(SelfId, SelfInstrument), Member(SpouseId, SpouseInstrument)], TestContext.Current.CancellationToken);
+        await CreateGuard().Assert([Member(_selfId, _selfInstrument), Member(_spouseId, _spouseInstrument)], TestContext.Current.CancellationToken);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public class MemberGuardTests
     public async Task Assert_PersonFromAnotherFamily_IsRefused()
     {
         await Assert.ThrowsAsync<NotAuthorisedException>(() =>
-            CreateGuard().Assert([Member(OutsiderId)], TestContext.Current.CancellationToken));
+            CreateGuard().Assert([Member(_outsiderId)], TestContext.Current.CancellationToken));
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public class MemberGuardTests
     public async Task Assert_AccountBelongingToAnotherPerson_IsRefused()
     {
         await Assert.ThrowsAsync<NotAuthorisedException>(() =>
-            CreateGuard().Assert([Member(SelfId, SpouseInstrument)], TestContext.Current.CancellationToken));
+            CreateGuard().Assert([Member(_selfId, _spouseInstrument)], TestContext.Current.CancellationToken));
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class MemberGuardTests
     public async Task Assert_AccountOwnedByNobody_IsRefused()
     {
         await Assert.ThrowsAsync<NotAuthorisedException>(() =>
-            CreateGuard().Assert([Member(SelfId, Guid.NewGuid())], TestContext.Current.CancellationToken));
+            CreateGuard().Assert([Member(_selfId, Guid.NewGuid())], TestContext.Current.CancellationToken));
     }
 
     /// <summary>

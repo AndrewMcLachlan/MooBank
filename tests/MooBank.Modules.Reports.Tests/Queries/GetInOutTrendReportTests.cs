@@ -10,7 +10,7 @@ namespace Asm.MooBank.Modules.Reports.Tests.Queries;
 [Trait("Category", "Unit")]
 public class GetInOutTrendReportTests
 {
-    private static readonly Guid TestAccountId = Guid.NewGuid();
+    private static readonly Guid _testAccountId = Guid.NewGuid();
 
     [Fact]
     public async Task Handle_ValidQuery_ReturnsReportWithAccountAndDates()
@@ -24,7 +24,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = start,
             End = end,
         };
@@ -34,7 +34,7 @@ public class GetInOutTrendReportTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(TestAccountId, result.AccountId);
+        Assert.Equal(_testAccountId, result.AccountId);
         Assert.Equal(start, result.Start);
         Assert.Equal(end, result.End);
     }
@@ -49,7 +49,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-3)),
             End = DateOnly.FromDateTime(DateTime.Today),
         };
@@ -68,8 +68,8 @@ public class GetInOutTrendReportTests
         // Arrange
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 1000m, DateTime.Today.AddDays(-5), TransactionType.Credit),
-            CreateTransaction(TestAccountId, 500m, DateTime.Today.AddDays(-3), TransactionType.Credit),
+            CreateTransaction(_testAccountId, 1000m, DateTime.Today.AddDays(-5), TransactionType.Credit),
+            CreateTransaction(_testAccountId, 500m, DateTime.Today.AddDays(-3), TransactionType.Credit),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -77,7 +77,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
         };
@@ -97,8 +97,8 @@ public class GetInOutTrendReportTests
         // Arrange
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -200m, DateTime.Today.AddDays(-5), TransactionType.Debit),
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-3), TransactionType.Debit),
+            CreateTransaction(_testAccountId, -200m, DateTime.Today.AddDays(-5), TransactionType.Debit),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-3), TransactionType.Debit),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -106,7 +106,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
         };
@@ -128,10 +128,10 @@ public class GetInOutTrendReportTests
         // Arrange
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 1000m, DateTime.Today.AddDays(-10), TransactionType.Credit),
-            CreateTransaction(TestAccountId, -200m, DateTime.Today.AddDays(-5), TransactionType.Debit),
-            CreateTransaction(TestAccountId, 500m, DateTime.Today.AddDays(-3), TransactionType.Credit),
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-2), TransactionType.Debit),
+            CreateTransaction(_testAccountId, 1000m, DateTime.Today.AddDays(-10), TransactionType.Credit),
+            CreateTransaction(_testAccountId, -200m, DateTime.Today.AddDays(-5), TransactionType.Debit),
+            CreateTransaction(_testAccountId, 500m, DateTime.Today.AddDays(-3), TransactionType.Credit),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-2), TransactionType.Debit),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -139,7 +139,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
         };
@@ -161,9 +161,9 @@ public class GetInOutTrendReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 1000m, thisMonth, TransactionType.Credit),
-            CreateTransaction(TestAccountId, 500m, thisMonth.AddDays(-5), TransactionType.Credit),
-            CreateTransaction(TestAccountId, 800m, lastMonth, TransactionType.Credit),
+            CreateTransaction(_testAccountId, 1000m, thisMonth, TransactionType.Credit),
+            CreateTransaction(_testAccountId, 500m, thisMonth.AddDays(-5), TransactionType.Credit),
+            CreateTransaction(_testAccountId, 800m, lastMonth, TransactionType.Credit),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -171,7 +171,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-2)),
             End = DateOnly.FromDateTime(DateTime.Today),
         };
@@ -193,9 +193,9 @@ public class GetInOutTrendReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 300m, month3, TransactionType.Credit),
-            CreateTransaction(TestAccountId, 100m, month1, TransactionType.Credit),
-            CreateTransaction(TestAccountId, 200m, month2, TransactionType.Credit),
+            CreateTransaction(_testAccountId, 300m, month3, TransactionType.Credit),
+            CreateTransaction(_testAccountId, 100m, month1, TransactionType.Credit),
+            CreateTransaction(_testAccountId, 200m, month2, TransactionType.Credit),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -203,7 +203,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(month1.AddDays(-10)),
             End = DateOnly.FromDateTime(month3.AddDays(10)),
         };
@@ -227,9 +227,9 @@ public class GetInOutTrendReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 1000m, baseDate, TransactionType.Credit),
-            CreateTransaction(TestAccountId, 500m, baseDate.AddDays(5), TransactionType.Credit),
-            CreateTransaction(TestAccountId, 250m, baseDate.AddDays(10), TransactionType.Credit),
+            CreateTransaction(_testAccountId, 1000m, baseDate, TransactionType.Credit),
+            CreateTransaction(_testAccountId, 500m, baseDate.AddDays(5), TransactionType.Credit),
+            CreateTransaction(_testAccountId, 250m, baseDate.AddDays(10), TransactionType.Credit),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -237,7 +237,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(baseDate.AddDays(-10)),
             End = DateOnly.FromDateTime(baseDate.AddDays(15)),
         };
@@ -259,7 +259,7 @@ public class GetInOutTrendReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 1000m, DateTime.Today.AddDays(-5), TransactionType.Credit),
+            CreateTransaction(_testAccountId, 1000m, DateTime.Today.AddDays(-5), TransactionType.Credit),
             CreateTransaction(otherAccountId, 5000m, DateTime.Today.AddDays(-5), TransactionType.Credit),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
@@ -268,7 +268,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
         };
@@ -287,8 +287,8 @@ public class GetInOutTrendReportTests
         // Arrange
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 1000m, DateTime.Today.AddDays(-5), TransactionType.Credit),   // In range
-            CreateTransaction(TestAccountId, 5000m, DateTime.Today.AddMonths(-6), TransactionType.Credit), // Out of range
+            CreateTransaction(_testAccountId, 1000m, DateTime.Today.AddDays(-5), TransactionType.Credit),   // In range
+            CreateTransaction(_testAccountId, 5000m, DateTime.Today.AddMonths(-6), TransactionType.Credit), // Out of range
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -296,7 +296,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
         };
@@ -313,8 +313,8 @@ public class GetInOutTrendReportTests
     public async Task Handle_ExcludesTransactionsMarkedExcludeFromReporting()
     {
         // Arrange
-        var includedTransaction = CreateTransaction(TestAccountId, 1000m, DateTime.Today.AddDays(-5), TransactionType.Credit);
-        var excludedTransaction = CreateTransaction(TestAccountId, 5000m, DateTime.Today.AddDays(-5), TransactionType.Credit);
+        var includedTransaction = CreateTransaction(_testAccountId, 1000m, DateTime.Today.AddDays(-5), TransactionType.Credit);
+        var excludedTransaction = CreateTransaction(_testAccountId, 5000m, DateTime.Today.AddDays(-5), TransactionType.Credit);
         excludedTransaction.ExcludeFromReporting = true;
 
         var transactions = new[] { includedTransaction, excludedTransaction };
@@ -324,7 +324,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
         };
@@ -345,7 +345,7 @@ public class GetInOutTrendReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 1000m, transactionDate, TransactionType.Credit),
+            CreateTransaction(_testAccountId, 1000m, transactionDate, TransactionType.Credit),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -353,7 +353,7 @@ public class GetInOutTrendReportTests
 
         var query = new GetInOutTrendReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(transactionDate.AddMonths(-1)),
             End = DateOnly.FromDateTime(transactionDate.AddMonths(1)),
         };

@@ -12,7 +12,7 @@ namespace Asm.MooBank.Api;
 
 public static class IServiceCollectionExtensions
 {
-    private static readonly HybridCacheEntryOptions CacheOptions = new()
+    private static readonly HybridCacheEntryOptions _cacheOptions = new()
     {
         Expiration = TimeSpan.FromMinutes(5),
     };
@@ -108,7 +108,7 @@ public static class IServiceCollectionExtensions
                         audit.LoginSuccess(userId, principal.GetClaimValue<string>(ClaimTypes.Email) ?? String.Empty);
 
                         return claims;
-                    }, CacheOptions, cancellationToken: CancellationToken.None);
+                    }, _cacheOptions, cancellationToken: CancellationToken.None);
 
                     principal.AddIdentity(new(claims.Select(c => new Claim(c.Item1, c.Item2))));
                 }

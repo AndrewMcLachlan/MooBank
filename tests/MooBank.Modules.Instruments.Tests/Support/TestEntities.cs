@@ -15,7 +15,7 @@ namespace Asm.MooBank.Modules.Instruments.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static LogicalAccount CreateInstrument(
         Guid? id = null,
@@ -29,8 +29,8 @@ internal static class TestEntities
         var instrumentId = id ?? Guid.NewGuid();
         var instrument = new LogicalAccount(instrumentId, [])
         {
-            Name = name ?? Faker.Finance.AccountName(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Name = name ?? _faker.Finance.AccountName(),
+            Description = description ?? _faker.Lorem.Sentence(),
             Currency = currency,
             AccountType = accountType,
         };
@@ -72,8 +72,8 @@ internal static class TestEntities
         var virtualInstrument = new DomainVirtualInstrument(virtualInstrumentId)
         {
             ParentInstrumentId = parentId ?? Guid.NewGuid(),
-            Name = name ?? Faker.Finance.AccountName(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Name = name ?? _faker.Finance.AccountName(),
+            Description = description ?? _faker.Lorem.Sentence(),
             Currency = currency,
             Balance = balance,
             Controller = controller,
@@ -103,7 +103,7 @@ internal static class TestEntities
         return new RecurringTransaction(id ?? Guid.NewGuid())
         {
             VirtualInstrumentId = virtualInstrumentId ?? Guid.NewGuid(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Description = description ?? _faker.Lorem.Sentence(),
             Amount = amount,
             Schedule = schedule,
             NextRun = nextRun ?? DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7)),
@@ -122,7 +122,7 @@ internal static class TestEntities
         var accountId = id ?? Guid.NewGuid();
         var account = new LogicalAccount(accountId, [])
         {
-            Name = name ?? Faker.Finance.AccountName(),
+            Name = name ?? _faker.Finance.AccountName(),
             Currency = currency,
             Balance = balance,
             AccountType = AccountType.Transaction,
@@ -155,8 +155,8 @@ internal static class TestEntities
     {
         return new CreateVirtualInstrument
         {
-            Name = name ?? Faker.Finance.AccountName(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Name = name ?? _faker.Finance.AccountName(),
+            Description = description ?? _faker.Lorem.Sentence(),
             OpeningBalance = openingBalance,
             Controller = controller,
         };
@@ -182,8 +182,8 @@ internal static class TestEntities
         var rule = new DomainRule(id)
         {
             InstrumentId = instrumentId ?? Guid.NewGuid(),
-            Contains = contains ?? Faker.Commerce.ProductName(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Contains = contains ?? _faker.Commerce.ProductName(),
+            Description = description ?? _faker.Lorem.Sentence(),
         };
 
         if (tags != null)
@@ -205,7 +205,7 @@ internal static class TestEntities
     {
         return new DomainTag(id)
         {
-            Name = name ?? Faker.Commerce.Department(),
+            Name = name ?? _faker.Commerce.Department(),
             FamilyId = familyId ?? Guid.NewGuid(),
             Deleted = deleted,
         };
@@ -218,7 +218,7 @@ internal static class TestEntities
         return new MooBank.Models.Tag
         {
             Id = id,
-            Name = name ?? Faker.Commerce.Department(),
+            Name = name ?? _faker.Commerce.Department(),
             Tags = [],
             Settings = new() { ApplySmoothing = false, ExcludeFromReporting = false },
         };
@@ -231,8 +231,8 @@ internal static class TestEntities
     {
         return new Instruments.Models.Rules.UpdateRule
         {
-            Contains = contains ?? Faker.Commerce.ProductName(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Contains = contains ?? _faker.Commerce.ProductName(),
+            Description = description ?? _faker.Lorem.Sentence(),
             Tags = tags ?? [],
         };
     }
@@ -268,8 +268,8 @@ internal static class TestEntities
     {
         var holding = new DomainStockHolding(id ?? Guid.NewGuid())
         {
-            Name = name ?? Faker.Company.CompanyName() + " Shares",
-            Description = description ?? Faker.Lorem.Sentence(),
+            Name = name ?? _faker.Company.CompanyName() + " Shares",
+            Description = description ?? _faker.Lorem.Sentence(),
             Currency = currency,
             CurrentValue = currentValue,
         };
@@ -302,8 +302,8 @@ internal static class TestEntities
     {
         var asset = new DomainAsset(id ?? Guid.NewGuid())
         {
-            Name = name ?? Faker.Commerce.ProductName(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Name = name ?? _faker.Commerce.ProductName(),
+            Description = description ?? _faker.Lorem.Sentence(),
             Currency = currency,
             Value = value,
         };
@@ -337,7 +337,7 @@ internal static class TestEntities
         var instrumentId = id ?? Guid.NewGuid();
         var instrument = new LogicalAccount(instrumentId, [])
         {
-            Name = name ?? Faker.Finance.AccountName(),
+            Name = name ?? _faker.Finance.AccountName(),
             Currency = currency,
             Balance = balance,
             AccountType = AccountType.Transaction,
