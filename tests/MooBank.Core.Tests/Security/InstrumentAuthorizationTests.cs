@@ -10,9 +10,9 @@ namespace Asm.MooBank.Core.Tests.Security;
 /// </summary>
 public class InstrumentAuthorizationTests
 {
-    private static readonly Guid OwnedInstrumentId = new("aaaaaaaa-bbbb-cccc-1111-222233334444");
-    private static readonly Guid SharedInstrumentId = new("dddddddd-eeee-ffff-4444-555566667777");
-    private static readonly Guid UnauthorizedInstrumentId = new("11112222-3333-4444-5555-666677778888");
+    private static readonly Guid _ownedInstrumentId = new("aaaaaaaa-bbbb-cccc-1111-222233334444");
+    private static readonly Guid _sharedInstrumentId = new("dddddddd-eeee-ffff-4444-555566667777");
+    private static readonly Guid _unauthorizedInstrumentId = new("11112222-3333-4444-5555-666677778888");
 
     #region Owner Authorization
 
@@ -26,10 +26,10 @@ public class InstrumentAuthorizationTests
     public void OwnerAuthorization_ForOwnedInstrument_Succeeds()
     {
         // Arrange
-        var user = CreateUser(accounts: [OwnedInstrumentId]);
+        var user = CreateUser(accounts: [_ownedInstrumentId]);
 
         // Act
-        var isAuthorized = IsOwnerAuthorized(user, OwnedInstrumentId);
+        var isAuthorized = IsOwnerAuthorized(user, _ownedInstrumentId);
 
         // Assert
         Assert.True(isAuthorized);
@@ -45,10 +45,10 @@ public class InstrumentAuthorizationTests
     public void OwnerAuthorization_ForNonOwnedInstrument_Fails()
     {
         // Arrange
-        var user = CreateUser(accounts: [OwnedInstrumentId]);
+        var user = CreateUser(accounts: [_ownedInstrumentId]);
 
         // Act
-        var isAuthorized = IsOwnerAuthorized(user, UnauthorizedInstrumentId);
+        var isAuthorized = IsOwnerAuthorized(user, _unauthorizedInstrumentId);
 
         // Assert
         Assert.False(isAuthorized);
@@ -67,7 +67,7 @@ public class InstrumentAuthorizationTests
         User? user = null;
 
         // Act
-        var isAuthorized = IsOwnerAuthorized(user, OwnedInstrumentId);
+        var isAuthorized = IsOwnerAuthorized(user, _ownedInstrumentId);
 
         // Assert
         Assert.False(isAuthorized);
@@ -87,10 +87,10 @@ public class InstrumentAuthorizationTests
     public void ViewerAuthorization_ForOwnedInstrument_Succeeds()
     {
         // Arrange
-        var user = CreateUser(accounts: [OwnedInstrumentId]);
+        var user = CreateUser(accounts: [_ownedInstrumentId]);
 
         // Act
-        var isAuthorized = IsViewerAuthorized(user, OwnedInstrumentId);
+        var isAuthorized = IsViewerAuthorized(user, _ownedInstrumentId);
 
         // Assert
         Assert.True(isAuthorized);
@@ -106,10 +106,10 @@ public class InstrumentAuthorizationTests
     public void ViewerAuthorization_ForSharedInstrument_Succeeds()
     {
         // Arrange
-        var user = CreateUser(sharedAccounts: [SharedInstrumentId]);
+        var user = CreateUser(sharedAccounts: [_sharedInstrumentId]);
 
         // Act
-        var isAuthorized = IsViewerAuthorized(user, SharedInstrumentId);
+        var isAuthorized = IsViewerAuthorized(user, _sharedInstrumentId);
 
         // Assert
         Assert.True(isAuthorized);
@@ -125,10 +125,10 @@ public class InstrumentAuthorizationTests
     public void ViewerAuthorization_ForUnauthorizedInstrument_Fails()
     {
         // Arrange
-        var user = CreateUser(accounts: [OwnedInstrumentId]);
+        var user = CreateUser(accounts: [_ownedInstrumentId]);
 
         // Act
-        var isAuthorized = IsViewerAuthorized(user, UnauthorizedInstrumentId);
+        var isAuthorized = IsViewerAuthorized(user, _unauthorizedInstrumentId);
 
         // Assert
         Assert.False(isAuthorized);
@@ -147,7 +147,7 @@ public class InstrumentAuthorizationTests
         User? user = null;
 
         // Act
-        var isAuthorized = IsViewerAuthorized(user, SharedInstrumentId);
+        var isAuthorized = IsViewerAuthorized(user, _sharedInstrumentId);
 
         // Assert
         Assert.False(isAuthorized);
@@ -167,7 +167,7 @@ public class InstrumentAuthorizationTests
     public void Authorization_WithInvalidGuidValue_Fails()
     {
         // Arrange
-        var user = CreateUser(accounts: [OwnedInstrumentId]);
+        var user = CreateUser(accounts: [_ownedInstrumentId]);
         object invalidValue = "not-a-guid";
 
         // Act - Simulates the handler's Guid.TryParse check
@@ -209,8 +209,8 @@ public class InstrumentAuthorizationTests
 /// </summary>
 public class GroupOwnerAuthorizationTests
 {
-    private static readonly Guid OwnedGroupId = new("aaaaaaaa-bbbb-cccc-1111-222233334444");
-    private static readonly Guid UnauthorizedGroupId = new("11112222-3333-4444-5555-666677778888");
+    private static readonly Guid _ownedGroupId = new("aaaaaaaa-bbbb-cccc-1111-222233334444");
+    private static readonly Guid _unauthorizedGroupId = new("11112222-3333-4444-5555-666677778888");
 
     /// <summary>
     /// Given a user who owns a group
@@ -222,10 +222,10 @@ public class GroupOwnerAuthorizationTests
     public void GroupOwnerAuthorization_ForOwnedGroup_Succeeds()
     {
         // Arrange
-        var user = CreateUser(groups: [OwnedGroupId]);
+        var user = CreateUser(groups: [_ownedGroupId]);
 
         // Act
-        var isAuthorized = IsGroupOwnerAuthorized(user, OwnedGroupId);
+        var isAuthorized = IsGroupOwnerAuthorized(user, _ownedGroupId);
 
         // Assert
         Assert.True(isAuthorized);
@@ -241,10 +241,10 @@ public class GroupOwnerAuthorizationTests
     public void GroupOwnerAuthorization_ForNonOwnedGroup_Fails()
     {
         // Arrange
-        var user = CreateUser(groups: [OwnedGroupId]);
+        var user = CreateUser(groups: [_ownedGroupId]);
 
         // Act
-        var isAuthorized = IsGroupOwnerAuthorized(user, UnauthorizedGroupId);
+        var isAuthorized = IsGroupOwnerAuthorized(user, _unauthorizedGroupId);
 
         // Assert
         Assert.False(isAuthorized);
@@ -263,7 +263,7 @@ public class GroupOwnerAuthorizationTests
         User? user = null;
 
         // Act
-        var isAuthorized = IsGroupOwnerAuthorized(user, OwnedGroupId);
+        var isAuthorized = IsGroupOwnerAuthorized(user, _ownedGroupId);
 
         // Assert
         Assert.False(isAuthorized);
@@ -279,7 +279,7 @@ public class GroupOwnerAuthorizationTests
     public void GroupOwnerAuthorization_WithInvalidGuidValue_Fails()
     {
         // Arrange
-        var user = CreateUser(groups: [OwnedGroupId]);
+        var user = CreateUser(groups: [_ownedGroupId]);
         object invalidValue = "not-a-guid";
 
         // Act - Simulates the handler's Guid.TryParse check
@@ -312,7 +312,7 @@ public class GroupOwnerAuthorizationTests
 /// </summary>
 public class FamilyMemberAuthorizationTests
 {
-    private static readonly Guid TestFamilyId = Guid.NewGuid();
+    private static readonly Guid _testFamilyId = Guid.NewGuid();
 
     /// <summary>
     /// Given a user in a family
@@ -324,10 +324,10 @@ public class FamilyMemberAuthorizationTests
     public void FamilyMemberAuthorization_ForOwnFamily_Succeeds()
     {
         // Arrange
-        var user = CreateUser(TestFamilyId);
+        var user = CreateUser(_testFamilyId);
 
         // Act
-        var isAuthorized = IsFamilyMemberAuthorized(user, TestFamilyId);
+        var isAuthorized = IsFamilyMemberAuthorized(user, _testFamilyId);
 
         // Assert
         Assert.True(isAuthorized);
@@ -343,7 +343,7 @@ public class FamilyMemberAuthorizationTests
     public void FamilyMemberAuthorization_ForDifferentFamily_Fails()
     {
         // Arrange
-        var user = CreateUser(TestFamilyId);
+        var user = CreateUser(_testFamilyId);
         var differentFamilyId = Guid.NewGuid();
 
         // Act

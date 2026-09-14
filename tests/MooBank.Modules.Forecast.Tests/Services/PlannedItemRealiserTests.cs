@@ -18,11 +18,11 @@ namespace Asm.MooBank.Modules.Forecast.Tests.Services;
 [Trait("Category", "Unit")]
 public class PlannedItemRealiserTests
 {
-    private static readonly Guid AccountId = Guid.NewGuid();
-    private static readonly Guid SavingsId = Guid.NewGuid();
+    private static readonly Guid _accountId = Guid.NewGuid();
+    private static readonly Guid _savingsId = Guid.NewGuid();
 
-    private static readonly DateOnly PlanStart = new(2026, 1, 1);
-    private static readonly DateOnly PlanEnd = new(2026, 12, 31);
+    private static readonly DateOnly _planStart = new(2026, 1, 1);
+    private static readonly DateOnly _planEnd = new(2026, 12, 31);
 
     private static DomainForecastPlan Plan(params DomainPlannedItem[] items)
     {
@@ -30,8 +30,8 @@ public class PlannedItemRealiserTests
         {
             Name = "Test Plan",
             FamilyId = Guid.NewGuid(),
-            StartDate = PlanStart,
-            EndDate = PlanEnd,
+            StartDate = _planStart,
+            EndDate = _planEnd,
         };
 
         foreach (var item in items)
@@ -80,10 +80,10 @@ public class PlannedItemRealiserTests
     }
 
     private static LinkedPayment Payment(Guid transactionId, DateOnly month, decimal amount, bool inReporting = true, Guid? account = null) =>
-        new(transactionId, account ?? AccountId, month, amount, inReporting);
+        new(transactionId, account ?? _accountId, month, amount, inReporting);
 
     private static RealisedPlan Realise(DomainForecastPlan plan, DateOnly settledThrough, params LinkedPayment[] payments) =>
-        PlannedItemRealiser.Realise(plan, payments, [AccountId], settledThrough);
+        PlannedItemRealiser.Realise(plan, payments, [_accountId], settledThrough);
 
     private static decimal Month(Dictionary<string, decimal> byMonth, int year, int month) =>
         byMonth.GetValueOrDefault(new DateOnly(year, month, 1).ToString("yyyy-MM"), 0m);
@@ -201,7 +201,7 @@ public class PlannedItemRealiserTests
     public void Realise_RecurringCharge_IsNeverUsedUp()
     {
         var january = Guid.NewGuid();
-        var plan = Plan(LinkedTo(Recurring("Electricity", 300m, PlanStart), january));
+        var plan = Plan(LinkedTo(Recurring("Electricity", 300m, _planStart), january));
 
         var realised = Realise(plan, new DateOnly(2026, 1, 1), Payment(january, new DateOnly(2026, 1, 1), 355m));
 
@@ -229,7 +229,7 @@ public class PlannedItemRealiserTests
     public void Realise_RecurringItemWithOneOccurrenceLinked_LeavesTheRestAsPlanned()
     {
         var marchPayment = Guid.NewGuid();
-        var fees = LinkedTo(Recurring("School Fees", 21_000m, PlanStart), marchPayment);
+        var fees = LinkedTo(Recurring("School Fees", 21_000m, _planStart), marchPayment);
 
         // Settled through June, with only March's payment linked.
         var realised = Realise(Plan(fees), new DateOnly(2026, 6, 1), Payment(marchPayment, new DateOnly(2026, 3, 1), 22_500m));
@@ -324,7 +324,7 @@ public class PlannedItemRealiserTests
         var id = Guid.NewGuid();
         var plan = Plan(LinkedTo(OneOff("New Car", 50_000m, new DateOnly(2026, 3, 15)), id));
 
-        var realised = Realise(plan, new DateOnly(2026, 4, 1), Payment(id, new DateOnly(2026, 3, 1), 50_000m, account: SavingsId));
+        var realised = Realise(plan, new DateOnly(2026, 4, 1), Payment(id, new DateOnly(2026, 3, 1), 50_000m, account: _savingsId));
 
         Assert.Equal(50_000m, Month(realised.ExpensesByMonth, 2026, 3));
         Assert.Equal(50_000m, Assert.Single(realised.Progress).ActualToDate);
@@ -389,7 +389,7 @@ public class PlannedItemRealiserTests
             Amount = 5_000m,
             IsIncluded = true,
             DateMode = PlannedItemDateMode.Schedule,
-            Schedule = new PlannedItemSchedule { Frequency = ScheduleFrequency.Monthly, AnchorDate = PlanStart, Interval = 1 },
+            Schedule = new PlannedItemSchedule { Frequency = ScheduleFrequency.Monthly, AnchorDate = _planStart, Interval = 1 },
         };
 
         var realised = Realise(Plan(salary), new DateOnly(2026, 6, 1));

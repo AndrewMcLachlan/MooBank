@@ -15,7 +15,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 [Trait("Category", "Unit")]
 public class RetirementProjectionOptionsTests
 {
-    private static readonly DateOnly Today = new(2026, 1, 1);
+    private static readonly DateOnly _today = new(2026, 1, 1);
 
     private readonly RetirementProjectionEngine _engine = new();
 
@@ -35,7 +35,7 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var firstYear = _engine.CalculateWithoutPension(plan, Today).Years.ElementAt(1);
+        var firstYear = _engine.CalculateWithoutPension(plan, _today).Years.ElementAt(1);
 
         // Assert
         // 100,000 * 10% employer, plus 5,000 sacrificed.
@@ -60,7 +60,7 @@ public class RetirementProjectionOptionsTests
             members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 100_000m, salarySacrifice: 5_000m, accountBalances: [0m])]);
 
         // Act
-        var firstYear = _engine.CalculateWithoutPension(plan, Today).Years.ElementAt(1);
+        var firstYear = _engine.CalculateWithoutPension(plan, _today).Years.ElementAt(1);
 
         // Assert
         // (10,000 + 5,000) * 85%
@@ -81,7 +81,7 @@ public class RetirementProjectionOptionsTests
             members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, salarySacrifice: 10_000m, accountBalances: [0m])]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, _today).Years.ToList();
 
         // Assert
         Assert.Equal(10_000m, years[1].Contributions);
@@ -103,7 +103,7 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, _today).Years.ToList();
 
         // Assert
         Assert.Equal(10_000m, years[1].Contributions);
@@ -168,7 +168,7 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, _today);
 
         // Assert
         // 4.9% on 100,000 plus 6.8% on 100,000.
@@ -201,7 +201,7 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, _today).Years.ToList();
 
         // Assert: the last accumulating year earns 6.4%, the first retired year 4.9%.
         Assert.Equal(6_400m, years[1].InvestmentReturn);
@@ -228,7 +228,7 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, _today).Years.ToList();
 
         // Assert
         Assert.Equal(10_000m, years[1].Contributions);
@@ -250,7 +250,7 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var member = _engine.CalculateWithoutPension(plan, Today).Members.Single();
+        var member = _engine.CalculateWithoutPension(plan, _today).Members.Single();
 
         // Assert
         Assert.Equal(GrowthStrategy.Growth, member.GrowthStrategy);
@@ -277,7 +277,7 @@ public class RetirementProjectionOptionsTests
         };
 
         // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today, overrides);
+        var projection = _engine.CalculateWithoutPension(plan, _today, overrides);
 
         // Assert
         Assert.Equal(2036, projection.Summary.RetirementYear);
@@ -302,7 +302,7 @@ public class RetirementProjectionOptionsTests
         };
 
         // Act
-        var firstYear = _engine.CalculateWithoutPension(plan, Today, overrides).Years.ElementAt(1);
+        var firstYear = _engine.CalculateWithoutPension(plan, _today, overrides).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(15_000m, firstYear.Contributions);
@@ -327,7 +327,7 @@ public class RetirementProjectionOptionsTests
         };
 
         // Act
-        var firstYear = _engine.CalculateWithoutPension(plan, Today, overrides).Years.ElementAt(1);
+        var firstYear = _engine.CalculateWithoutPension(plan, _today, overrides).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(20_000m, firstYear.InvestmentReturn);
@@ -357,7 +357,7 @@ public class RetirementProjectionOptionsTests
         };
 
         // Act
-        _engine.CalculateWithoutPension(plan, Today, overrides);
+        _engine.CalculateWithoutPension(plan, _today, overrides);
 
         // Assert
         Assert.Equal(0.10m, member.CustomReturnRate);
@@ -392,7 +392,7 @@ public class RetirementProjectionOptionsTests
         };
 
         // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today, overrides);
+        var projection = _engine.CalculateWithoutPension(plan, _today, overrides);
 
         // Assert
         Assert.Equal(2031, projection.Summary.RetirementYear);
@@ -412,8 +412,8 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var without = _engine.CalculateWithoutPension(plan, Today);
-        var withEmpty = _engine.CalculateWithoutPension(plan, Today, new ProjectionOverrides());
+        var without = _engine.CalculateWithoutPension(plan, _today);
+        var withEmpty = _engine.CalculateWithoutPension(plan, _today, new ProjectionOverrides());
 
         // Assert
         Assert.Equal(without.Summary.BalanceAtRetirement, withEmpty.Summary.BalanceAtRetirement);
@@ -439,7 +439,7 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
+        var summary = _engine.CalculateWithoutPension(plan, _today).Summary;
 
         // Assert: (300,000 x 4.9% + 100,000 x 6.8%) / 400,000, and no inflation to discount.
         Assert.Equal(0.05375m, summary.RealReturnRate, 5);
@@ -464,7 +464,7 @@ public class RetirementProjectionOptionsTests
         ]);
 
         // Act
-        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
+        var summary = _engine.CalculateWithoutPension(plan, _today).Summary;
 
         // Assert
         Assert.Equal(0.064m, summary.RealReturnRate, 5);

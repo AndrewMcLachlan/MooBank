@@ -12,7 +12,7 @@ namespace Asm.MooBank.Modules.Transactions.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static TestTransactionInstrument CreateTransactionInstrument(
         Guid? id = null,
@@ -52,7 +52,7 @@ internal static class TestEntities
             AccountId = accountId ?? Guid.NewGuid(),
             AccountHolderId = accountHolderId,
             Amount = amount,
-            Description = description ?? Faker.Commerce.ProductName(),
+            Description = description ?? _faker.Commerce.ProductName(),
             TransactionTime = transactionTime ?? DateTime.UtcNow,
             TransactionType = type,
             Reference = reference,

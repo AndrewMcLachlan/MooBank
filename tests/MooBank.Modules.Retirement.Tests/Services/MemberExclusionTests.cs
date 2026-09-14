@@ -12,9 +12,9 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 [Trait("Category", "Unit")]
 public class MemberExclusionTests
 {
-    private static readonly DateOnly Today = new(2026, 7, 30);
+    private static readonly DateOnly _today = new(2026, 7, 30);
 
-    private static readonly AgePensionRates Rates = new(67, 29_900m, 45_080m, 314_000m, 470_000m, 0.078m);
+    private static readonly AgePensionRates _rates = new(67, 29_900m, 45_080m, 314_000m, 470_000m, 0.078m);
 
     private readonly RetirementProjectionEngine _engine = new();
 
@@ -38,7 +38,7 @@ public class MemberExclusionTests
         var (plan, selfId, spouseId) = Household();
 
         // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today, new ProjectionOverrides { ExcludedMemberIds = [spouseId] });
+        var projection = _engine.CalculateWithoutPension(plan, _today, new ProjectionOverrides { ExcludedMemberIds = [spouseId] });
 
         // Assert
         var member = Assert.Single(projection.Members);
@@ -63,8 +63,8 @@ public class MemberExclusionTests
         var (plan, _, spouseId) = Household();
 
         // Act
-        var without = _engine.CalculateWithoutPension(plan, Today, new ProjectionOverrides { ExcludedMemberIds = [spouseId] });
-        var with = _engine.CalculateWithoutPension(plan, Today);
+        var without = _engine.CalculateWithoutPension(plan, _today, new ProjectionOverrides { ExcludedMemberIds = [spouseId] });
+        var with = _engine.CalculateWithoutPension(plan, _today);
 
         // Assert
         Assert.Single(without.Members);
@@ -88,7 +88,7 @@ public class MemberExclusionTests
         var (plan, selfId, spouseId) = Household();
 
         // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today, new ProjectionOverrides { ExcludedMemberIds = [selfId, spouseId] });
+        var projection = _engine.CalculateWithoutPension(plan, _today, new ProjectionOverrides { ExcludedMemberIds = [selfId, spouseId] });
 
         // Assert
         Assert.Equal(2, projection.Members.Count());
@@ -106,7 +106,7 @@ public class MemberExclusionTests
         var (plan, _, _) = Household();
 
         // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today, new ProjectionOverrides { ExcludedMemberIds = [Guid.NewGuid()] });
+        var projection = _engine.CalculateWithoutPension(plan, _today, new ProjectionOverrides { ExcludedMemberIds = [Guid.NewGuid()] });
 
         // Assert
         Assert.Equal(2, projection.Members.Count());
@@ -130,8 +130,8 @@ public class MemberExclusionTests
         var plan = TestEntities.CreatePlan(inflationRate: 0m, targetRetirementIncome: 60_000m, members: [self, spouse]);
 
         // Act
-        var asCouple = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Years.ElementAt(1);
-        var asSingle = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None, new ProjectionOverrides { ExcludedMemberIds = [spouse.Id] }).Years.ElementAt(1);
+        var asCouple = _engine.Calculate(plan, _today, _rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Years.ElementAt(1);
+        var asSingle = _engine.Calculate(plan, _today, _rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None, new ProjectionOverrides { ExcludedMemberIds = [spouse.Id] }).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(45_080m, asCouple.Pension);

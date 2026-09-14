@@ -14,10 +14,10 @@ namespace Asm.MooBank.Domain.Tests.Entities;
 /// </summary>
 public class InstrumentTests
 {
-    private static readonly Guid UserId1 = Guid.NewGuid();
-    private static readonly Guid UserId2 = Guid.NewGuid();
-    private static readonly Guid GroupId1 = Guid.NewGuid();
-    private static readonly Guid GroupId2 = Guid.NewGuid();
+    private static readonly Guid _userId1 = Guid.NewGuid();
+    private static readonly Guid _userId2 = Guid.NewGuid();
+    private static readonly Guid _groupId1 = Guid.NewGuid();
+    private static readonly Guid _groupId2 = Guid.NewGuid();
 
     #region GetGroup
 
@@ -31,16 +31,16 @@ public class InstrumentTests
     public void GetGroup_OwnerHasGroup_ReturnsGroup()
     {
         // Arrange
-        var group = new Asm.MooBank.Domain.Entities.Group.Group(GroupId1) { Name = "Test Group", OwnerId = Guid.NewGuid() };
+        var group = new Asm.MooBank.Domain.Entities.Group.Group(_groupId1) { Name = "Test Group", OwnerId = Guid.NewGuid() };
         var instrument = CreateInstrument();
-        instrument.Owners.Add(new InstrumentOwner { UserId = UserId1, GroupId = GroupId1, Group = group });
+        instrument.Owners.Add(new InstrumentOwner { UserId = _userId1, GroupId = _groupId1, Group = group });
 
         // Act
-        var result = instrument.GetGroup(UserId1);
+        var result = instrument.GetGroup(_userId1);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(GroupId1, result.Id);
+        Assert.Equal(_groupId1, result.Id);
     }
 
     /// <summary>
@@ -54,10 +54,10 @@ public class InstrumentTests
     {
         // Arrange
         var instrument = CreateInstrument();
-        instrument.Owners.Add(new InstrumentOwner { UserId = UserId1, GroupId = null });
+        instrument.Owners.Add(new InstrumentOwner { UserId = _userId1, GroupId = null });
 
         // Act
-        var result = instrument.GetGroup(UserId1);
+        var result = instrument.GetGroup(_userId1);
 
         // Assert
         Assert.Null(result);
@@ -74,10 +74,10 @@ public class InstrumentTests
     {
         // Arrange
         var instrument = CreateInstrument();
-        instrument.Owners.Add(new InstrumentOwner { UserId = UserId1, GroupId = GroupId1 });
+        instrument.Owners.Add(new InstrumentOwner { UserId = _userId1, GroupId = _groupId1 });
 
         // Act
-        var result = instrument.GetGroup(UserId2); // Different user
+        var result = instrument.GetGroup(_userId2); // Different user
 
         // Assert
         Assert.Null(result);
@@ -98,14 +98,14 @@ public class InstrumentTests
     {
         // Arrange
         var instrument = CreateInstrument();
-        instrument.Owners.Add(new InstrumentOwner { UserId = UserId1, GroupId = null });
+        instrument.Owners.Add(new InstrumentOwner { UserId = _userId1, GroupId = null });
 
         // Act
-        instrument.SetGroup(GroupId1, UserId1);
+        instrument.SetGroup(_groupId1, _userId1);
 
         // Assert
-        var owner = instrument.Owners.Single(o => o.UserId == UserId1);
-        Assert.Equal(GroupId1, owner.GroupId);
+        var owner = instrument.Owners.Single(o => o.UserId == _userId1);
+        Assert.Equal(_groupId1, owner.GroupId);
     }
 
     /// <summary>
@@ -119,14 +119,14 @@ public class InstrumentTests
     {
         // Arrange
         var instrument = CreateInstrument();
-        instrument.Owners.Add(new InstrumentOwner { UserId = UserId1, GroupId = GroupId1 });
+        instrument.Owners.Add(new InstrumentOwner { UserId = _userId1, GroupId = _groupId1 });
 
         // Act
-        instrument.SetGroup(GroupId2, UserId1);
+        instrument.SetGroup(_groupId2, _userId1);
 
         // Assert
-        var owner = instrument.Owners.Single(o => o.UserId == UserId1);
-        Assert.Equal(GroupId2, owner.GroupId);
+        var owner = instrument.Owners.Single(o => o.UserId == _userId1);
+        Assert.Equal(_groupId2, owner.GroupId);
     }
 
     /// <summary>
@@ -140,13 +140,13 @@ public class InstrumentTests
     {
         // Arrange
         var instrument = CreateInstrument();
-        instrument.Owners.Add(new InstrumentOwner { UserId = UserId1, GroupId = GroupId1 });
+        instrument.Owners.Add(new InstrumentOwner { UserId = _userId1, GroupId = _groupId1 });
 
         // Act
-        instrument.SetGroup(null, UserId1);
+        instrument.SetGroup(null, _userId1);
 
         // Assert
-        var owner = instrument.Owners.Single(o => o.UserId == UserId1);
+        var owner = instrument.Owners.Single(o => o.UserId == _userId1);
         Assert.Null(owner.GroupId);
     }
 
@@ -165,14 +165,14 @@ public class InstrumentTests
     {
         // Arrange
         var instrument = CreateInstrument();
-        instrument.Viewers.Add(new InstrumentViewer { UserId = UserId1, GroupId = null });
+        instrument.Viewers.Add(new InstrumentViewer { UserId = _userId1, GroupId = null });
 
         // Act
-        instrument.SetGroup(GroupId1, UserId1);
+        instrument.SetGroup(_groupId1, _userId1);
 
         // Assert
-        var viewer = instrument.Viewers.Single(v => v.UserId == UserId1);
-        Assert.Equal(GroupId1, viewer.GroupId);
+        var viewer = instrument.Viewers.Single(v => v.UserId == _userId1);
+        Assert.Equal(_groupId1, viewer.GroupId);
     }
 
     /// <summary>
@@ -188,13 +188,13 @@ public class InstrumentTests
         var instrument = CreateInstrument();
 
         // Act
-        instrument.SetGroup(GroupId1, UserId1);
+        instrument.SetGroup(_groupId1, _userId1);
 
         // Assert
         Assert.Single(instrument.Viewers);
         var viewer = instrument.Viewers.First();
-        Assert.Equal(UserId1, viewer.UserId);
-        Assert.Equal(GroupId1, viewer.GroupId);
+        Assert.Equal(_userId1, viewer.UserId);
+        Assert.Equal(_groupId1, viewer.GroupId);
     }
 
     /// <summary>
@@ -210,12 +210,12 @@ public class InstrumentTests
         var instrument = CreateInstrument();
 
         // Act
-        instrument.SetGroup(null, UserId1);
+        instrument.SetGroup(null, _userId1);
 
         // Assert
         Assert.Single(instrument.Viewers);
         var viewer = instrument.Viewers.First();
-        Assert.Equal(UserId1, viewer.UserId);
+        Assert.Equal(_userId1, viewer.UserId);
         Assert.Null(viewer.GroupId);
     }
 
@@ -236,11 +236,11 @@ public class InstrumentTests
         var instrument = CreateInstrument();
 
         // Act
-        instrument.SetAccountHolder(UserId1);
+        instrument.SetAccountHolder(_userId1);
 
         // Assert
         Assert.Single(instrument.Owners);
-        Assert.Equal(UserId1, instrument.Owners.First().UserId);
+        Assert.Equal(_userId1, instrument.Owners.First().UserId);
     }
 
     /// <summary>
@@ -254,10 +254,10 @@ public class InstrumentTests
     {
         // Arrange
         var instrument = CreateInstrument();
-        instrument.Owners.Add(new InstrumentOwner { UserId = UserId1 });
+        instrument.Owners.Add(new InstrumentOwner { UserId = _userId1 });
 
         // Act & Assert
-        var exception = Assert.Throws<ExistsException>(() => instrument.SetAccountHolder(UserId1));
+        var exception = Assert.Throws<ExistsException>(() => instrument.SetAccountHolder(_userId1));
         Assert.Equal("User is already an account holder", exception.Message);
     }
 
@@ -272,15 +272,15 @@ public class InstrumentTests
     {
         // Arrange
         var instrument = CreateInstrument();
-        instrument.Owners.Add(new InstrumentOwner { UserId = UserId1 });
+        instrument.Owners.Add(new InstrumentOwner { UserId = _userId1 });
 
         // Act
-        instrument.SetAccountHolder(UserId2);
+        instrument.SetAccountHolder(_userId2);
 
         // Assert
         Assert.Equal(2, instrument.Owners.Count);
-        Assert.Contains(instrument.Owners, o => o.UserId == UserId1);
-        Assert.Contains(instrument.Owners, o => o.UserId == UserId2);
+        Assert.Contains(instrument.Owners, o => o.UserId == _userId1);
+        Assert.Contains(instrument.Owners, o => o.UserId == _userId2);
     }
 
     #endregion

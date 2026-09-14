@@ -13,8 +13,8 @@ namespace Asm.MooBank.Institution.AustralianSuper.Tests.Importers;
 [Trait("Category", "Unit")]
 public class ImporterTests
 {
-    private static readonly Guid InstrumentId = Guid.NewGuid();
-    private static readonly Guid InstitutionAccountId = Guid.NewGuid();
+    private static readonly Guid _instrumentId = Guid.NewGuid();
+    private static readonly Guid _institutionAccountId = Guid.NewGuid();
 
     private readonly Mock<ITransactionRawRepository> _rawRepositoryMock = new();
     private readonly Mock<MooBank.Domain.Entities.Transactions.ITransactionRepository> _transactionRepositoryMock = new();
@@ -42,7 +42,7 @@ public class ImporterTests
     {
         var importer = CreateImporter();
 
-        var result = await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        var result = await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             Row(sg: "100.50", employer: "25.00", salarySacrifice: "50.25", member: "10.75", total: "186.50")),
             TestContext.Current.CancellationToken);
 
@@ -71,7 +71,7 @@ public class ImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             Row(period: "2024-06-01/2024-06-14")),
             TestContext.Current.CancellationToken);
 
@@ -90,7 +90,7 @@ public class ImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             Row(period: "2024-06-14/2024-06-01")),
             TestContext.Current.CancellationToken);
 
@@ -110,7 +110,7 @@ public class ImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             Row(date: "2024-06-21", period: "not-a-period"),
             Row(date: "2024-06-20", period: "2024-06-01/2024-06-14")),
             TestContext.Current.CancellationToken);
@@ -130,7 +130,7 @@ public class ImporterTests
     {
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             Row(description: "\"Payment, from \"\"Employer, Inc\"\"\"")),
             TestContext.Current.CancellationToken);
 
@@ -149,7 +149,7 @@ public class ImporterTests
     {
         var importer = CreateImporter();
 
-        var result = await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        var result = await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             Row(category: "INVESTMENT RETURNS", period: "", sg: "", employer: "", salarySacrifice: "", member: "")),
             TestContext.Current.CancellationToken);
 
@@ -171,12 +171,12 @@ public class ImporterTests
     public async Task Import_DuplicateRow_IsSkipped()
     {
         _rawRepositoryMock
-            .Setup(r => r.GetSummaries(InstrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetSummaries(_instrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([new TransactionRawSummary("Employer contribution", new DateOnly(2024, 6, 20), 186.50m)]);
 
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(Row()), TestContext.Current.CancellationToken);
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(Row()), TestContext.Current.CancellationToken);
 
         Assert.Empty(_captured);
     }

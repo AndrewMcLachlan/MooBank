@@ -21,7 +21,7 @@ namespace Asm.MooBank.Modules.Budgets.Tests.Commands;
 public class GenerateBudgetTests : IDisposable
 {
     private readonly TestMocks _mocks = new();
-    private readonly IQueryable<TagRelationship> relationshipQueryable = TestEntities.CreateTagRelationshipQueryable();
+    private readonly IQueryable<TagRelationship> _relationshipQueryable = TestEntities.CreateTagRelationshipQueryable();
 
     public GenerateBudgetTests()
     {
@@ -76,7 +76,7 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Groceries"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, _relationshipQueryable);
         var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
@@ -117,7 +117,7 @@ public class GenerateBudgetTests : IDisposable
             .Setup(r => r.GetOrCreate(familyId, (short)2026, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, _relationshipQueryable);
         var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
@@ -151,7 +151,7 @@ public class GenerateBudgetTests : IDisposable
             .Setup(r => r.GetOrCreate(familyId, (short)2026, It.IsAny<CancellationToken>()))
             .ReturnsAsync(budget);
 
-        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, _relationshipQueryable);
         var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
@@ -192,7 +192,7 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Shopping"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, _relationshipQueryable);
         var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
@@ -234,7 +234,7 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "Salary"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, _relationshipQueryable);
         var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act
@@ -291,7 +291,7 @@ public class GenerateBudgetTests : IDisposable
             .Callback<DomainBudgetLine, CancellationToken>((l, _) => { l.Tag = TestEntities.CreateTag(l.TagId, "House Insurance"); captured.Add(l); })
             .Returns<DomainBudgetLine, CancellationToken>((l, _) => Task.FromResult(l));
 
-        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, relationshipQueryable);
+        var reader = new BudgetGenerationReader(budgetQueryable, accountQueryable, transactionQueryable, tagQueryable, _relationshipQueryable);
         var handler = new GenerateBudgetHandler(_mocks.BudgetRepositoryMock.Object, reader, _mocks.UnitOfWorkMock.Object, _mocks.User);
 
         // Act

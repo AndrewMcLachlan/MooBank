@@ -16,22 +16,22 @@ public class RetirementAuthorizationTests(MooBankWebApplicationFactory factory)
 {
     private readonly MooBankWebApplicationFactory _factory = factory;
 
-    private static readonly Guid FamilyId = Guid.NewGuid();
-    private static readonly Guid PlanId = Guid.NewGuid();
+    private static readonly Guid _familyId = Guid.NewGuid();
+    private static readonly Guid _planId = Guid.NewGuid();
 
-    private string PlanUrl => $"/api/retirement/plans/{PlanId}";
+    private string PlanUrl => $"/api/retirement/plans/{_planId}";
 
-    private string RunUrl => $"/api/retirement/plans/{PlanId}/run";
+    private string RunUrl => $"/api/retirement/plans/{_planId}/run";
 
     private Task SeedPlanAsync() =>
         _factory.SeedDataAsync(async context =>
         {
-            if (!await context.Set<RetirementPlan>().IgnoreQueryFilters().AnyAsync(p => p.Id == PlanId))
+            if (!await context.Set<RetirementPlan>().IgnoreQueryFilters().AnyAsync(p => p.Id == _planId))
             {
-                context.Add(new RetirementPlan(PlanId)
+                context.Add(new RetirementPlan(_planId)
                 {
                     Name = "Plan",
-                    FamilyId = FamilyId,
+                    FamilyId = _familyId,
                     InflationRate = 0.025m,
                     SuperGuaranteeRate = 0.12m,
                     ContributionsTaxRate = 0.15m,
@@ -87,7 +87,7 @@ public class RetirementAuthorizationTests(MooBankWebApplicationFactory factory)
     public async Task GetPlan_SameFamily_ReturnsThePlan()
     {
         await SeedPlanAsync();
-        var user = new TestUser { FamilyId = FamilyId };
+        var user = new TestUser { FamilyId = _familyId };
         var client = _factory.CreateAuthenticatedClient(user);
 
         var response = await client.GetAsync(PlanUrl, TestContext.Current.CancellationToken);
@@ -146,7 +146,7 @@ public class RetirementAuthorizationTests(MooBankWebApplicationFactory factory)
     public async Task RunProjection_SameFamily_ReturnsAProjection()
     {
         await SeedPlanAsync();
-        var user = new TestUser { FamilyId = FamilyId };
+        var user = new TestUser { FamilyId = _familyId };
         var client = _factory.CreateAuthenticatedClient(user);
 
         var response = await client.PostAsync(RunUrl, null, TestContext.Current.CancellationToken);

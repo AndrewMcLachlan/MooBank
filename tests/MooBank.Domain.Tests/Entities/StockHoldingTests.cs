@@ -12,8 +12,8 @@ namespace Asm.MooBank.Domain.Tests.Entities;
 /// </summary>
 public class StockHoldingTests
 {
-    private static readonly Guid TestUserId = Guid.NewGuid();
-    private static readonly Guid TestFamilyId = Guid.NewGuid();
+    private static readonly Guid _testUserId = Guid.NewGuid();
+    private static readonly Guid _testFamilyId = Guid.NewGuid();
 
     #region ValidAccountViewers
 
@@ -50,8 +50,8 @@ public class StockHoldingTests
         var holding = CreateStockHolding();
         holding.ShareWithFamily = true;
 
-        var owner = CreateUser(TestUserId, TestFamilyId);
-        var viewer = CreateUser(Guid.NewGuid(), TestFamilyId); // Same family
+        var owner = CreateUser(_testUserId, _testFamilyId);
+        var viewer = CreateUser(Guid.NewGuid(), _testFamilyId); // Same family
 
         holding.Owners.Add(new InstrumentOwner { UserId = owner.Id, User = owner });
         holding.Viewers.Add(new InstrumentViewer { UserId = viewer.Id, User = viewer });
@@ -77,7 +77,7 @@ public class StockHoldingTests
         var holding = CreateStockHolding();
         holding.ShareWithFamily = true;
 
-        var owner = CreateUser(TestUserId, TestFamilyId);
+        var owner = CreateUser(_testUserId, _testFamilyId);
         var viewer = CreateUser(Guid.NewGuid(), Guid.NewGuid()); // Different family
 
         holding.Owners.Add(new InstrumentOwner { UserId = owner.Id, User = owner });
@@ -106,7 +106,7 @@ public class StockHoldingTests
         // Arrange
         var holding = CreateStockHolding();
         var group = new Group(Guid.NewGuid()) { Name = "Test Group" };
-        var owner = CreateUser(TestUserId, TestFamilyId);
+        var owner = CreateUser(_testUserId, _testFamilyId);
 
         holding.Owners.Add(new InstrumentOwner { UserId = owner.Id, User = owner, Group = group });
 
@@ -132,8 +132,8 @@ public class StockHoldingTests
 
         var ownerGroup = new Group(Guid.NewGuid()) { Name = "Owner Group" };
         var viewerGroup = new Group(Guid.NewGuid()) { Name = "Viewer Group" };
-        var owner = CreateUser(TestUserId, TestFamilyId);
-        var viewer = CreateUser(Guid.NewGuid(), TestFamilyId); // Same family
+        var owner = CreateUser(_testUserId, _testFamilyId);
+        var viewer = CreateUser(Guid.NewGuid(), _testFamilyId); // Same family
 
         holding.Owners.Add(new InstrumentOwner { UserId = owner.Id, User = owner, Group = ownerGroup });
         holding.Viewers.Add(new InstrumentViewer { UserId = viewer.Id, User = viewer, Group = viewerGroup });

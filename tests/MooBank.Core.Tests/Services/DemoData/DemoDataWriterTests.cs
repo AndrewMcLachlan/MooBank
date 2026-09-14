@@ -17,7 +17,7 @@ namespace Asm.MooBank.Core.Tests.Services.DemoData;
 /// </summary>
 public class DemoDataWriterTests
 {
-    private static readonly Guid CheckingId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid _checkingId = Guid.Parse("11111111-1111-1111-1111-111111111111");
 
     private readonly Mock<ITransactionRepository> _transactionRepository = new();
     private readonly Mock<IRunRulesService> _runRules = new();
@@ -39,7 +39,7 @@ public class DemoDataWriterTests
     {
         var month = new DateOnly(2026, 7, 1);
         var alreadyThere = DomainTransaction.Create(
-            CheckingId, null, -12.50m, "COFFEE", new DateTime(2026, 7, 3), null, "test", null);
+            _checkingId, null, -12.50m, "COFFEE", new DateTime(2026, 7, 3), null, "test", null);
 
         var writer = CreateWriter([alreadyThere]);
 
@@ -65,14 +65,14 @@ public class DemoDataWriterTests
     {
         var month = new DateOnly(2026, 7, 1);
         var older = DomainTransaction.Create(
-            CheckingId, null, -12.50m, "COFFEE", new DateTime(2026, 5, 3), null, "test", null);
+            _checkingId, null, -12.50m, "COFFEE", new DateTime(2026, 5, 3), null, "test", null);
 
         var writer = CreateWriter([older]);
 
         await writer.Extend(month, TestContext.Current.CancellationToken);
 
         _transactionRepository.Verify(r => r.Add(It.IsAny<DomainTransaction>()), Times.AtLeastOnce);
-        _runRules.Verify(r => r.RunRules(CheckingId, It.IsAny<CancellationToken>()), Times.Once);
+        _runRules.Verify(r => r.RunRules(_checkingId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public class DemoDataWriterTests
 
     private DemoDataWriter CreateWriter(IEnumerable<DomainTransaction> transactions) =>
         new(
-            Options.Create(new DemoDataOptions { CheckingAccountId = CheckingId }),
+            Options.Create(new DemoDataOptions { CheckingAccountId = _checkingId }),
             MockDbSetFactory.CreateQueryable(transactions),
             MockDbSetFactory.CreateQueryable<TagEntity>([]),
             MockDbSetFactory.CreateQueryable<LogicalAccount>([]),

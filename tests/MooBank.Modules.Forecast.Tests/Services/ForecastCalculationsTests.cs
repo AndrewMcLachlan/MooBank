@@ -12,7 +12,7 @@ namespace Asm.MooBank.Modules.Forecast.Tests.Services;
 [Trait("Category", "Unit")]
 public class ForecastCalculationsTests
 {
-    private static readonly IncomeCorrelatedSettings Settings = new() { MinDataPoints = 6 };
+    private static readonly IncomeCorrelatedSettings _settings = new() { MinDataPoints = 6 };
 
     #region FitRegression
 
@@ -30,7 +30,7 @@ public class ForecastCalculationsTests
             [new(2024, 2, 1)] = (2000m, 700m),
         };
 
-        var model = ForecastCalculations.FitRegression(data, Settings);
+        var model = ForecastCalculations.FitRegression(data, _settings);
 
         Assert.False(model.Valid);
         Assert.Equal(1500m, model.AvgHistoricalIncome);
@@ -50,7 +50,7 @@ public class ForecastCalculationsTests
             data[new DateOnly(2024, 1, 1).AddMonths(i)] = (1000m, 400m + i);
         }
 
-        var model = ForecastCalculations.FitRegression(data, Settings);
+        var model = ForecastCalculations.FitRegression(data, _settings);
 
         Assert.False(model.Valid);
         Assert.Equal(1000m, model.AvgHistoricalIncome);
@@ -71,7 +71,7 @@ public class ForecastCalculationsTests
             data[new DateOnly(2024, 1, 1).AddMonths(i)] = (income, 100m + 0.5m * income);
         }
 
-        var model = ForecastCalculations.FitRegression(data, Settings);
+        var model = ForecastCalculations.FitRegression(data, _settings);
 
         Assert.True(model.Valid);
         Assert.Equal(0.5m, model.Slope, 4);
@@ -94,7 +94,7 @@ public class ForecastCalculationsTests
             data[new DateOnly(2024, 1, 1).AddMonths(i)] = (income, 5000m - 0.5m * income);
         }
 
-        var model = ForecastCalculations.FitRegression(data, Settings);
+        var model = ForecastCalculations.FitRegression(data, _settings);
 
         // Clamped to flat rather than thrown away: spending that falls as income rises is not a
         // believable shape to project, but a flat line through the data still beats no model.
@@ -117,7 +117,7 @@ public class ForecastCalculationsTests
             data[new DateOnly(2024, 1, 1).AddMonths(i)] = (income, 100m + 1.4m * income);
         }
 
-        var model = ForecastCalculations.FitRegression(data, Settings);
+        var model = ForecastCalculations.FitRegression(data, _settings);
 
         // Clamped to one. Spending every additional dollar is believable; spending more than all of
         // it says a pay rise makes you worse off, which is a countdown rather than a forecast.
@@ -144,7 +144,7 @@ public class ForecastCalculationsTests
             data[new DateOnly(2024, 1, 1).AddMonths(i)] = (income, 100m + income);
         }
 
-        var model = ForecastCalculations.FitRegression(data, Settings);
+        var model = ForecastCalculations.FitRegression(data, _settings);
 
         Assert.True(model.Valid);
         Assert.Equal(1m, model.Slope, 4);
@@ -158,7 +158,7 @@ public class ForecastCalculationsTests
     [Fact]
     public void FitRegression_NoData_ReturnsZeroAverageIncome()
     {
-        var model = ForecastCalculations.FitRegression([], Settings);
+        var model = ForecastCalculations.FitRegression([], _settings);
 
         Assert.False(model.Valid);
         Assert.Equal(0m, model.AvgHistoricalIncome);

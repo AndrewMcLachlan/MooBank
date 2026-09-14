@@ -12,8 +12,8 @@ namespace Asm.MooBank.Domain.Tests.Entities;
 /// </summary>
 public class TransactionTests
 {
-    private static readonly Guid AccountId = Guid.NewGuid();
-    private static readonly Guid UserId = Guid.NewGuid();
+    private static readonly Guid _accountId = Guid.NewGuid();
+    private static readonly Guid _userId = Guid.NewGuid();
     private readonly TestEntities _entities = new();
 
     #region Transaction.Create - Type Determination
@@ -32,8 +32,8 @@ public class TransactionTests
 
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             amount,
             "Test",
             DateTime.UtcNow,
@@ -59,8 +59,8 @@ public class TransactionTests
 
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             amount,
             "Test",
             DateTime.UtcNow,
@@ -86,8 +86,8 @@ public class TransactionTests
 
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             amount,
             "Test",
             DateTime.UtcNow,
@@ -113,8 +113,8 @@ public class TransactionTests
 
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             amount,
             "Test",
             DateTime.UtcNow,
@@ -188,8 +188,8 @@ public class TransactionTests
 
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             amount,
             description,
             transactionTime,
@@ -198,8 +198,8 @@ public class TransactionTests
             institutionAccountId);
 
         // Assert
-        Assert.Equal(AccountId, transaction.AccountId);
-        Assert.Equal(UserId, transaction.AccountHolderId);
+        Assert.Equal(_accountId, transaction.AccountId);
+        Assert.Equal(_userId, transaction.AccountHolderId);
         Assert.Equal(amount, transaction.Amount);
         Assert.Equal(description, transaction.Description);
         Assert.Equal(transactionTime, transaction.TransactionTime);
@@ -219,8 +219,8 @@ public class TransactionTests
     {
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             -50m,
             null,
             DateTime.UtcNow,
@@ -243,7 +243,7 @@ public class TransactionTests
     {
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
+            _accountId,
             null,
             -50m,
             "Test",
@@ -271,8 +271,8 @@ public class TransactionTests
     {
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             -50m,
             "Test",
             DateTime.UtcNow,
@@ -296,8 +296,8 @@ public class TransactionTests
     {
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             -50m,
             "Test",
             DateTime.UtcNow,
@@ -326,8 +326,8 @@ public class TransactionTests
     {
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             -50m,
             "Test",
             DateTime.UtcNow,
@@ -353,8 +353,8 @@ public class TransactionTests
 
         // Act
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             amount,
             "Test",
             DateTime.UtcNow,
@@ -400,8 +400,8 @@ public class TransactionTests
     {
         // Arrange
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             -100m,
             "Test",
             DateTime.UtcNow,
@@ -427,8 +427,8 @@ public class TransactionTests
     {
         // Arrange
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             100m,
             "Test",
             DateTime.UtcNow,
@@ -545,8 +545,8 @@ public class TransactionTests
     {
         // Arrange
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             -0.0001m,
             "Test",
             DateTime.UtcNow,
@@ -576,8 +576,8 @@ public class TransactionTests
     {
         // Arrange
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             -50m,
             "Test",
             DateTime.UtcNow,
@@ -604,8 +604,8 @@ public class TransactionTests
     {
         // Arrange
         var transaction = DomainTransaction.Create(
-            AccountId,
-            UserId,
+            _accountId,
+            _userId,
             -50m,
             "Test",
             DateTime.UtcNow,

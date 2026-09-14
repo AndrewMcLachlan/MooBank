@@ -7,7 +7,7 @@ namespace Asm.MooBank.Modules.Families.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainFamily CreateFamily(
         Guid? id = null,
@@ -17,7 +17,7 @@ internal static class TestEntities
         var familyId = id ?? Guid.NewGuid();
         var family = new DomainFamily(familyId)
         {
-            Name = name ?? Faker.Company.CompanyName() + "'s Family",
+            Name = name ?? _faker.Company.CompanyName() + "'s Family",
         };
 
         if (members != null)
@@ -41,9 +41,9 @@ internal static class TestEntities
     {
         return new DomainUser(id ?? Guid.NewGuid())
         {
-            EmailAddress = email ?? Faker.Internet.Email(),
-            FirstName = firstName ?? Faker.Name.FirstName(),
-            LastName = lastName ?? Faker.Name.LastName(),
+            EmailAddress = email ?? _faker.Internet.Email(),
+            FirstName = firstName ?? _faker.Name.FirstName(),
+            LastName = lastName ?? _faker.Name.LastName(),
             FamilyId = familyId ?? Guid.NewGuid(),
         };
     }

@@ -16,7 +16,7 @@ public class RetirementPlanTests
         decimal annualFees = 0m, decimal insurancePremium = 0m) =>
         new(currentAge, currentIncome, salarySacrifice, null, retirementAge, growthStrategy, null, null, null, annualFees, insurancePremium);
 
-    private static readonly RetirementAssumptions Assumptions = new(0.025m, 0.12m, 0.15m, 90, 60_000m, 2);
+    private static readonly RetirementAssumptions _assumptions = new(0.025m, 0.12m, 0.15m, 90, 60_000m, 2);
 
     /// <summary>
     /// Given a family and a set of assumptions
@@ -30,7 +30,7 @@ public class RetirementPlanTests
         var familyId = Guid.NewGuid();
 
         // Act
-        var plan = RetirementPlan.Create(familyId, "Retirement", Assumptions);
+        var plan = RetirementPlan.Create(familyId, "Retirement", _assumptions);
 
         // Assert
         Assert.Equal(familyId, plan.FamilyId);
@@ -52,7 +52,7 @@ public class RetirementPlanTests
     public void AddMember_NewMember_IsLinkedToThePlan()
     {
         // Arrange
-        var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
+        var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", _assumptions);
         var instrumentId = Guid.NewGuid();
 
         // Act
@@ -73,7 +73,7 @@ public class RetirementPlanTests
     public void RemoveMember_ExistingMember_IsRemoved()
     {
         // Arrange
-        var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
+        var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", _assumptions);
         var member = plan.AddMember(Guid.NewGuid(), Details(), []);
 
         // Act
@@ -92,7 +92,7 @@ public class RetirementPlanTests
     public void RemoveMember_UnknownMember_Throws()
     {
         // Arrange
-        var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
+        var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", _assumptions);
 
         // Act / Assert
         Assert.Throws<NotFoundException>(() => plan.RemoveMember(Guid.NewGuid()));
@@ -107,7 +107,7 @@ public class RetirementPlanTests
     public void Update_NewAssumptions_AreApplied()
     {
         // Arrange
-        var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", Assumptions);
+        var plan = RetirementPlan.Create(Guid.NewGuid(), "Retirement", _assumptions);
 
         // Act
         plan.Update("Renamed", new RetirementAssumptions(0.03m, 0.11m, 0.15m, 95, 70_000m, 5));

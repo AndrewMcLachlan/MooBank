@@ -21,7 +21,7 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
 {
     private readonly MooBankWebApplicationFactory _factory = factory;
 
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+    private static readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web);
 
     /// <summary>
     /// A caller plus two people in their family, and an instrument owned by each.
@@ -111,7 +111,7 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
             throw new Exception($"Create failed with {(int)response.StatusCode}: {await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)}");
         }
 
-        return await response.Content.ReadFromJsonAsync<JsonElement>(JsonOptions, TestContext.Current.CancellationToken);
+        return await response.Content.ReadFromJsonAsync<JsonElement>(_jsonOptions, TestContext.Current.CancellationToken);
     }
 
     private static Guid IdOf(JsonElement plan) => plan.GetProperty("id").GetGuid();
@@ -188,7 +188,7 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         // Assert
         response.EnsureSuccessStatusCode();
 
-        var projection = await response.Content.ReadFromJsonAsync<JsonElement>(JsonOptions, TestContext.Current.CancellationToken);
+        var projection = await response.Content.ReadFromJsonAsync<JsonElement>(_jsonOptions, TestContext.Current.CancellationToken);
         var projected = projection.GetProperty("members").EnumerateArray().ToList();
 
         Assert.Single(projected);
@@ -247,7 +247,7 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         // Assert
         response.EnsureSuccessStatusCode();
 
-        var updated = await response.Content.ReadFromJsonAsync<JsonElement>(JsonOptions, TestContext.Current.CancellationToken);
+        var updated = await response.Content.ReadFromJsonAsync<JsonElement>(_jsonOptions, TestContext.Current.CancellationToken);
         Assert.Equal([h.SelfUserId, h.SpouseUserId], MembersOf(updated).Select(m => m.GetProperty("userId").GetGuid()));
     }
 
@@ -274,7 +274,7 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         update.EnsureSuccessStatusCode();
 
         // Assert
-        var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", JsonOptions, TestContext.Current.CancellationToken);
+        var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", _jsonOptions, TestContext.Current.CancellationToken);
         Assert.Equal(2, MembersOf(reread).Count());
     }
 
@@ -336,7 +336,7 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         response.EnsureSuccessStatusCode();
 
         // Assert
-        var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", JsonOptions, TestContext.Current.CancellationToken);
+        var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", _jsonOptions, TestContext.Current.CancellationToken);
         var spouse = MembersOf(reread).Single(m => m.GetProperty("userId").GetGuid() == h.SpouseUserId);
         Assert.Equal([h.SpouseInstrumentId], spouse.GetProperty("instrumentIds").EnumerateArray().Select(i => i.GetGuid()));
     }
@@ -373,7 +373,7 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         response.EnsureSuccessStatusCode();
 
         // Assert
-        var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", JsonOptions, TestContext.Current.CancellationToken);
+        var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", _jsonOptions, TestContext.Current.CancellationToken);
         var self = MembersOf(reread).Single();
         Assert.Equal([h.SelfOtherInstrumentId], self.GetProperty("instrumentIds").EnumerateArray().Select(i => i.GetGuid()));
     }
@@ -401,7 +401,7 @@ public class RetirementPlanUpdateTests(MooBankWebApplicationFactory factory)
         response.EnsureSuccessStatusCode();
 
         // Assert
-        var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", JsonOptions, TestContext.Current.CancellationToken);
+        var reread = await client.GetFromJsonAsync<JsonElement>($"/api/retirement/plans/{planId}", _jsonOptions, TestContext.Current.CancellationToken);
         Assert.Equal(h.SelfUserId, MembersOf(reread).Single().GetProperty("userId").GetGuid());
     }
 }

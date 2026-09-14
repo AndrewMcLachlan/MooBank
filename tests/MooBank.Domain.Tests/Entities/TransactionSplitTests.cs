@@ -9,7 +9,7 @@ namespace Asm.MooBank.Domain.Tests.Entities;
 /// </summary>
 public class TransactionSplitTests
 {
-    private static readonly Guid FamilyId = Guid.NewGuid();
+    private static readonly Guid _familyId = Guid.NewGuid();
 
     #region GetNetAmount
 
@@ -409,7 +409,7 @@ public class TransactionSplitTests
         return new Tag(id)
         {
             Name = name,
-            FamilyId = FamilyId,
+            FamilyId = _familyId,
         };
     }
 }

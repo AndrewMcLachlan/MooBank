@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Institutions.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static Institution CreateInstitution(
         int id = 1,
@@ -15,7 +15,7 @@ internal static class TestEntities
     {
         return new Institution(id)
         {
-            Name = name ?? Faker.Company.CompanyName(),
+            Name = name ?? _faker.Company.CompanyName(),
             InstitutionType = institutionType,
         };
     }

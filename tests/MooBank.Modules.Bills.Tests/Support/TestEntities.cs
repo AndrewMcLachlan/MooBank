@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Bills.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainAccount CreateAccount(
         Guid? id = null,
@@ -26,7 +26,7 @@ internal static class TestEntities
 
         var account = new DomainAccount(accountId)
         {
-            Name = name ?? Faker.Company.CompanyName() + " " + utilityType,
+            Name = name ?? _faker.Company.CompanyName() + " " + utilityType,
             Description = description,
             UtilityType = utilityType,
             AccountNumber = accountNumber,
@@ -64,11 +64,11 @@ internal static class TestEntities
         var bill = new Bill(id)
         {
             AccountId = accountId ?? Guid.NewGuid(),
-            InvoiceNumber = invoiceNumber ?? Faker.Random.AlphaNumeric(10),
+            InvoiceNumber = invoiceNumber ?? _faker.Random.AlphaNumeric(10),
             IssueDate = issueDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
             CurrentReading = currentReading,
             PreviousReading = previousReading,
-            Cost = cost ?? Faker.Random.Decimal(50, 500),
+            Cost = cost ?? _faker.Random.Decimal(50, 500),
             CostsIncludeGST = costsIncludeGST,
         };
 
@@ -116,7 +116,7 @@ internal static class TestEntities
                 {
                     ChargeTypeId = chargeTypeId,
                     ChargeType = new ChargeType { Id = chargeTypeId, Name = chargeTypeName },
-                    ChargePerDay = chargePerDay ?? Faker.Random.Decimal(0.5m, 2m),
+                    ChargePerDay = chargePerDay ?? _faker.Random.Decimal(0.5m, 2m),
                 },
             ],
             Usages =
@@ -124,8 +124,8 @@ internal static class TestEntities
                 new Usage
                 {
                     UsageType = usageType,
-                    PricePerUnit = pricePerUnit ?? Faker.Random.Decimal(0.1m, 0.5m),
-                    TotalUsage = totalUsage ?? Faker.Random.Int(100, 1000),
+                    PricePerUnit = pricePerUnit ?? _faker.Random.Decimal(0.1m, 0.5m),
+                    TotalUsage = totalUsage ?? _faker.Random.Int(100, 1000),
                 },
             ],
         };
@@ -218,7 +218,7 @@ internal static class TestEntities
         {
             AccountName = accountName,
             IssueDate = issueDate ?? DateOnly.FromDateTime(DateTime.UtcNow),
-            InvoiceNumber = invoiceNumber ?? Faker.Random.AlphaNumeric(10),
+            InvoiceNumber = invoiceNumber ?? _faker.Random.AlphaNumeric(10),
             Total = null,
             Cost = cost,
             CostsIncludeGST = costsIncludeGST,

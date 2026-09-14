@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Forecast.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainForecastPlan CreateForecastPlan(
         Guid? id = null,
@@ -27,7 +27,7 @@ internal static class TestEntities
         var planId = id ?? Guid.NewGuid();
         var plan = new DomainForecastPlan(planId)
         {
-            Name = name ?? Faker.Lorem.Sentence(3),
+            Name = name ?? _faker.Lorem.Sentence(3),
             FamilyId = familyId ?? Guid.NewGuid(),
             StartDate = startDate ?? DateOnly.FromDateTime(DateTime.Today),
             EndDate = endDate ?? DateOnly.FromDateTime(DateTime.Today.AddYears(1)),
@@ -69,7 +69,7 @@ internal static class TestEntities
         var item = new DomainPlannedItem(itemId)
         {
             ForecastPlanId = planId ?? Guid.NewGuid(),
-            Name = name ?? Faker.Commerce.ProductName(),
+            Name = name ?? _faker.Commerce.ProductName(),
             ItemType = itemType,
             Amount = amount,
             TagId = tagId,
@@ -106,7 +106,7 @@ internal static class TestEntities
         return new ModelPlannedItem
         {
             Id = id ?? Guid.NewGuid(),
-            Name = name ?? Faker.Commerce.ProductName(),
+            Name = name ?? _faker.Commerce.ProductName(),
             ItemType = itemType,
             Amount = amount,
             TagId = tagId,

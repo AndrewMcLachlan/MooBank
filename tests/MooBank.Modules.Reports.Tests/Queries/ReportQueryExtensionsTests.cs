@@ -10,8 +10,8 @@ namespace Asm.MooBank.Modules.Reports.Tests.Queries;
 [Trait("Category", "Unit")]
 public class ReportQueryExtensionsTests
 {
-    private static readonly Guid TestAccountId = Guid.NewGuid();
-    private static readonly Guid OtherAccountId = Guid.NewGuid();
+    private static readonly Guid _testAccountId = Guid.NewGuid();
+    private static readonly Guid _otherAccountId = Guid.NewGuid();
 
     #region WhereByReportQuery Basic Filtering
 
@@ -20,29 +20,29 @@ public class ReportQueryExtensionsTests
     {
         // Arrange
         var transactions = CreateTransactions(
-            CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5)),
-            CreateTransaction(OtherAccountId, 200m, DateTime.Today.AddDays(-5))
+            CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5)),
+            CreateTransaction(_otherAccountId, 200m, DateTime.Today.AddDays(-5))
         );
-        var query = CreateReportQuery(TestAccountId);
+        var query = CreateReportQuery(_testAccountId);
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
 
         // Assert
         Assert.Single(result);
-        Assert.Equal(TestAccountId, result[0].AccountId);
+        Assert.Equal(_testAccountId, result[0].AccountId);
     }
 
     [Fact]
     public void WhereByReportQuery_ExcludesExcludedFromReporting()
     {
         // Arrange
-        var included = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5));
-        var excluded = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddDays(-5));
+        var included = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5));
+        var excluded = CreateTransaction(_testAccountId, 200m, DateTime.Today.AddDays(-5));
         excluded.ExcludeFromReporting = true;
 
         var transactions = CreateTransactions(included, excluded);
-        var query = CreateReportQuery(TestAccountId);
+        var query = CreateReportQuery(_testAccountId);
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -56,11 +56,11 @@ public class ReportQueryExtensionsTests
     public void WhereByReportQuery_FiltersTransactionsAfterEndDate()
     {
         // Arrange
-        var inRange = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5));
-        var afterEnd = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddDays(5));
+        var inRange = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5));
+        var afterEnd = CreateTransaction(_testAccountId, 200m, DateTime.Today.AddDays(5));
 
         var transactions = CreateTransactions(inRange, afterEnd);
-        var query = CreateReportQuery(TestAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), DateOnly.FromDateTime(DateTime.Today));
+        var query = CreateReportQuery(_testAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), DateOnly.FromDateTime(DateTime.Today));
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -74,11 +74,11 @@ public class ReportQueryExtensionsTests
     public void WhereByReportQuery_FiltersTransactionsBeforeStartDate()
     {
         // Arrange
-        var inRange = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5));
-        var beforeStart = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddMonths(-2));
+        var inRange = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5));
+        var beforeStart = CreateTransaction(_testAccountId, 200m, DateTime.Today.AddMonths(-2));
 
         var transactions = CreateTransactions(inRange, beforeStart);
-        var query = CreateReportQuery(TestAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), DateOnly.FromDateTime(DateTime.Today));
+        var query = CreateReportQuery(_testAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), DateOnly.FromDateTime(DateTime.Today));
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -96,11 +96,11 @@ public class ReportQueryExtensionsTests
     public void WhereByReportQuery_StartDateMinValue_IncludesAllHistoricTransactions()
     {
         // Arrange - Using MinValue for start date should include all transactions
-        var recent = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5));
-        var veryOld = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddYears(-10));
+        var recent = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5));
+        var veryOld = CreateTransaction(_testAccountId, 200m, DateTime.Today.AddYears(-10));
 
         var transactions = CreateTransactions(recent, veryOld);
-        var query = CreateReportQuery(TestAccountId, DateOnly.MinValue, DateOnly.FromDateTime(DateTime.Today));
+        var query = CreateReportQuery(_testAccountId, DateOnly.MinValue, DateOnly.FromDateTime(DateTime.Today));
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -113,11 +113,11 @@ public class ReportQueryExtensionsTests
     public void WhereByReportQuery_StartDateMinValue_StillFiltersEndDate()
     {
         // Arrange - MinValue start should still respect end date
-        var inRange = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5));
-        var afterEnd = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddDays(5));
+        var inRange = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5));
+        var afterEnd = CreateTransaction(_testAccountId, 200m, DateTime.Today.AddDays(5));
 
         var transactions = CreateTransactions(inRange, afterEnd);
-        var query = CreateReportQuery(TestAccountId, DateOnly.MinValue, DateOnly.FromDateTime(DateTime.Today));
+        var query = CreateReportQuery(_testAccountId, DateOnly.MinValue, DateOnly.FromDateTime(DateTime.Today));
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -130,11 +130,11 @@ public class ReportQueryExtensionsTests
     public void WhereByReportQuery_NonMinValueStartDate_FiltersOlderTransactions()
     {
         // Arrange - Non-MinValue start should filter old transactions
-        var recent = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5));
-        var veryOld = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddYears(-10));
+        var recent = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5));
+        var veryOld = CreateTransaction(_testAccountId, 200m, DateTime.Today.AddYears(-10));
 
         var transactions = CreateTransactions(recent, veryOld);
-        var query = CreateReportQuery(TestAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), DateOnly.FromDateTime(DateTime.Today));
+        var query = CreateReportQuery(_testAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), DateOnly.FromDateTime(DateTime.Today));
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -153,10 +153,10 @@ public class ReportQueryExtensionsTests
     {
         // Arrange
         var startDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
-        var onStartDate = CreateTransaction(TestAccountId, 100m, startDate.ToDateTime(TimeOnly.MinValue));
+        var onStartDate = CreateTransaction(_testAccountId, 100m, startDate.ToDateTime(TimeOnly.MinValue));
 
         var transactions = CreateTransactions(onStartDate);
-        var query = CreateReportQuery(TestAccountId, startDate, DateOnly.FromDateTime(DateTime.Today));
+        var query = CreateReportQuery(_testAccountId, startDate, DateOnly.FromDateTime(DateTime.Today));
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -170,10 +170,10 @@ public class ReportQueryExtensionsTests
     {
         // Arrange
         var endDate = DateOnly.FromDateTime(DateTime.Today);
-        var onEndDate = CreateTransaction(TestAccountId, 100m, endDate.ToDateTime(new TimeOnly(12, 0)));
+        var onEndDate = CreateTransaction(_testAccountId, 100m, endDate.ToDateTime(new TimeOnly(12, 0)));
 
         var transactions = CreateTransactions(onEndDate);
-        var query = CreateReportQuery(TestAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), endDate);
+        var query = CreateReportQuery(_testAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), endDate);
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -187,10 +187,10 @@ public class ReportQueryExtensionsTests
     {
         // Arrange - Transaction at 23:59:59 on end date should be included
         var endDate = DateOnly.FromDateTime(DateTime.Today);
-        var atEndOfDay = CreateTransaction(TestAccountId, 100m, endDate.ToDateTime(new TimeOnly(23, 59, 59)));
+        var atEndOfDay = CreateTransaction(_testAccountId, 100m, endDate.ToDateTime(new TimeOnly(23, 59, 59)));
 
         var transactions = CreateTransactions(atEndOfDay);
-        var query = CreateReportQuery(TestAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), endDate);
+        var query = CreateReportQuery(_testAccountId, DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), endDate);
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -207,11 +207,11 @@ public class ReportQueryExtensionsTests
     public void TypedWhereByReportQuery_FiltersAccountAndType()
     {
         // Arrange
-        var creditTransaction = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5), TransactionType.Credit);
-        var debitTransaction = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Debit);
+        var creditTransaction = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5), TransactionType.Credit);
+        var debitTransaction = CreateTransaction(_testAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Debit);
 
         var transactions = CreateTransactions(creditTransaction, debitTransaction);
-        var query = CreateTypedReportQuery(TestAccountId, TestEntities.CreateDebitReportType());
+        var query = CreateTypedReportQuery(_testAccountId, TestEntities.CreateDebitReportType());
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -225,11 +225,11 @@ public class ReportQueryExtensionsTests
     public void TypedWhereByReportQuery_CreditType_OnlyIncludesCredits()
     {
         // Arrange
-        var creditTransaction = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5), TransactionType.Credit);
-        var debitTransaction = CreateTransaction(TestAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Debit);
+        var creditTransaction = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5), TransactionType.Credit);
+        var debitTransaction = CreateTransaction(_testAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Debit);
 
         var transactions = CreateTransactions(creditTransaction, debitTransaction);
-        var query = CreateTypedReportQuery(TestAccountId, TestEntities.CreateCreditReportType());
+        var query = CreateTypedReportQuery(_testAccountId, TestEntities.CreateCreditReportType());
 
         // Act
         var result = transactions.WhereByReportQuery(query).ToList();
@@ -243,15 +243,15 @@ public class ReportQueryExtensionsTests
     public void TypedWhereByReportQuery_CombinesAllFilters()
     {
         // Arrange - Mix of transactions that should test all filters
-        var matchAll = CreateTransaction(TestAccountId, 100m, DateTime.Today.AddDays(-5), TransactionType.Debit);
-        var wrongAccount = CreateTransaction(OtherAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Debit);
-        var wrongType = CreateTransaction(TestAccountId, 300m, DateTime.Today.AddDays(-5), TransactionType.Credit);
-        var wrongDate = CreateTransaction(TestAccountId, 400m, DateTime.Today.AddMonths(-3), TransactionType.Debit);
-        var excluded = CreateTransaction(TestAccountId, 500m, DateTime.Today.AddDays(-5), TransactionType.Debit);
+        var matchAll = CreateTransaction(_testAccountId, 100m, DateTime.Today.AddDays(-5), TransactionType.Debit);
+        var wrongAccount = CreateTransaction(_otherAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Debit);
+        var wrongType = CreateTransaction(_testAccountId, 300m, DateTime.Today.AddDays(-5), TransactionType.Credit);
+        var wrongDate = CreateTransaction(_testAccountId, 400m, DateTime.Today.AddMonths(-3), TransactionType.Debit);
+        var excluded = CreateTransaction(_testAccountId, 500m, DateTime.Today.AddDays(-5), TransactionType.Debit);
         excluded.ExcludeFromReporting = true;
 
         var transactions = CreateTransactions(matchAll, wrongAccount, wrongType, wrongDate, excluded);
-        var query = CreateTypedReportQuery(TestAccountId, TestEntities.CreateDebitReportType(),
+        var query = CreateTypedReportQuery(_testAccountId, TestEntities.CreateDebitReportType(),
             DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)), DateOnly.FromDateTime(DateTime.Today));
 
         // Act
