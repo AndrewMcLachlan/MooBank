@@ -11,7 +11,7 @@ public record UpdatePlan(Guid Id, Models.ForecastPlanBase Plan) : ICommand<Model
 
 internal class UpdatePlanHandler(IForecastRepository forecastRepository, IUnitOfWork unitOfWork) : ICommandHandler<UpdatePlan, Models.ForecastPlan>
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public async ValueTask<Models.ForecastPlan> Handle(UpdatePlan request, CancellationToken cancellationToken)
     {
@@ -24,8 +24,8 @@ internal class UpdatePlanHandler(IForecastRepository forecastRepository, IUnitOf
         entity.StartingBalanceMode = request.Plan.StartingBalanceMode;
         entity.StartingBalanceAmount = request.Plan.StartingBalanceAmount;
         entity.CurrencyCode = request.Plan.CurrencyCode;
-        entity.OutgoingStrategySerialized = request.Plan.OutgoingStrategy != null ? JsonSerializer.Serialize(request.Plan.OutgoingStrategy, JsonOptions) : null;
-        entity.AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, JsonOptions) : null;
+        entity.OutgoingStrategySerialized = request.Plan.OutgoingStrategy != null ? JsonSerializer.Serialize(request.Plan.OutgoingStrategy, _jsonOptions) : null;
+        entity.AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, _jsonOptions) : null;
         entity.UpdatedUtc = DateTime.UtcNow;
 
         entity.SetAccounts(request.Plan.AccountIds);

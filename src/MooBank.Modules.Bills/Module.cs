@@ -10,7 +10,7 @@ namespace Asm.MooBank.Modules.Bills;
 
 public class Module : IModule
 {
-    private static readonly Assembly Assembly = typeof(Module).Assembly;
+    private static readonly Assembly _assembly = typeof(Module).Assembly;
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
@@ -24,9 +24,9 @@ public class Module : IModule
 
     public IServiceCollection AddServices(IServiceCollection services)
     {
-        services.AddCommandHandlers(Assembly);
-        services.AddQueryHandlers(Assembly);
-        services.AddValidatorsFromAssembly(Assembly);
+        services.AddCommandHandlers(_assembly);
+        services.AddQueryHandlers(_assembly);
+        services.AddValidatorsFromAssembly(_assembly);
 
         return services;
     }

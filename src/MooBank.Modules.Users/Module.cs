@@ -9,12 +9,12 @@ namespace Asm.MooBank.Modules.Users;
 
 public class Module : IModule
 {
-    private static readonly Assembly Assembly = typeof(Module).Assembly;
+    private static readonly Assembly _assembly = typeof(Module).Assembly;
 
     public IServiceCollection AddServices(IServiceCollection services) =>
-        services.AddCommandHandlers(Assembly)
-                .AddQueryHandlers(Assembly)
-                .AddValidatorsFromAssembly(Assembly);
+        services.AddCommandHandlers(_assembly)
+                .AddQueryHandlers(_assembly)
+                .AddValidatorsFromAssembly(_assembly);
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {

@@ -15,7 +15,7 @@ public interface ICpiService
 
 internal class CpiService(IReferenceDataRepository referenceDataRepository, HybridCache cache) : ICpiService
 {
-    private static readonly HybridCacheEntryOptions CacheOptions = new()
+    private static readonly HybridCacheEntryOptions _cacheOptions = new()
     {
         Expiration = TimeSpan.FromDays(1),
     };
@@ -28,7 +28,7 @@ internal class CpiService(IReferenceDataRepository referenceDataRepository, Hybr
 
     public async Task<decimal> CalculateAdjustedValue(decimal value, DateOnly startDate, CancellationToken cancellationToken = default)
     {
-        var changes = await cache.GetOrCreateAsync(CacheKeys.ReferenceData.CpiChanges, async ct => await referenceDataRepository.GetCpiChanges(ct), CacheOptions, [CacheKeys.ReferenceData.CacheTag], cancellationToken);
+        var changes = await cache.GetOrCreateAsync(CacheKeys.ReferenceData.CpiChanges, async ct => await referenceDataRepository.GetCpiChanges(ct), _cacheOptions, [CacheKeys.ReferenceData.CacheTag], cancellationToken);
 
         var startQuarter = Quarter.FromDate(startDate);
         decimal adjustedValue = value;
