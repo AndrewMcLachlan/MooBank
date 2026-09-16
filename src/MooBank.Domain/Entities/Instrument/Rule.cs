@@ -23,7 +23,8 @@ public partial class Rule : KeyedEntity<int>
     public required string Contains { get; set; }
 
     [ForeignKey(nameof(InstrumentId))]
-    public virtual Instrument Instrument { get; set; } = null!;
+    [Navigation]
+    public virtual partial Instrument Instrument { get; set; }
 
     public virtual ICollection<Tag.Tag> Tags { get; set; } = new HashSet<Tag.Tag>();
 }

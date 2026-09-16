@@ -3,14 +3,15 @@
 namespace Asm.MooBank.Domain.Entities.Budget;
 
 [PrimaryKey(nameof(Id))]
-public class BudgetLine(Guid id) : KeyedEntity<Guid>(id)
+public partial class BudgetLine(Guid id) : KeyedEntity<Guid>(id)
 {
     public BudgetLine() : this(default) { }
 
     public int TagId { get; set; }
 
     [ForeignKey(nameof(TagId))]
-    public virtual Tag.Tag Tag { get; set; } = null!;
+    [Navigation]
+    public virtual partial Tag.Tag Tag { get; set; }
 
     [MaxLength(255)]
     public string? Notes { get; set; }
@@ -25,5 +26,6 @@ public class BudgetLine(Guid id) : KeyedEntity<Guid>(id)
     public Guid BudgetId { get; set; }
 
     [ForeignKey(nameof(BudgetId))]
-    public virtual Budget Budget { get; set; } = null!;
+    [Navigation]
+    public virtual partial Budget Budget { get; set; }
 }

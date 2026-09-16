@@ -11,10 +11,12 @@ public partial class InstrumentOwner
 
     public Guid? GroupId { get; set; }
 
-    public virtual Instrument Instrument { get; set; } = null!;
+    [Navigation]
+    public virtual partial Instrument Instrument { get; set; }
 
     [ForeignKey(nameof(UserId))]
-    public virtual User.User User { get; set; } = null!;
+    [Navigation]
+    public virtual partial User.User User { get; set; }
 
     [ForeignKey(nameof(GroupId))]
     public virtual Group.Group? Group { get; set; }

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Forecast;
 
@@ -19,14 +19,15 @@ namespace Asm.MooBank.Domain.Entities.Forecast;
 /// invoice for two children — is a sign the two should be one item.
 /// </remarks>
 [PrimaryKey(nameof(Id))]
-public class ForecastPlannedItemTransaction(Guid id) : KeyedEntity<Guid>(id)
+public partial class ForecastPlannedItemTransaction(Guid id) : KeyedEntity<Guid>(id)
 {
     public ForecastPlannedItemTransaction() : this(Guid.Empty) { }
 
     public Guid PlannedItemId { get; set; }
 
     [ForeignKey(nameof(PlannedItemId))]
-    public virtual ForecastPlannedItem PlannedItem { get; set; } = null!;
+    [Navigation]
+    public virtual partial ForecastPlannedItem PlannedItem { get; set; }
 
     /// <summary>
     /// The plan the item belongs to, denormalised so the database can enforce one item per payment.
@@ -36,5 +37,6 @@ public class ForecastPlannedItemTransaction(Guid id) : KeyedEntity<Guid>(id)
     public Guid TransactionId { get; set; }
 
     [ForeignKey(nameof(TransactionId))]
-    public virtual Transactions.Transaction Transaction { get; set; } = null!;
+    [Navigation]
+    public virtual partial Transactions.Transaction Transaction { get; set; }
 }

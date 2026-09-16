@@ -6,7 +6,7 @@ namespace Asm.MooBank.Domain.Entities.Institution;
 
 [AggregateRoot]
 [PrimaryKey(nameof(Id))]
-public class Institution : KeyedEntity<int>
+public partial class Institution : KeyedEntity<int>
 {
     public Institution() : base(default)
     {
@@ -26,5 +26,5 @@ public class Institution : KeyedEntity<int>
     public int? ImporterTypeId { get; set; }
 
     [ForeignKey(nameof(ImporterTypeId))]
-    public virtual ImporterType ImporterType { get; set; } = null!;
+    public virtual ImporterType? ImporterType { get; set; }
 }

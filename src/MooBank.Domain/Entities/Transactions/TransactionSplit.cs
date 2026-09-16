@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
 [PrimaryKey(nameof(Id))]
-public class TransactionSplit : KeyedEntity<Guid>
+public partial class TransactionSplit : KeyedEntity<Guid>
 {
     public TransactionSplit() : base(Guid.Empty)
     {
@@ -19,7 +19,8 @@ public class TransactionSplit : KeyedEntity<Guid>
     [Precision(12, 4)]
     public decimal Amount { get; set; }
 
-    public virtual Transaction Transaction { get; set; } = null!;
+    [Navigation]
+    public virtual partial Transaction Transaction { get; set; }
 
     public virtual ICollection<TransactionOffset> OffsetBy { get; set; } = [];
 

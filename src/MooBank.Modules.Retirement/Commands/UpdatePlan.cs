@@ -27,7 +27,11 @@ internal class UpdatePlanHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel();
+        // A member added here was added by user id, so its User navigation was never loaded, and
+        // the model carries each member's name.
+        var saved = await retirementRepository.Get(request.Id, new RetirementPlanDetailsSpecification(), cancellationToken);
+
+        return saved.ToModel();
     }
 
     /// <summary>

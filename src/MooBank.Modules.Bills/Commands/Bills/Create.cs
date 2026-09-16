@@ -17,6 +17,7 @@ internal class CreateHandler(IUnitOfWork unitOfWork, Domain.Entities.Utility.IAc
         var bill = new Domain.Entities.Utility.Bill
         {
             AccountId = account.Id,
+            Account = account,
             Cost = command.Bill.Cost,
             CostsIncludeGST = command.Bill.CostsIncludeGST,
             CurrentReading = command.Bill.CurrentReading,

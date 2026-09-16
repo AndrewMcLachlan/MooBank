@@ -1,10 +1,10 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Instrument;
 
 [PrimaryKey(nameof(Id))]
-public class RecurringTransaction([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
+public partial class RecurringTransaction([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
     public RecurringTransaction() : this(default) { }
     public Guid VirtualInstrumentId { get; set; }
@@ -16,7 +16,8 @@ public class RecurringTransaction([DisallowNull] Guid id) : KeyedEntity<Guid>(id
 
     public DateOnly NextRun { get; set; } = DateTime.UtcNow.ToDateOnly();
 
-    public virtual VirtualInstrument VirtualInstrument { get; set; } = null!;
+    [Navigation]
+    public virtual partial VirtualInstrument VirtualInstrument { get; set; }
 
     [Column("ScheduleId")]
     public virtual ScheduleFrequency Schedule { get; set; }

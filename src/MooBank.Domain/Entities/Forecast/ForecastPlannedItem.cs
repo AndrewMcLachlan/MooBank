@@ -3,14 +3,15 @@
 namespace Asm.MooBank.Domain.Entities.Forecast;
 
 [PrimaryKey(nameof(Id))]
-public class ForecastPlannedItem(Guid id) : KeyedEntity<Guid>(id)
+public partial class ForecastPlannedItem(Guid id) : KeyedEntity<Guid>(id)
 {
     public ForecastPlannedItem() : this(Guid.Empty) { }
 
     public Guid ForecastPlanId { get; set; }
 
     [ForeignKey(nameof(ForecastPlanId))]
-    public virtual ForecastPlan ForecastPlan { get; set; } = null!;
+    [Navigation]
+    public virtual partial ForecastPlan ForecastPlan { get; set; }
 
     public PlannedItemType ItemType { get; set; }
 

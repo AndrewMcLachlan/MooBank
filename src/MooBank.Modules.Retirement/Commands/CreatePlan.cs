@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Asm.MooBank.Domain.Entities.Retirement;
+using Asm.MooBank.Domain.Entities.Retirement.Specifications;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Retirement.Models;
 using Asm.MooBank.Modules.Retirement.Services;
@@ -35,6 +36,10 @@ internal class CreatePlanHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return entity.ToModel();
+        // Members are added by user id, so nothing brought a User into the context for the
+        // navigation to be fixed up from, and the model carries each member's name.
+        var saved = await retirementRepository.Get(entity.Id, new RetirementPlanDetailsSpecification(), cancellationToken);
+
+        return saved.ToModel();
     }
 }

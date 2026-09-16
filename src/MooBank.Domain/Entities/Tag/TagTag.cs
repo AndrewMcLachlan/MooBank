@@ -9,7 +9,9 @@ public partial class TagTag
 
     public int SecondaryTagId { get; set; }
 
-    public virtual Tag Primary { get; set; } = null!;
+    [Navigation]
+    public virtual partial Tag Primary { get; set; }
 
-    public virtual Tag Secondary { get; set; } = null!;
+    [Navigation]
+    public virtual partial Tag Secondary { get; set; }
 }

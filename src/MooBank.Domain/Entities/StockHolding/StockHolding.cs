@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Domain.Entities.StockHolding;
 
 [AggregateRoot]
-public class StockHolding : Instrument.Instrument
+public partial class StockHolding : Instrument.Instrument
 {
     internal StockHolding([DisallowNull] Guid id) : base(id)
     {
@@ -29,7 +29,8 @@ public class StockHolding : Instrument.Instrument
         return stockHolding;
     }
 
-    public StockSymbolEntity Symbol { get; set; } = null!;
+    [Navigation]
+    public partial StockSymbolEntity Symbol { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public int Quantity { get; set; }

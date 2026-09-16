@@ -8,7 +8,9 @@ public partial class TransactionSplitTag : Entity
 
     public int TagId { get; set; }
 
-    public virtual TransactionSplit TransactionSplit { get; set; } = null!;
+    [Navigation]
+    public virtual partial TransactionSplit TransactionSplit { get; set; }
 
-    public virtual Tag.Tag Tag { get; set; } = null!;
+    [Navigation]
+    public virtual partial Tag.Tag Tag { get; set; }
 }

@@ -3,7 +3,7 @@
 namespace Asm.MooBank.Domain.Entities.Account;
 
 [PrimaryKey(nameof(Id))]
-public class InstitutionAccount(Guid id) : KeyedEntity<Guid>(id)
+public partial class InstitutionAccount(Guid id) : KeyedEntity<Guid>(id)
 {
     public InstitutionAccount() : this(Guid.Empty) { }
 
@@ -19,8 +19,10 @@ public class InstitutionAccount(Guid id) : KeyedEntity<Guid>(id)
     public DateOnly? ClosedDate { get; set; }
 
     [ForeignKey(nameof(InstitutionId))]
-    public virtual Institution.Institution Institution { get; set; } = null!;
+    [Navigation]
+    public virtual partial Institution.Institution Institution { get; set; }
 
     [ForeignKey(nameof(InstrumentId))]
-    public virtual LogicalAccount LogicalAccount { get; set; } = null!;
+    [Navigation]
+    public virtual partial LogicalAccount LogicalAccount { get; set; }
 }

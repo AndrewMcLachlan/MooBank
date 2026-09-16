@@ -4,7 +4,7 @@ namespace Asm.MooBank.Domain.Entities.TagRelationships;
 
 [Table("TagHierarchies", Schema = "dbo")]
 [PrimaryKey(nameof(Id), nameof(ParentId))]
-public class TagRelationship
+public partial class TagRelationship
 {
     public int Id { get; set; }
 
@@ -13,8 +13,10 @@ public class TagRelationship
     public long Ordinal { get; set; }
 
     [ForeignKey(nameof(Id))]
-    public virtual Tag.Tag Tag { get; set; } = null!;
+    [Navigation]
+    public virtual partial Tag.Tag Tag { get; set; }
 
     [ForeignKey(nameof(ParentId))]
-    public virtual Tag.Tag ParentTag { get; set; } = null!;
+    [Navigation]
+    public virtual partial Tag.Tag ParentTag { get; set; }
 }

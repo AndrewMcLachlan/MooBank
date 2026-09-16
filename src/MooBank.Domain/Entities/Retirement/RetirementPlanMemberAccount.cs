@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Retirement;
 
@@ -6,17 +6,19 @@ namespace Asm.MooBank.Domain.Entities.Retirement;
 /// Links a superannuation instrument to the plan member it belongs to.
 /// </summary>
 [PrimaryKey(nameof(Id))]
-public class RetirementPlanMemberAccount(Guid id) : KeyedEntity<Guid>(id)
+public partial class RetirementPlanMemberAccount(Guid id) : KeyedEntity<Guid>(id)
 {
     public RetirementPlanMemberAccount() : this(Guid.Empty) { }
 
     public Guid RetirementPlanMemberId { get; set; }
 
     [ForeignKey(nameof(RetirementPlanMemberId))]
-    public virtual RetirementPlanMember RetirementPlanMember { get; set; } = null!;
+    [Navigation]
+    public virtual partial RetirementPlanMember RetirementPlanMember { get; set; }
 
     public Guid InstrumentId { get; set; }
 
     [ForeignKey(nameof(InstrumentId))]
-    public virtual Instrument.Instrument Instrument { get; set; } = null!;
+    [Navigation]
+    public virtual partial Instrument.Instrument Instrument { get; set; }
 }

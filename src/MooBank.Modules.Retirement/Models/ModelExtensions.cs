@@ -28,7 +28,7 @@ public static class ModelExtensions
         {
             Id = member.Id,
             UserId = member.UserId,
-            Name = member.User is null ? null : $"{member.User.FirstName} {member.User.LastName}".Trim(),
+            Name = $"{member.User.FirstName} {member.User.LastName}".Trim(),
             CurrentAge = member.CurrentAge,
             CurrentIncome = member.CurrentIncome,
             SalarySacrifice = member.SalarySacrifice,

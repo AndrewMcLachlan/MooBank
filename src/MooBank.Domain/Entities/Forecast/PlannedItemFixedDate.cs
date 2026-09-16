@@ -1,14 +1,15 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Forecast;
 
 [PrimaryKey(nameof(PlannedItemId))]
-public class PlannedItemFixedDate
+public partial class PlannedItemFixedDate
 {
     public Guid PlannedItemId { get; set; }
 
     [ForeignKey(nameof(PlannedItemId))]
-    public virtual ForecastPlannedItem PlannedItem { get; set; } = null!;
+    [Navigation]
+    public virtual partial ForecastPlannedItem PlannedItem { get; set; }
 
     public required DateOnly FixedDate { get; set; }
 }

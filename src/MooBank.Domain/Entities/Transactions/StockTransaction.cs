@@ -1,10 +1,10 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Transactions;
 
 [AggregateRoot]
 [PrimaryKey(nameof(Id))]
-public class StockTransaction(Guid id) : KeyedEntity<Guid>(id)
+public partial class StockTransaction(Guid id) : KeyedEntity<Guid>(id)
 {
     public StockTransaction() : this(default) { }
 
@@ -27,5 +27,6 @@ public class StockTransaction(Guid id) : KeyedEntity<Guid>(id)
     public TransactionType TransactionType { get; set; }
 
     [ForeignKey(nameof(AccountId))]
-    public StockHolding.StockHolding StockHolding { get; set; } = null!;
+    [Navigation]
+    public partial StockHolding.StockHolding StockHolding { get; set; }
 }
