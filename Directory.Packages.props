@@ -47,15 +47,15 @@
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Asm" Version="5.0.39" />
-    <PackageVersion Include="Asm.AspNetCore" Version="5.0.39" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="5.0.39" />
-    <PackageVersion Include="Asm.AspNetCore.Postie" Version="5.0.39" />
-    <PackageVersion Include="Asm.Domain" Version="5.0.39" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="5.0.39" />
-    <PackageVersion Include="Asm.Hosting" Version="5.0.39" />
-    <PackageVersion Include="Asm.ModelContextProtocol" Version="5.0.39" />
-    <PackageVersion Include="Asm.Testing.Domain" Version="5.0.39" />
+    <PackageVersion Include="Asm" Version="5.1.10" />
+    <PackageVersion Include="Asm.AspNetCore" Version="5.1.10" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="5.1.10" />
+    <PackageVersion Include="Asm.AspNetCore.Postie" Version="5.1.10" />
+    <PackageVersion Include="Asm.Domain" Version="5.1.10" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="5.1.10" />
+    <PackageVersion Include="Asm.Hosting" Version="5.1.10" />
+    <PackageVersion Include="Asm.ModelContextProtocol" Version="5.1.10" />
+    <PackageVersion Include="Asm.Testing.Domain" Version="5.1.10" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Postie.AspNetCore" Version="1.0.1" />

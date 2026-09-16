@@ -5,7 +5,7 @@ namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("Bill", Schema = "utilities")]
 [PrimaryKey(nameof(Id))]
-public class Bill(int id) : KeyedEntity<int>(id)
+public partial class Bill(int id) : KeyedEntity<int>(id)
 {
     public Bill() : this(default) { }
 
@@ -30,7 +30,8 @@ public class Bill(int id) : KeyedEntity<int>(id)
     public decimal? Cost { get; set; } // Computed column
 
     [ForeignKey("AccountId")]
-    public virtual Account Account { get; set; } = null!;
+    [Navigation]
+    public virtual partial Account Account { get; set; }
 
     public virtual ICollection<Discount> Discounts { get; set; } = [];
 

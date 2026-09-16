@@ -3,7 +3,7 @@
 namespace Asm.MooBank.Domain.Entities.Utility;
 
 [Table("Period", Schema = "utilities")]
-public class Period : Entity
+public partial class Period : Entity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -29,5 +29,6 @@ public class Period : Entity
     public virtual ICollection<Usage> Usages { get; set; } = [];
 
     [ForeignKey("BillId")]
-    public virtual Bill Bill { get; set; } = null!;
+    [Navigation]
+    public virtual partial Bill Bill { get; set; }
 }

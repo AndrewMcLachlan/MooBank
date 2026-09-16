@@ -19,7 +19,7 @@ public class UpdatePlanTests
     {
         _mocks.RetirementRepositoryMock
             .Setup(r => r.Get(plan.Id, It.IsAny<RetirementPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(plan);
+            .ReturnsAsync(() => TestEntities.WithUsers(plan));
 
         return new UpdatePlanHandler(_mocks.RetirementRepositoryMock.Object, _mocks.MemberGuardMock.Object, _mocks.UnitOfWorkMock.Object);
     }

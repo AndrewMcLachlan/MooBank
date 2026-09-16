@@ -120,7 +120,8 @@ public partial class Transaction(Guid id) : KeyedEntity<Guid>(id)
     [BackingField(nameof(_splits))]
     public IReadOnlyCollection<TransactionSplit> Splits => _splits.AsReadOnly();
 
-    public TransactionInstrument Account { get; set; } = null!;
+    [Navigation]
+    public partial TransactionInstrument Account { get; set; }
 
     [ForeignKey(nameof(AccountHolderId))]
     public User.User? User { get; set; }

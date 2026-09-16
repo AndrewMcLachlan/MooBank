@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Domain.Entities.User;
 
 [PrimaryKey(nameof(UserId), nameof(Last4Digits))]
-public class UserCard
+public partial class UserCard
 {
     public required Guid UserId { get; set; }
 
@@ -13,5 +13,6 @@ public class UserCard
     public string? Name { get; set; }
 
     [ForeignKey(nameof(UserId))]
-    public User User { get; set; } = null!;
+    [Navigation]
+    public partial User User { get; set; }
 }

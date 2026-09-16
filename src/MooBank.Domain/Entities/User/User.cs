@@ -37,5 +37,6 @@ public partial class User(Guid id) : KeyedEntity<Guid>(id)
     public virtual ICollection<UserCard> Cards { get; set; } = new HashSet<UserCard>();
 
     [ForeignKey(nameof(FamilyId))]
-    public Family.Family Family { get; set; } = null!;
+    [Navigation]
+    public partial Family.Family Family { get; set; }
 }

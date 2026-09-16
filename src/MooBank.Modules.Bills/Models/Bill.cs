@@ -17,7 +17,7 @@ public static class BillExtensions
         {
             Id = entity.Id,
             AccountId = entity.AccountId,
-            AccountName = entity.Account?.Name ?? String.Empty,
+            AccountName = entity.Account.Name,
             InvoiceNumber = entity.InvoiceNumber,
             IssueDate = entity.IssueDate,
             CurrentReading = entity.CurrentReading,

@@ -171,6 +171,19 @@ internal static class TestEntities
             Balance = balance,
         };
 
+    /// <summary>
+    /// Fills in each member's User, standing in for the include the handlers reload through.
+    /// </summary>
+    public static DomainPlan WithUsers(DomainPlan plan)
+    {
+        foreach (var member in plan.Members)
+        {
+            member.User = new Asm.MooBank.Domain.Entities.User.User(member.UserId) { FirstName = "Test", LastName = "User", EmailAddress = "test@example.com" };
+        }
+
+        return plan;
+    }
+
     public static User CreateUser(Guid? id = null, Guid? familyId = null) =>
         new()
         {

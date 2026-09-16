@@ -4,14 +4,15 @@ namespace Asm.MooBank.Domain.Entities.Forecast;
 
 [AggregateRoot]
 [PrimaryKey(nameof(Id))]
-public class ForecastPlan(Guid id) : KeyedEntity<Guid>(id)
+public partial class ForecastPlan(Guid id) : KeyedEntity<Guid>(id)
 {
     public ForecastPlan() : this(Guid.Empty) { }
 
     public Guid FamilyId { get; set; }
 
     [ForeignKey(nameof(FamilyId))]
-    public virtual Family.Family Family { get; set; } = null!;
+    [Navigation]
+    public virtual partial Family.Family Family { get; set; }
 
     [MaxLength(200)]
     public required string Name { get; set; }

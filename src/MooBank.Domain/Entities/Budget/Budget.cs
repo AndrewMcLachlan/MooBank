@@ -4,7 +4,7 @@ namespace Asm.MooBank.Domain.Entities.Budget;
 
 [AggregateRoot]
 [PrimaryKey(nameof(Id))]
-public class Budget(Guid id) : KeyedEntity<Guid>(id)
+public partial class Budget(Guid id) : KeyedEntity<Guid>(id)
 {
     public Budget() : this(Guid.Empty) { }
 
@@ -13,7 +13,8 @@ public class Budget(Guid id) : KeyedEntity<Guid>(id)
     public Guid FamilyId { get; set; }
 
     [ForeignKey(nameof(FamilyId))]
-    public virtual Family.Family Family { get; set; } = null!;
+    [Navigation]
+    public virtual partial Family.Family Family { get; set; }
 
     public virtual ICollection<BudgetLine> Lines { get; set; } = new HashSet<BudgetLine>();
 }

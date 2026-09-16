@@ -13,7 +13,7 @@ namespace Asm.MooBank.Domain.Entities.Retirement;
 /// for a year projects from the age it was last given.
 /// </remarks>
 [PrimaryKey(nameof(Id))]
-public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
+public partial class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
 {
     private readonly List<RetirementPlanMemberAccount> _accounts = [];
 
@@ -22,7 +22,8 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
     public Guid RetirementPlanId { get; set; }
 
     [ForeignKey(nameof(RetirementPlanId))]
-    public virtual RetirementPlan RetirementPlan { get; set; } = null!;
+    [Navigation]
+    public virtual partial RetirementPlan RetirementPlan { get; set; }
 
     /// <summary>
     /// The person this member is. A plan projects the superannuation of people in the family, so a
@@ -32,7 +33,8 @@ public class RetirementPlanMember(Guid id) : KeyedEntity<Guid>(id)
     public Guid UserId { get; set; }
 
     [ForeignKey(nameof(UserId))]
-    public virtual User.User User { get; set; } = null!;
+    [Navigation]
+    public virtual partial User.User User { get; set; }
 
     public int CurrentAge { get; set; }
 

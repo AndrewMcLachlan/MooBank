@@ -1,9 +1,9 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Asm.MooBank.Domain.Entities.Account;
 
 [PrimaryKey(nameof(InstrumentId), nameof(Purpose))]
-public class AccountTagPurpose
+public partial class AccountTagPurpose
 {
     public Guid InstrumentId { get; set; }
 
@@ -12,8 +12,10 @@ public class AccountTagPurpose
     public int TagId { get; set; }
 
     [ForeignKey(nameof(TagId))]
-    public virtual Tag.Tag Tag { get; set; } = null!;
+    [Navigation]
+    public virtual partial Tag.Tag Tag { get; set; }
 
     [ForeignKey(nameof(InstrumentId))]
-    public virtual LogicalAccount LogicalAccount { get; set; } = null!;
+    [Navigation]
+    public virtual partial LogicalAccount LogicalAccount { get; set; }
 }

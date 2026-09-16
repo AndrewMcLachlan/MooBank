@@ -6,7 +6,7 @@ namespace Asm.MooBank.Domain.Entities.Group;
 
 [AggregateRoot]
 [PrimaryKey(nameof(Id))]
-public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
+public partial class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
 {
     public Group() : this(default) { }
 
@@ -29,5 +29,6 @@ public class Group([DisallowNull] Guid id) : KeyedEntity<Guid>(id)
     /// </remarks>
     public int SortOrder { get; set; }
 
-    public virtual User.User Owner { get; set; } = null!;
+    [Navigation]
+    public virtual partial User.User Owner { get; set; }
 }

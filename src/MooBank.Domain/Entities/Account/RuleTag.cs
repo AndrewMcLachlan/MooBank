@@ -4,13 +4,15 @@ using Microsoft.EntityFrameworkCore;
 namespace Asm.MooBank.Domain.Entities.Account;
 
 [PrimaryKey(nameof(RuleId), nameof(TagId))]
-public class RuleTag
+public partial class RuleTag
 {
     public int RuleId { get; set; }
 
     public int TagId { get; set; }
 
-    public Rule Rule { get; set; } = null!;
+    [Navigation]
+    public partial Rule Rule { get; set; }
 
-    public Tag.Tag Tag { get; set; } = null!;
+    [Navigation]
+    public partial Tag.Tag Tag { get; set; }
 }
