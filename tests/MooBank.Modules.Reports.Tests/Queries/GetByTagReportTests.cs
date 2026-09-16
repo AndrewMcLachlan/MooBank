@@ -13,7 +13,7 @@ namespace Asm.MooBank.Modules.Reports.Tests.Queries;
 [Trait("Category", "Unit")]
 public class GetByTagReportTests
 {
-    private static readonly Guid TestAccountId = Guid.NewGuid();
+    private static readonly Guid _testAccountId = Guid.NewGuid();
 
     [Fact]
     public async Task Handle_ValidQuery_ReturnsReportWithAccountAndDates()
@@ -27,7 +27,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = start,
             End = end,
             ReportType = TestEntities.CreateDebitReportType(),
@@ -38,7 +38,7 @@ public class GetByTagReportTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(TestAccountId, result.AccountId);
+        Assert.Equal(_testAccountId, result.AccountId);
         Assert.Equal(start, result.Start);
         Assert.Equal(end, result.End);
     }
@@ -52,9 +52,9 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
-            CreateTransaction(TestAccountId, -50m, DateTime.Today.AddDays(-3), TransactionType.Debit, [tag1]),
-            CreateTransaction(TestAccountId, -75m, DateTime.Today.AddDays(-2), TransactionType.Debit, [tag2]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -50m, DateTime.Today.AddDays(-3), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -75m, DateTime.Today.AddDays(-2), TransactionType.Debit, [tag2]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -62,7 +62,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -94,7 +94,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -118,8 +118,8 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
-            CreateTransaction(TestAccountId, -50m, DateTime.Today.AddDays(-3), TransactionType.Debit, []), // Untagged
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -50m, DateTime.Today.AddDays(-3), TransactionType.Debit, []), // Untagged
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -127,7 +127,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -150,7 +150,7 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -158,7 +158,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -182,7 +182,7 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1, tag2]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1, tag2]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -190,7 +190,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -219,9 +219,9 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -50m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-4), TransactionType.Debit, [tag2]),
-            CreateTransaction(TestAccountId, -200m, DateTime.Today.AddDays(-3), TransactionType.Debit, [tag3]),
+            CreateTransaction(_testAccountId, -50m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-4), TransactionType.Debit, [tag2]),
+            CreateTransaction(_testAccountId, -200m, DateTime.Today.AddDays(-3), TransactionType.Debit, [tag3]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -229,7 +229,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -253,8 +253,8 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),  // In range
-            CreateTransaction(TestAccountId, -200m, DateTime.Today.AddMonths(-2), TransactionType.Debit, [tag1]), // Out of range
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),  // In range
+            CreateTransaction(_testAccountId, -200m, DateTime.Today.AddMonths(-2), TransactionType.Debit, [tag1]), // Out of range
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -262,7 +262,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -286,7 +286,7 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
             CreateTransaction(otherAccountId, -200m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
@@ -295,7 +295,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -307,7 +307,7 @@ public class GetByTagReportTests
         // Assert
         var testTag = result.Tags.FirstOrDefault(t => t.TagName == "TestTag");
         Assert.NotNull(testTag);
-        Assert.Equal(100m, testTag.GrossAmount); // Only from TestAccountId
+        Assert.Equal(100m, testTag.GrossAmount); // Only from _testAccountId
     }
 
     [Fact]
@@ -318,8 +318,8 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
-            CreateTransaction(TestAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Credit, [tag1]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Credit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -327,7 +327,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -350,8 +350,8 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
-            CreateTransaction(TestAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Credit, [tag1]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, 200m, DateTime.Today.AddDays(-5), TransactionType.Credit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -359,7 +359,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateCreditReportType(),
@@ -380,8 +380,8 @@ public class GetByTagReportTests
         // Arrange
         var tag1 = CreateTag(1, "TestTag");
 
-        var includedTransaction = CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]);
-        var excludedTransaction = CreateTransaction(TestAccountId, -200m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]);
+        var includedTransaction = CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]);
+        var excludedTransaction = CreateTransaction(_testAccountId, -200m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]);
         excludedTransaction.ExcludeFromReporting = true;
 
         var transactions = new[] { includedTransaction, excludedTransaction };
@@ -391,7 +391,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -419,8 +419,8 @@ public class GetByTagReportTests
         // Both should contribute to Common's total
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tagA, tagB]),
-            CreateTransaction(TestAccountId, -50m, DateTime.Today.AddDays(-4), TransactionType.Debit, [tagA, tagC]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tagA, tagB]),
+            CreateTransaction(_testAccountId, -50m, DateTime.Today.AddDays(-4), TransactionType.Debit, [tagA, tagC]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -428,7 +428,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -462,7 +462,7 @@ public class GetByTagReportTests
         // Transaction at exactly 00:00:00 on start date should be included
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, startDate.Date, TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -100m, startDate.Date, TransactionType.Debit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -470,7 +470,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(startDate),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -495,7 +495,7 @@ public class GetByTagReportTests
         // Transaction at 23:59:59 on end date should be included
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, endDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -100m, endDate.Date.AddHours(23).AddMinutes(59).AddSeconds(59), TransactionType.Debit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -503,7 +503,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(endDate),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -527,8 +527,8 @@ public class GetByTagReportTests
         // Very old transaction
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, new DateTime(2010, 1, 1), TransactionType.Debit, [tag1]),
-            CreateTransaction(TestAccountId, -50m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -100m, new DateTime(2010, 1, 1), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -50m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -536,7 +536,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.MinValue, // No start date filter
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -560,7 +560,7 @@ public class GetByTagReportTests
         // Debit transaction has negative amount
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -250m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, -250m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -568,7 +568,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -592,7 +592,7 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, 0m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
+            CreateTransaction(_testAccountId, 0m, DateTime.Today.AddDays(-5), TransactionType.Debit, [tag1]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -600,7 +600,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -623,7 +623,7 @@ public class GetByTagReportTests
         var tag2 = CreateTag(2, "Split2Tag");
 
         var transaction = CreateTransactionWithMultipleSplits(
-            TestAccountId,
+            _testAccountId,
             -200m,
             DateTime.Today.AddDays(-5),
             TransactionType.Debit,
@@ -635,7 +635,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -659,7 +659,7 @@ public class GetByTagReportTests
         var tags = Enumerable.Range(1, 20).Select(i => CreateTag(i, $"Tag{i}")).ToList();
 
         var transactions = tags.Select((tag, i) =>
-            CreateTransaction(TestAccountId, -(i + 1) * 10m, DateTime.Today.AddDays(-i - 1), TransactionType.Debit, [tag])
+            CreateTransaction(_testAccountId, -(i + 1) * 10m, DateTime.Today.AddDays(-i - 1), TransactionType.Debit, [tag])
         ).ToArray();
 
         var transactionsQueryable = CreateTransactionQueryable(transactions);
@@ -668,7 +668,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -694,11 +694,11 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-10), TransactionType.Debit, [tag]),
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-8), TransactionType.Debit, [tag]),
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-6), TransactionType.Debit, [tag]),
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-4), TransactionType.Debit, [tag]),
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-2), TransactionType.Debit, [tag]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-10), TransactionType.Debit, [tag]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-8), TransactionType.Debit, [tag]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-6), TransactionType.Debit, [tag]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-4), TransactionType.Debit, [tag]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-2), TransactionType.Debit, [tag]),
         };
         var transactionsQueryable = CreateTransactionQueryable(transactions);
 
@@ -706,7 +706,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -734,7 +734,7 @@ public class GetByTagReportTests
         var household = CreateTag(2, "Household");
 
         var transaction = CreateTransactionWithMultipleSplits(
-            TestAccountId,
+            _testAccountId,
             -150m,
             DateTime.Today.AddDays(-5),
             TransactionType.Debit,
@@ -744,7 +744,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),
@@ -772,8 +772,8 @@ public class GetByTagReportTests
 
         var transactions = new[]
         {
-            CreateTransaction(TestAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [child]),
-            CreateTransaction(TestAccountId, -50m, DateTime.Today.AddDays(-4), TransactionType.Debit, [unrelated]),
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [child]),
+            CreateTransaction(_testAccountId, -50m, DateTime.Today.AddDays(-4), TransactionType.Debit, [unrelated]),
         };
 
         var handler = CreateHandler(
@@ -782,7 +782,7 @@ public class GetByTagReportTests
 
         var query = new GetByTagReport
         {
-            AccountId = TestAccountId,
+            AccountId = _testAccountId,
             Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
             End = DateOnly.FromDateTime(DateTime.Today),
             ReportType = TestEntities.CreateDebitReportType(),

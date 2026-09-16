@@ -35,7 +35,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 public class MoneySmartBenchmarkTests
 {
     /// <summary>The day the MoneySmart run was made, so both engines project the same span.</summary>
-    private static readonly DateOnly Today = new(2026, 9, 6);
+    private static readonly DateOnly _today = new(2026, 9, 6);
 
     /// <summary>What MoneySmart reported for the balance at retirement, in today's dollars.</summary>
     private const decimal MoneySmartBalanceAtRetirement = 1_702_500m;
@@ -88,7 +88,7 @@ public class MoneySmartBenchmarkTests
     {
         // Act
         var summary = _engine
-            .Calculate(Plan(), Today, AgePensionRates.None, TestEntities.StrategyRates(Plan(), 0.037m), TestEntities.MinimumDrawdown())
+            .Calculate(Plan(), _today, AgePensionRates.None, TestEntities.StrategyRates(Plan(), 0.037m), TestEntities.MinimumDrawdown())
             .Summary;
 
         // Assert
@@ -115,7 +115,7 @@ public class MoneySmartBenchmarkTests
     public void Calculate_TheMoneySmartScenario_ReadsBelowIt()
     {
         var summary = _engine
-            .Calculate(Plan(), Today, AgePensionRates.None, TestEntities.StrategyRates(Plan(), 0.037m), TestEntities.MinimumDrawdown())
+            .Calculate(Plan(), _today, AgePensionRates.None, TestEntities.StrategyRates(Plan(), 0.037m), TestEntities.MinimumDrawdown())
             .Summary;
 
         Assert.True(summary.BalanceAtRetirementInTodaysDollars < MoneySmartBalanceAtRetirement,

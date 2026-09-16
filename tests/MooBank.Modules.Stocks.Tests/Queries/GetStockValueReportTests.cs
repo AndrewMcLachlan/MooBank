@@ -11,7 +11,7 @@ namespace Asm.MooBank.Modules.Stocks.Tests.Queries;
 [Trait("Category", "Unit")]
 public class GetStockValueReportTests
 {
-    private static readonly Guid TestInstrumentId = Guid.NewGuid();
+    private static readonly Guid _testInstrumentId = Guid.NewGuid();
     private const string TestSymbol = "AAPL";
 
     [Fact]
@@ -21,21 +21,21 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
         var transactions = CreateStockTransactionQueryable([]);
         var priceHistory = CreatePriceHistoryQueryable([]);
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(TestInstrumentId, result.InstrumentId);
+        Assert.Equal(_testInstrumentId, result.InstrumentId);
         Assert.Equal(TestSymbol, result.Symbol);
         Assert.Equal(start, result.Start);
         Assert.Equal(end, result.End);
@@ -48,14 +48,14 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-30));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
         var transactions = CreateStockTransactionQueryable([]);
         var priceHistory = CreatePriceHistoryQueryable([]);
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -72,12 +72,12 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-10));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         // Transaction before the report period
         var transaction = CreateStockTransaction(
-            accountId: TestInstrumentId,
+            accountId: _testInstrumentId,
             quantity: 10,
             price: 100m,
             fees: 10m,
@@ -90,7 +90,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -116,14 +116,14 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-60));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
         var transactions = CreateStockTransactionQueryable([]);
         var priceHistory = CreatePriceHistoryQueryable([]);
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -140,14 +140,14 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-10));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
         var transactions = CreateStockTransactionQueryable([]);
         var priceHistory = CreatePriceHistoryQueryable([]);
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -163,13 +163,13 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         var transactions = new[]
         {
-            CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 10m, DateTime.Today.AddDays(-30)),
-            CreateStockTransaction(TestInstrumentId, quantity: 5, price: 110m, fees: 5m, DateTime.Today.AddDays(-20)),
+            CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 10m, DateTime.Today.AddDays(-30)),
+            CreateStockTransaction(_testInstrumentId, quantity: 5, price: 110m, fees: 5m, DateTime.Today.AddDays(-20)),
         };
         var transactionsQueryable = CreateStockTransactionQueryable(transactions);
 
@@ -178,7 +178,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactionsQueryable, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -203,7 +203,7 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         // No transactions = zero quantity
@@ -215,7 +215,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -232,10 +232,10 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-10));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var transaction = CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
+        var transaction = CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
         var transactions = CreateStockTransactionQueryable([transaction]);
 
         // Only price at start, not for subsequent dates
@@ -244,7 +244,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -265,11 +265,11 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-30));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         // Transaction within the report period
-        var transaction = CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-15));
+        var transaction = CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-15));
         var transactions = CreateStockTransactionQueryable([transaction]);
 
         // Prices throughout the period
@@ -282,7 +282,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -301,12 +301,12 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         var transactions = new[]
         {
-            CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-10)),
+            CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-10)),
             CreateStockTransaction(otherAccountId, quantity: 100, price: 100m, fees: 0m, DateTime.Today.AddDays(-10)),
         };
         var transactionsQueryable = CreateStockTransactionQueryable(transactions);
@@ -316,14 +316,14 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactionsQueryable, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotEmpty(result.Points);
-        // Should only count the 10 shares from TestInstrumentId, not the 100 from otherAccountId
+        // Should only count the 10 shares from _testInstrumentId, not the 100 from otherAccountId
         var firstPoint = result.Points.First();
         Assert.Equal(1000m, firstPoint.Value); // 10 * 100
     }
@@ -335,13 +335,13 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-10));
         var end = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         var transactions = new[]
         {
-            CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-15)), // Before start
-            CreateStockTransaction(TestInstrumentId, quantity: 5, price: 100m, fees: 0m, DateTime.Today.AddDays(-2)),   // After end
+            CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-15)), // Before start
+            CreateStockTransaction(_testInstrumentId, quantity: 5, price: 100m, fees: 0m, DateTime.Today.AddDays(-2)),   // After end
         };
         var transactionsQueryable = CreateStockTransactionQueryable(transactions);
 
@@ -350,7 +350,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactionsQueryable, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -369,13 +369,13 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         var transactions = new[]
         {
-            CreateStockTransaction(TestInstrumentId, quantity: 20, price: 100m, fees: 10m, DateTime.Today.AddDays(-30)), // Buy 20
-            CreateStockTransaction(TestInstrumentId, quantity: -5, price: 110m, fees: 5m, DateTime.Today.AddDays(-20)),  // Sell 5
+            CreateStockTransaction(_testInstrumentId, quantity: 20, price: 100m, fees: 10m, DateTime.Today.AddDays(-30)), // Buy 20
+            CreateStockTransaction(_testInstrumentId, quantity: -5, price: 110m, fees: 5m, DateTime.Today.AddDays(-20)),  // Sell 5
         };
         var transactionsQueryable = CreateStockTransactionQueryable(transactions);
 
@@ -384,7 +384,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactionsQueryable, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -409,10 +409,10 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-4));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var transaction = CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
+        var transaction = CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
         var transactions = CreateStockTransactionQueryable([transaction]);
 
         // Multiple prices on different days
@@ -428,7 +428,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -448,10 +448,10 @@ public class GetStockValueReportTests
         // Arrange - Same start and end date
         var singleDay = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var transaction = CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-10));
+        var transaction = CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-10));
         var transactions = CreateStockTransactionQueryable([transaction]);
 
         var price = CreatePriceHistory(singleDay, 150m);
@@ -459,7 +459,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, singleDay, singleDay);
+        var query = new GetStockValueReport(_testInstrumentId, singleDay, singleDay);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -477,14 +477,14 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-90));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
         var transactions = CreateStockTransactionQueryable([]);
         var priceHistory = CreatePriceHistoryQueryable([]);
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -500,11 +500,11 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         var transaction = CreateStockTransaction(
-            TestInstrumentId,
+            _testInstrumentId,
             quantity: 7,
             price: 123.45m,
             fees: 9.99m,
@@ -516,7 +516,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -540,10 +540,10 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-10));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var transaction = CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
+        var transaction = CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
         var transactions = CreateStockTransactionQueryable([transaction]);
 
         // Price only available later in the period
@@ -552,7 +552,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -573,10 +573,10 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var transaction = CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
+        var transaction = CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
         var transactions = CreateStockTransactionQueryable([transaction]);
 
         // Prices outside range - should be filtered out
@@ -590,7 +590,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -609,13 +609,13 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-10));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         var transactions = new[]
         {
-            CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30)), // Buy 10
-            CreateStockTransaction(TestInstrumentId, quantity: -10, price: 120m, fees: 0m, DateTime.Today.AddDays(-15)), // Sell all
+            CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30)), // Buy 10
+            CreateStockTransaction(_testInstrumentId, quantity: -10, price: 120m, fees: 0m, DateTime.Today.AddDays(-15)), // Sell all
         };
         var transactionsQueryable = CreateStockTransactionQueryable(transactions);
 
@@ -624,7 +624,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactionsQueryable, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -642,12 +642,12 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         // Transaction at start of end date (should be included since < end.ToEndOfDay())
         var transaction = CreateStockTransaction(
-            TestInstrumentId,
+            _testInstrumentId,
             quantity: 10,
             price: 100m,
             fees: 0m,
@@ -659,7 +659,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -678,11 +678,11 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
         var transaction = CreateStockTransaction(
-            TestInstrumentId,
+            _testInstrumentId,
             quantity: 100000,
             price: 5000m,
             fees: 500m,
@@ -694,7 +694,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -718,10 +718,10 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var transaction = CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
+        var transaction = CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 0m, DateTime.Today.AddDays(-30));
         var transactions = CreateStockTransactionQueryable([transaction]);
 
         var price = CreatePriceHistory(start, 100m);
@@ -729,7 +729,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);
@@ -748,10 +748,10 @@ public class GetStockValueReportTests
         var start = DateOnly.FromDateTime(DateTime.Today.AddDays(-5));
         var end = DateOnly.FromDateTime(DateTime.Today);
 
-        var stockHolding = TestEntities.CreateStockHolding(id: TestInstrumentId, symbol: TestSymbol);
+        var stockHolding = TestEntities.CreateStockHolding(id: _testInstrumentId, symbol: TestSymbol);
         var stockHoldings = CreateStockHoldingQueryable([stockHolding]);
 
-        var transaction = CreateStockTransaction(TestInstrumentId, quantity: 10, price: 100m, fees: 10m, DateTime.Today.AddDays(-30));
+        var transaction = CreateStockTransaction(_testInstrumentId, quantity: 10, price: 100m, fees: 10m, DateTime.Today.AddDays(-30));
         var transactions = CreateStockTransactionQueryable([transaction]);
 
         // Prices for each day
@@ -762,7 +762,7 @@ public class GetStockValueReportTests
 
         var handler = new GetStockValueReportHandler(stockHoldings, transactions, priceHistory);
 
-        var query = new GetStockValueReport(TestInstrumentId, start, end);
+        var query = new GetStockValueReport(_testInstrumentId, start, end);
 
         // Act
         var result = await handler.Handle(query, TestContext.Current.CancellationToken);

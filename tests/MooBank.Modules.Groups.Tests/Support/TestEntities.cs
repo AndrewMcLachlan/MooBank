@@ -8,7 +8,7 @@ namespace Asm.MooBank.Modules.Groups.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainGroup CreateGroup(
         Guid? id = null,
@@ -21,8 +21,8 @@ internal static class TestEntities
     {
         return new DomainGroup(id ?? Guid.NewGuid())
         {
-            Name = name ?? Faker.Commerce.Department(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Name = name ?? _faker.Commerce.Department(),
+            Description = description ?? _faker.Lorem.Sentence(),
             OwnerId = ownerId ?? Guid.NewGuid(),
             ShowPosition = showPosition,
             Colour = colour,
@@ -40,8 +40,8 @@ internal static class TestEntities
         return new ModelGroup
         {
             Id = id ?? Guid.NewGuid(),
-            Name = name ?? Faker.Commerce.Department(),
-            Description = description ?? Faker.Lorem.Sentence(),
+            Name = name ?? _faker.Commerce.Department(),
+            Description = description ?? _faker.Lorem.Sentence(),
             ShowTotal = showTotal,
             Colour = colour,
         };

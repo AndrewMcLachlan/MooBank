@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Reports.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static ReportType CreateDebitReportType()
     {
@@ -55,7 +55,7 @@ internal static class TestEntities
         return new TransactionTagTotal
         {
             TagId = tagId,
-            TagName = tagName ?? Faker.Commerce.Department(),
+            TagName = tagName ?? _faker.Commerce.Department(),
             GrossAmount = grossAmount,
             NetAmount = netAmount,
             HasChildren = hasChildren,
@@ -94,7 +94,7 @@ internal static class TestEntities
         return new TagAverage
         {
             TagId = tagId,
-            Name = name ?? Faker.Commerce.Department(),
+            Name = name ?? _faker.Commerce.Department(),
             Average = average,
         };
     }
@@ -107,7 +107,7 @@ internal static class TestEntities
     {
         return new DomainTag(id)
         {
-            Name = name ?? Faker.Commerce.Department(),
+            Name = name ?? _faker.Commerce.Department(),
             FamilyId = familyId ?? Guid.NewGuid(),
             Deleted = deleted,
         };

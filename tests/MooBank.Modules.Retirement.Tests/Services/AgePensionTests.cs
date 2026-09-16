@@ -16,9 +16,9 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 [Trait("Category", "Unit")]
 public class AgePensionTests
 {
-    private static readonly DateOnly Today = new(2026, 7, 30);
+    private static readonly DateOnly _today = new(2026, 7, 30);
 
-    private static readonly AgePensionRates Rates = new(
+    private static readonly AgePensionRates _rates = new(
         EligibilityAge: 67,
         MaxAnnualSingle: 29_900m,
         MaxAnnualCouple: 45_080m,
@@ -40,7 +40,7 @@ public class AgePensionTests
     [Trait("Category", "Unit")]
     public void ForYear_CoupleBelowTheFreeArea_GetsTheFullRate(decimal assets)
     {
-        Assert.Equal(45_080m, AgePension.ForYear(Rates, [67, 67], assets));
+        Assert.Equal(45_080m, AgePension.ForYear(_rates, [67, 67], assets));
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public class AgePensionTests
     public void ForYear_CoupleAboveTheFreeArea_IsTapered()
     {
         // 100,000 over the free area, tapering at 7.8%, is 7,800 off.
-        Assert.Equal(45_080m - 7_800m, AgePension.ForYear(Rates, [67, 67], 570_000m));
+        Assert.Equal(45_080m - 7_800m, AgePension.ForYear(_rates, [67, 67], 570_000m));
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class AgePensionTests
     [Fact]
     public void ForYear_WellAboveTheFreeArea_IsNought()
     {
-        Assert.Equal(0m, AgePension.ForYear(Rates, [67, 67], 2_000_000m));
+        Assert.Equal(0m, AgePension.ForYear(_rates, [67, 67], 2_000_000m));
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public class AgePensionTests
     [Fact]
     public void ForYear_NobodyEligible_GetsNothing()
     {
-        Assert.Equal(0m, AgePension.ForYear(Rates, [65, 63], 100_000m));
+        Assert.Equal(0m, AgePension.ForYear(_rates, [65, 63], 100_000m));
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class AgePensionTests
     [Fact]
     public void ForYear_OneOfACoupleEligible_GetsHalfTheCoupleRate()
     {
-        Assert.Equal(45_080m / 2m, AgePension.ForYear(Rates, [67, 60], 400_000m));
+        Assert.Equal(45_080m / 2m, AgePension.ForYear(_rates, [67, 60], 400_000m));
     }
 
     /// <summary>
@@ -100,9 +100,9 @@ public class AgePensionTests
     [Fact]
     public void ForYear_SinglePerson_UsesTheSingleRate()
     {
-        Assert.Equal(29_900m, AgePension.ForYear(Rates, [67], 314_000m));
+        Assert.Equal(29_900m, AgePension.ForYear(_rates, [67], 314_000m));
         // 100,000 over the single free area.
-        Assert.Equal(29_900m - 7_800m, AgePension.ForYear(Rates, [67], 414_000m));
+        Assert.Equal(29_900m - 7_800m, AgePension.ForYear(_rates, [67], 414_000m));
     }
 
     /// <summary>
@@ -131,11 +131,11 @@ public class AgePensionTests
         // 470,000 free area plus 45,080 of entitlement at 7.8% a year.
         var expected = 470_000m + (45_080m / 0.078m);
 
-        Assert.Equal(expected, AgePension.AssetsCutOff(Rates, [67, 67]), 2);
+        Assert.Equal(expected, AgePension.AssetsCutOff(_rates, [67, 67]), 2);
 
         // And a household exactly there receives nothing, while a pound under receives something.
-        Assert.Equal(0m, AgePension.ForYear(Rates, [67, 67], expected));
-        Assert.True(AgePension.ForYear(Rates, [67, 67], expected - 1_000m) > 0m);
+        Assert.Equal(0m, AgePension.ForYear(_rates, [67, 67], expected));
+        Assert.True(AgePension.ForYear(_rates, [67, 67], expected - 1_000m) > 0m);
     }
 
     /// <summary>
@@ -146,8 +146,8 @@ public class AgePensionTests
     [Fact]
     public void AssetsCutOff_ForOnePerson_IsLowerThanForACouple()
     {
-        var single = AgePension.AssetsCutOff(Rates, [67]);
-        var couple = AgePension.AssetsCutOff(Rates, [67, 67]);
+        var single = AgePension.AssetsCutOff(_rates, [67]);
+        var couple = AgePension.AssetsCutOff(_rates, [67, 67]);
 
         Assert.Equal(314_000m + (29_900m / 0.078m), single, 2);
         Assert.True(single < couple);
@@ -165,7 +165,7 @@ public class AgePensionTests
     [Fact]
     public void AssetsCutOff_NobodyEligible_IsNought()
     {
-        Assert.Equal(0m, AgePension.AssetsCutOff(Rates, [60, 55]));
+        Assert.Equal(0m, AgePension.AssetsCutOff(_rates, [60, 55]));
         Assert.Equal(0m, AgePension.AssetsCutOff(AgePensionRates.None, [90]));
     }
 
@@ -189,7 +189,7 @@ public class AgePensionTests
         ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
+        var summary = _engine.Calculate(plan, _today, _rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         Assert.Equal(470_000m + (45_080m / 0.078m), summary.PensionStartsBelowInTodaysDollars, 0);
@@ -209,7 +209,7 @@ public class AgePensionTests
         ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
+        var summary = _engine.Calculate(plan, _today, _rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         Assert.Equal(314_000m + (29_900m / 0.078m), summary.PensionStartsBelowInTodaysDollars, 0);
@@ -225,7 +225,7 @@ public class AgePensionTests
     {
         var plan = TestEntities.CreatePlan(members: [TestEntities.CreateMember(accountBalances: [400_000m])]);
 
-        Assert.Equal(0m, _engine.CalculateWithoutPension(plan, Today).Summary.PensionStartsBelowInTodaysDollars);
+        Assert.Equal(0m, _engine.CalculateWithoutPension(plan, _today).Summary.PensionStartsBelowInTodaysDollars);
     }
 
     /// <summary>
@@ -240,7 +240,7 @@ public class AgePensionTests
     [Fact]
     public void Indexed_ALaterYear_MovesTheMoneyButNotTheAge()
     {
-        var indexed = AgePension.Indexed(Rates, 2m);
+        var indexed = AgePension.Indexed(_rates, 2m);
 
         Assert.Equal(90_160m, indexed.MaxAnnualCouple);
         Assert.Equal(940_000m, indexed.AssetsFreeAreaCouple);
@@ -270,7 +270,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None);
+        var projection = _engine.Calculate(plan, _today, _rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None);
         var finalYear = projection.Years.Last();
 
         // Assert
@@ -307,7 +307,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var years = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Years.ToList();
+        var years = _engine.Calculate(plan, _today, _rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Years.ToList();
         var drawing = years.Where(y => y.TotalIncome > 0m).ToList();
 
         // Assert
@@ -351,7 +351,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var projection = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None);
+        var projection = _engine.Calculate(plan, _today, _rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None);
 
         // Assert
         Assert.All(projection.Years, y => Assert.Equal(0m, y.Drawdown));
@@ -382,7 +382,7 @@ public class AgePensionTests
             ]);
 
         // Act
-        var summary = _engine.Calculate(plan, Today, Rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
+        var summary = _engine.Calculate(plan, _today, _rates, TestEntities.StrategyRates(plan), MinimumDrawdownRates.None).Summary;
 
         // Assert
         // A single person's rate is below the target, so this one genuinely does fall short.

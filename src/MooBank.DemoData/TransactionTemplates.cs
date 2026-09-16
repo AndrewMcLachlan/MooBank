@@ -1,4 +1,4 @@
-namespace Asm.MooBank.DemoData;
+﻿namespace Asm.MooBank.DemoData;
 
 /// <summary>
 /// Payment method types that determine how the description is formatted.
@@ -74,7 +74,7 @@ public class TransactionTemplate
 public static class TransactionTemplates
 {
     // Seasonal multiplier for electricity (higher in summer and winter)
-    private static readonly Func<int, decimal> ElectricitySeasonalMultiplier = month =>
+    private static readonly Func<int, decimal> _electricitySeasonalMultiplier = month =>
         month switch
         {
             12 or 1 or 2 => 1.4m,  // Summer (Australia)
@@ -83,7 +83,7 @@ public static class TransactionTemplates
         };
 
     // Seasonal multiplier for gas (higher in winter)
-    private static readonly Func<int, decimal> GasSeasonalMultiplier = month =>
+    private static readonly Func<int, decimal> _gasSeasonalMultiplier = month =>
         month switch
         {
             6 or 7 or 8 => 1.5m,   // Winter
@@ -438,7 +438,7 @@ public static class TransactionTemplates
             ScheduleType = ScheduleType.Frequency,
             FrequencyDays = 90,
             FrequencyVariance = 5,
-            SeasonalMultiplier = ElectricitySeasonalMultiplier
+            SeasonalMultiplier = _electricitySeasonalMultiplier
         },
         // Gas
         new TransactionTemplate
@@ -451,7 +451,7 @@ public static class TransactionTemplates
             ScheduleType = ScheduleType.Frequency,
             FrequencyDays = 90,
             FrequencyVariance = 5,
-            SeasonalMultiplier = GasSeasonalMultiplier
+            SeasonalMultiplier = _gasSeasonalMultiplier
         },
         // Water
         new TransactionTemplate

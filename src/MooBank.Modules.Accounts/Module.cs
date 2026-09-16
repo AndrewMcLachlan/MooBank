@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Asm.AspNetCore.Modules;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Accounts;
 
 public class Module : IModule
 {
-    private static readonly Assembly Assembly = typeof(Module).Assembly;
+    private static readonly Assembly _assembly = typeof(Module).Assembly;
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
@@ -21,9 +21,9 @@ public class Module : IModule
 
     public IServiceCollection AddServices(IServiceCollection services)
     {
-        services.AddCommandHandlers(Assembly);
-        services.AddQueryHandlers(Assembly);
-        services.AddValidatorsFromAssembly(Assembly);
+        services.AddCommandHandlers(_assembly);
+        services.AddQueryHandlers(_assembly);
+        services.AddValidatorsFromAssembly(_assembly);
 
         return services;
     }

@@ -1,4 +1,4 @@
-using Asm.MooBank.Domain.Entities.ReferenceData;
+﻿using Asm.MooBank.Domain.Entities.ReferenceData;
 using Asm.MooBank.Models;
 using Microsoft.Extensions.Caching.Hybrid;
 
@@ -11,7 +11,7 @@ public interface ICurrencyConverter
 
 public class CurrencyConverter(IReferenceDataRepository referenceDataRepository, User user, HybridCache cache) : ICurrencyConverter
 {
-    private static readonly HybridCacheEntryOptions CacheOptions = new()
+    private static readonly HybridCacheEntryOptions _cacheOptions = new()
     {
         Expiration = TimeSpan.FromHours(12),
     };
@@ -34,7 +34,7 @@ public class CurrencyConverter(IReferenceDataRepository referenceDataRepository,
         var rates = await cache.GetOrCreateAsync(
             CacheKeys.ReferenceData.ExchangeRates,
             async ct => await referenceDataRepository.GetExchangeRates(ct),
-            CacheOptions,
+            _cacheOptions,
             [CacheKeys.ReferenceData.CacheTag],
             cancellationToken);
 

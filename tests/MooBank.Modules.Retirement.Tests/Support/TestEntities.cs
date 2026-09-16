@@ -11,7 +11,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     /// <summary>
     /// Rates chosen so the arithmetic in tests stays easy to check by hand: 10% return, no
@@ -47,7 +47,7 @@ internal static class TestEntities
 
         return new DomainPlan(id ?? Guid.NewGuid())
         {
-            Name = name ?? Faker.Lorem.Sentence(3),
+            Name = name ?? _faker.Lorem.Sentence(3),
             FamilyId = familyId ?? Guid.NewGuid(),
             InflationRate = inflationRate,
             SuperGuaranteeRate = superGuaranteeRate,
@@ -116,7 +116,7 @@ internal static class TestEntities
         return new DomainPlanMember(memberId)
         {
             UserId = personId,
-            User = CreateDomainUser(personId, name ?? Faker.Name.FirstName()),
+            User = CreateDomainUser(personId, name ?? _faker.Name.FirstName()),
             CurrentAge = currentAge,
             CurrentIncome = currentIncome,
             SalarySacrifice = salarySacrifice,

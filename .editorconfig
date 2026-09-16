@@ -45,9 +45,10 @@ dotnet_naming_rule.static_field_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.static_field_should_be_pascal_case.symbols = static_field
 dotnet_naming_rule.static_field_should_be_pascal_case.style = pascal_case
 
-#dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.severity = suggestion
-#dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.symbols = private_or_internal_field
-#dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.style = begins_with__
+dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.severity = warning
+dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.symbols = private_or_internal_field
+dotnet_naming_rule.private_or_internal_field_should_be_begins_with__.style = begins_with__
+dotnet_diagnostic.IDE1006.severity = warning
 
 # Symbol specifications
 
@@ -56,7 +57,10 @@ dotnet_naming_symbols.constant.applicable_accessibilities = *
 dotnet_naming_symbols.constant.required_modifiers = const
 
 dotnet_naming_symbols.static_field.applicable_kinds = field
-dotnet_naming_symbols.static_field.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+# private and private_protected are deliberately absent: a private static field is left to the
+# private_or_internal_field rule below, which asks for _camelCase. Naming rules are first-match, so
+# listing them here would make this rule win and require PascalCase instead.
+dotnet_naming_symbols.static_field.applicable_accessibilities = public, internal, protected, protected_internal
 dotnet_naming_symbols.static_field.required_modifiers = static
 
 dotnet_naming_symbols.private_or_internal_field.applicable_kinds = field

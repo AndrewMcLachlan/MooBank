@@ -9,7 +9,7 @@ namespace Asm.MooBank.Modules.Tags.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainTag CreateTag(
         int id = 1,
@@ -23,7 +23,7 @@ internal static class TestEntities
     {
         var tag = new DomainTag(id)
         {
-            Name = name ?? Faker.Commerce.Department(),
+            Name = name ?? _faker.Commerce.Department(),
             FamilyId = familyId ?? Guid.NewGuid(),
             Colour = colour,
             Deleted = deleted,
@@ -56,7 +56,7 @@ internal static class TestEntities
         return new ModelTag
         {
             Id = id,
-            Name = name ?? Faker.Commerce.Department(),
+            Name = name ?? _faker.Commerce.Department(),
             Colour = colour,
             Tags = tags ?? [],
             Settings = new ModelTag.TagSettings
@@ -74,7 +74,7 @@ internal static class TestEntities
         bool applySmoothing = false)
     {
         return new Models.UpdateTag(
-            name ?? Faker.Commerce.Department(),
+            name ?? _faker.Commerce.Department(),
             colour,
             excludeFromReporting,
             applySmoothing);

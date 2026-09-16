@@ -15,8 +15,8 @@ public class IngImporterTests
 {
     private const string Header = "Date,Description,Credit,Debit,Balance";
 
-    private static readonly Guid InstrumentId = Guid.NewGuid();
-    private static readonly Guid InstitutionAccountId = Guid.NewGuid();
+    private static readonly Guid _instrumentId = Guid.NewGuid();
+    private static readonly Guid _institutionAccountId = Guid.NewGuid();
 
     private readonly Mock<IUserRepository> _userRepositoryMock = new();
     private readonly Mock<ITransactionRawRepository> _rawRepositoryMock = new();
@@ -49,7 +49,7 @@ public class IngImporterTests
     {
         var importer = CreateImporter();
 
-        var result = await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        var result = await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20/06/2024,\"TRANSFER, FROM \"\"SAVINGS, ACCOUNT\"\"\",,50.00,1000.00"),
             TestContext.Current.CancellationToken);
 
@@ -70,7 +70,7 @@ public class IngImporterTests
     {
         var importer = CreateImporter();
 
-        var result = await importer.Import(InstrumentId, InstitutionAccountId, ToStream(), TestContext.Current.CancellationToken);
+        var result = await importer.Import(_instrumentId, _institutionAccountId, ToStream(), TestContext.Current.CancellationToken);
 
         Assert.Empty(result.Transactions);
         Assert.Null(result.EndBalance);
@@ -86,7 +86,7 @@ public class IngImporterTests
     {
         var importer = CreateImporter();
 
-        var result = await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        var result = await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "garbage,No amounts,,,",
             "not-a-date,Description,,50.00,1000.00"),
             TestContext.Current.CancellationToken);
@@ -104,12 +104,12 @@ public class IngImporterTests
     public async Task Import_UnparseableDescriptions_DoesNotMatchOnNullReceiptNumbers()
     {
         _rawRepositoryMock
-            .Setup(r => r.GetSummaries(InstrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetSummaries(_instrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([new TransactionRawSummary("Mystery Payment A", new DateOnly(2024, 6, 20), 0m, 50.00m)]);
 
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20/06/2024,Mystery Payment B,,50.00,1000.00"),
             TestContext.Current.CancellationToken);
 
@@ -126,12 +126,12 @@ public class IngImporterTests
     public async Task Import_MatchingReceiptNumbers_IsSkippedAsDuplicate()
     {
         _rawRepositoryMock
-            .Setup(r => r.GetSummaries(InstrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetSummaries(_instrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([new TransactionRawSummary("Power Co - Direct Debit - Receipt 123456 Bill", new DateOnly(2024, 6, 20), 0m, 50.00m)]);
 
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20/06/2024,Power Company - Direct Debit - Receipt 123456 Electricity Bill,,50.00,1000.00"),
             TestContext.Current.CancellationToken);
 
@@ -147,12 +147,12 @@ public class IngImporterTests
     public async Task Import_IdenticalDescription_IsSkippedAsDuplicate()
     {
         _rawRepositoryMock
-            .Setup(r => r.GetSummaries(InstrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetSummaries(_instrumentId, It.IsAny<DateOnly>(), It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([new TransactionRawSummary("Mystery Payment A", new DateOnly(2024, 6, 20), 0m, 50.00m)]);
 
         var importer = CreateImporter();
 
-        await importer.Import(InstrumentId, InstitutionAccountId, ToStream(
+        await importer.Import(_instrumentId, _institutionAccountId, ToStream(
             "20/06/2024,Mystery Payment A,,50.00,1000.00"),
             TestContext.Current.CancellationToken);
 

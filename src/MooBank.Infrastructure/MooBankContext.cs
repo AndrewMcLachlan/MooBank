@@ -17,7 +17,7 @@ namespace Asm.MooBank.Infrastructure;
 
 public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 {
-    private static readonly List<Assembly> Assemblies = [];
+    private static readonly List<Assembly> _assemblies = [];
 
     private readonly Security.IUserDataProvider? _userDataProvider;
 
@@ -117,7 +117,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
     // list, which OnModelCreating applies. Registration is order-sensitive: every assembly must be
     // registered before the context is first used. EF caches the built model, so any RegisterAssembly
     // call after first use is silently ignored.
-    public static void RegisterAssembly(Assembly assembly) => Assemblies.Add(assembly);
+    public static void RegisterAssembly(Assembly assembly) => _assemblies.Add(assembly);
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -132,7 +132,7 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
 
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
-        Assemblies.ForEach(a => modelBuilder.ApplyConfigurationsFromAssembly(a));
+        _assemblies.ForEach(a => modelBuilder.ApplyConfigurationsFromAssembly(a));
 
         modelBuilder.Entity<Asset>().UseTptMappingStrategy();
 

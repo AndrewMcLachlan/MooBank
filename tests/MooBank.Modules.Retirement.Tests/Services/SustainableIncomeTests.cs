@@ -18,7 +18,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 [Trait("Category", "Unit")]
 public class SustainableIncomeTests
 {
-    private static readonly DateOnly Today = new(2026, 7, 30);
+    private static readonly DateOnly _today = new(2026, 7, 30);
 
     private readonly RetirementProjectionEngine _engine = new();
 
@@ -44,7 +44,7 @@ public class SustainableIncomeTests
         ]);
 
         // Act
-        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
+        var summary = _engine.CalculateWithoutPension(plan, _today).Summary;
 
         // Assert
         Assert.Equal(70, summary.RetirementAge);
@@ -74,10 +74,10 @@ public class SustainableIncomeTests
             members: [TestEntities.CreateMember(currentAge: 55, retirementAge: 67, accountBalances: [600_000m])]);
 
         // Act: read the sustainable income off a first pass, then run again targeting it.
-        var sustainable = _engine.CalculateWithoutPension(plan, Today).Summary.SustainableIncomeInTodaysDollars;
+        var sustainable = _engine.CalculateWithoutPension(plan, _today).Summary.SustainableIncomeInTodaysDollars;
 
         plan.TargetRetirementIncome = sustainable;
-        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
+        var summary = _engine.CalculateWithoutPension(plan, _today).Summary;
 
         // Assert
         Assert.True(sustainable > 0m);

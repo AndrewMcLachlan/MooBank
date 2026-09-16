@@ -16,9 +16,9 @@ namespace Asm.MooBank.Core.Tests.Services.DemoData;
 /// </summary>
 public class DemoDataServiceTests
 {
-    private static readonly Guid CheckingId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-    private static readonly Guid OwnerId = Guid.Parse("22222222-2222-2222-2222-222222222222");
-    private static readonly Guid FamilyId = Guid.Parse("33333333-3333-3333-3333-333333333333");
+    private static readonly Guid _checkingId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid _ownerId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+    private static readonly Guid _familyId = Guid.Parse("33333333-3333-3333-3333-333333333333");
 
     private readonly Mock<IDemoDataWriter> _writer = new();
     private readonly Mock<ISettableUserDataProvider> _userDataProvider = new();
@@ -72,7 +72,7 @@ public class DemoDataServiceTests
     [Trait("Category", "Unit")]
     public async Task Extend_CheckingAccountDoesNotExist_WritesNothing()
     {
-        var service = CreateService(new DemoDataOptions { CheckingAccountId = CheckingId }, owners: []);
+        var service = CreateService(new DemoDataOptions { CheckingAccountId = _checkingId }, owners: []);
 
         await service.Extend(TestContext.Current.CancellationToken);
 
@@ -93,11 +93,11 @@ public class DemoDataServiceTests
     [Trait("Category", "Unit")]
     public async Task Extend_Configured_AdoptsTheDemoIdentityThenWrites()
     {
-        var service = CreateService(new DemoDataOptions { CheckingAccountId = CheckingId });
+        var service = CreateService(new DemoDataOptions { CheckingAccountId = _checkingId });
 
         await service.Extend(TestContext.Current.CancellationToken);
 
-        _userDataProvider.Verify(u => u.SetUser(It.Is<Asm.MooBank.Models.User>(user => user.Id == OwnerId && user.FamilyId == FamilyId)), Times.Once);
+        _userDataProvider.Verify(u => u.SetUser(It.Is<Asm.MooBank.Models.User>(user => user.Id == _ownerId && user.FamilyId == _familyId)), Times.Once);
         _writer.Verify(w => w.Extend(It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -114,7 +114,7 @@ public class DemoDataServiceTests
     [Trait("Category", "Unit")]
     public async Task Extend_Always_FillsThePreviousMonth()
     {
-        var service = CreateService(new DemoDataOptions { CheckingAccountId = CheckingId });
+        var service = CreateService(new DemoDataOptions { CheckingAccountId = _checkingId });
         var today = DateOnly.FromDateTime(DateTime.Today);
         var expected = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
 
@@ -131,9 +131,9 @@ public class DemoDataServiceTests
 
     private DemoDataService CreateService(DemoDataOptions options, IEnumerable<InstrumentOwner>? owners = null)
     {
-        owners ??= [new InstrumentOwner { InstrumentId = CheckingId, UserId = OwnerId }];
+        owners ??= [new InstrumentOwner { InstrumentId = _checkingId, UserId = _ownerId }];
 
-        var user = new UserEntity(OwnerId) { EmailAddress = "demo@example.com", FamilyId = FamilyId };
+        var user = new UserEntity(_ownerId) { EmailAddress = "demo@example.com", FamilyId = _familyId };
 
         var services = new ServiceCollection()
             .AddScoped(_ => _userDataProvider.Object)

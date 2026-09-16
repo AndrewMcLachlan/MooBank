@@ -6,7 +6,7 @@ namespace Asm.MooBank.Modules.Forecast.Models;
 
 public static class ModelExtensions
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public static ForecastPlan ToModel(this DomainEntities.ForecastPlan plan) => new()
     {
@@ -18,8 +18,8 @@ public static class ModelExtensions
         StartingBalanceMode = plan.StartingBalanceMode,
         StartingBalanceAmount = plan.StartingBalanceAmount,
         CurrencyCode = plan.CurrencyCode,
-        OutgoingStrategy = String.IsNullOrEmpty(plan.OutgoingStrategySerialized) ? null : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, JsonOptions),
-        Assumptions = String.IsNullOrEmpty(plan.AssumptionsSerialized) ? null : JsonSerializer.Deserialize<Assumptions>(plan.AssumptionsSerialized, JsonOptions),
+        OutgoingStrategy = String.IsNullOrEmpty(plan.OutgoingStrategySerialized) ? null : JsonSerializer.Deserialize<OutgoingStrategy>(plan.OutgoingStrategySerialized, _jsonOptions),
+        Assumptions = String.IsNullOrEmpty(plan.AssumptionsSerialized) ? null : JsonSerializer.Deserialize<Assumptions>(plan.AssumptionsSerialized, _jsonOptions),
         IsArchived = plan.IsArchived,
         CreatedUtc = plan.CreatedUtc,
         UpdatedUtc = plan.UpdatedUtc,

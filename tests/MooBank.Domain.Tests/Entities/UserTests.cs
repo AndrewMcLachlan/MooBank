@@ -9,8 +9,8 @@ namespace Asm.MooBank.Domain.Tests.Entities;
 /// </summary>
 public class UserTests
 {
-    private static readonly Guid TestUserId = Guid.NewGuid();
-    private static readonly Guid TestFamilyId = Guid.NewGuid();
+    private static readonly Guid _testUserId = Guid.NewGuid();
+    private static readonly Guid _testFamilyId = Guid.NewGuid();
 
     #region Instruments Property
 
@@ -65,10 +65,10 @@ public class UserTests
     public void Instruments_NullInstrumentOwners_ReturnsEmpty()
     {
         // Arrange
-        var user = new User(TestUserId)
+        var user = new User(_testUserId)
         {
             EmailAddress = "test@test.com",
-            FamilyId = TestFamilyId,
+            FamilyId = _testFamilyId,
             InstrumentOwners = null!,
         };
 
@@ -96,7 +96,7 @@ public class UserTests
         var user = new User
         {
             EmailAddress = "test@test.com",
-            FamilyId = TestFamilyId,
+            FamilyId = _testFamilyId,
         };
 
         // Assert
@@ -106,11 +106,11 @@ public class UserTests
     #endregion
 
     private static User CreateUser() =>
-        new(TestUserId)
+        new(_testUserId)
         {
             EmailAddress = "test@test.com",
             Currency = "AUD",
-            FamilyId = TestFamilyId,
+            FamilyId = _testFamilyId,
         };
 
     private static Instrument CreateTestInstrument() =>

@@ -16,17 +16,17 @@ public class ForecastAuthorizationTests(MooBankWebApplicationFactory factory)
 {
     private readonly MooBankWebApplicationFactory _factory = factory;
 
-    private static readonly Guid FamilyId = Guid.NewGuid();
-    private static readonly Guid PlanId = Guid.NewGuid();
+    private static readonly Guid _familyId = Guid.NewGuid();
+    private static readonly Guid _planId = Guid.NewGuid();
 
-    private string PlanUrl => $"/api/forecast/plans/{PlanId}";
+    private string PlanUrl => $"/api/forecast/plans/{_planId}";
 
     private Task SeedPlanAsync() =>
         _factory.SeedDataAsync(async context =>
         {
-            if (!await context.Set<ForecastPlan>().IgnoreQueryFilters().AnyAsync(p => p.Id == PlanId))
+            if (!await context.Set<ForecastPlan>().IgnoreQueryFilters().AnyAsync(p => p.Id == _planId))
             {
-                context.Add(new ForecastPlan(PlanId) { Name = "Plan", FamilyId = FamilyId });
+                context.Add(new ForecastPlan(_planId) { Name = "Plan", FamilyId = _familyId });
                 await context.SaveChangesAsync();
             }
         });
@@ -72,7 +72,7 @@ public class ForecastAuthorizationTests(MooBankWebApplicationFactory factory)
     public async Task GetPlan_SameFamily_PassesAuth()
     {
         await SeedPlanAsync();
-        var user = new TestUser { FamilyId = FamilyId };
+        var user = new TestUser { FamilyId = _familyId };
         var client = _factory.CreateAuthenticatedClient(user);
 
         var response = await client.GetAsync(PlanUrl, TestContext.Current.CancellationToken);

@@ -12,7 +12,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 [Trait("Category", "Unit")]
 public class RetirementDrawdownTests
 {
-    private static readonly DateOnly Today = new(2026, 7, 30);
+    private static readonly DateOnly _today = new(2026, 7, 30);
 
     private readonly RetirementProjectionEngine _engine = new();
 
@@ -34,7 +34,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, accountBalances: [500_000m])]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, _today).Years.ToList();
 
         // Assert
         Assert.Equal(0m, years[5].Drawdown);
@@ -60,7 +60,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 64, retirementAge: 65, currentIncome: 0m, accountBalances: [800_000m])]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, _today).Years.ToList();
 
         // Assert
         var atRetirement = years[1].ClosingBalance;
@@ -83,7 +83,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 65, retirementAge: 65, currentIncome: 0m, accountBalances: [100_000m])]);
 
         // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, _today);
         var years = projection.Years.ToList();
 
         // Assert
@@ -108,7 +108,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 65, retirementAge: 65, currentIncome: 0m, accountBalances: [2_000_000m])]);
 
         // Act
-        var summary = _engine.CalculateWithoutPension(plan, Today).Summary;
+        var summary = _engine.CalculateWithoutPension(plan, _today).Summary;
 
         // Assert
         Assert.Null(summary.MoneyRunsOutYear);
@@ -133,7 +133,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 64, retirementAge: 65, accountBalances: [1_000m])]);
 
         // Act
-        var projection = _engine.CalculateWithoutPension(plan, Today);
+        var projection = _engine.CalculateWithoutPension(plan, _today);
 
         // Assert
         Assert.Null(projection.Summary.MoneyRunsOutYear);
@@ -158,7 +158,7 @@ public class RetirementDrawdownTests
             ]);
 
         // Act
-        var firstDrawdownYear = _engine.CalculateWithoutPension(plan, Today).Years.ElementAt(1);
+        var firstDrawdownYear = _engine.CalculateWithoutPension(plan, _today).Years.ElementAt(1);
 
         // Assert
         Assert.Equal(40_000m, firstDrawdownYear.Drawdown);
@@ -183,7 +183,7 @@ public class RetirementDrawdownTests
             ]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, _today).Years.ToList();
 
         // Assert
         // Ten years until the younger one retires, then drawing starts the year after.
@@ -214,7 +214,7 @@ public class RetirementDrawdownTests
             members: [TestEntities.CreateMember(currentAge: 60, retirementAge: 65, currentIncome: 0m, growthStrategy: GrowthStrategy.Custom, accountBalances: [500_000m])]);
 
         // Act
-        var years = _engine.CalculateWithoutPension(plan, Today, cashReturnRate: 0.02m).Years.ToList();
+        var years = _engine.CalculateWithoutPension(plan, _today, cashReturnRate: 0.02m).Years.ToList();
 
         // Assert
         // Year 1 is four years from retirement, beyond a two-year bucket, so the whole balance earns 8%.
@@ -252,8 +252,8 @@ public class RetirementDrawdownTests
                 members: [TestEntities.CreateMember(currentAge: 50, retirementAge: 65, accountBalances: [200_000m])]);
 
         // Act
-        var withBucket = _engine.CalculateWithoutPension(Plan(3), Today, cashReturnRate: 0.02m).Summary.BalanceAtRetirement;
-        var without = _engine.CalculateWithoutPension(Plan(0), Today, cashReturnRate: 0.02m).Summary.BalanceAtRetirement;
+        var withBucket = _engine.CalculateWithoutPension(Plan(3), _today, cashReturnRate: 0.02m).Summary.BalanceAtRetirement;
+        var without = _engine.CalculateWithoutPension(Plan(0), _today, cashReturnRate: 0.02m).Summary.BalanceAtRetirement;
 
         // Assert
         Assert.True(withBucket < without, $"expected the bucket to cost some growth, but it left {withBucket} against {without}");

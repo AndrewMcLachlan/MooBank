@@ -10,7 +10,7 @@ namespace Asm.MooBank.Modules.Accounts.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static LogicalAccount CreateLogicalAccount(
         Guid? id = null,
@@ -29,7 +29,7 @@ internal static class TestEntities
 
         var account = new LogicalAccount(accountId, instAccounts)
         {
-            Name = name ?? Faker.Finance.AccountName(),
+            Name = name ?? _faker.Finance.AccountName(),
             AccountType = accountType,
             Controller = controller,
             Currency = currency,
@@ -60,7 +60,7 @@ internal static class TestEntities
         return new InstitutionAccount(id ?? Guid.NewGuid())
         {
             InstrumentId = instrumentId ?? Guid.NewGuid(),
-            Name = name ?? Faker.Finance.AccountName(),
+            Name = name ?? _faker.Finance.AccountName(),
             InstitutionId = institutionId,
             OpenedDate = openedDate ?? DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-1)),
             ClosedDate = closedDate,

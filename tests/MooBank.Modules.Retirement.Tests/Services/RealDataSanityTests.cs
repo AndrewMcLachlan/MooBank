@@ -18,7 +18,7 @@ namespace Asm.MooBank.Modules.Retirement.Tests.Services;
 [Trait("Category", "Unit")]
 public class RealDataSanityTests
 {
-    private static readonly DateOnly Today = new(2026, 7, 30);
+    private static readonly DateOnly _today = new(2026, 7, 30);
 
     private readonly RetirementProjectionEngine _engine = new();
 
@@ -47,7 +47,7 @@ public class RealDataSanityTests
     public void Calculate_TheRealPlan_HoldsUp()
     {
         // Act
-        var projection = _engine.CalculateWithoutPension(Plan(90_000m), Today, cashReturnRate: 0.03m);
+        var projection = _engine.CalculateWithoutPension(Plan(90_000m), _today, cashReturnRate: 0.03m);
         var years = projection.Years.ToList();
         var summary = projection.Summary;
 
@@ -91,9 +91,9 @@ public class RealDataSanityTests
     public void Calculate_ARaisedTarget_RunsOutSooner()
     {
         // Act
-        var modest = _engine.CalculateWithoutPension(Plan(60_000m), Today, cashReturnRate: 0.03m).Summary;
-        var comfortable = _engine.CalculateWithoutPension(Plan(150_000m), Today, cashReturnRate: 0.03m).Summary;
-        var extravagant = _engine.CalculateWithoutPension(Plan(400_000m), Today, cashReturnRate: 0.03m).Summary;
+        var modest = _engine.CalculateWithoutPension(Plan(60_000m), _today, cashReturnRate: 0.03m).Summary;
+        var comfortable = _engine.CalculateWithoutPension(Plan(150_000m), _today, cashReturnRate: 0.03m).Summary;
+        var extravagant = _engine.CalculateWithoutPension(Plan(400_000m), _today, cashReturnRate: 0.03m).Summary;
 
         // Assert
         Assert.Null(modest.MoneyRunsOutYear);
@@ -122,7 +122,7 @@ public class RealDataSanityTests
         var rates = new AgePensionRates(67, 29_900m, 45_080m, 314_000m, 470_000m, 0.078m);
 
         // Act
-        var projection = _engine.Calculate(Plan(150_000m), Today, rates, TestEntities.StrategyRates(Plan(150_000m), 0.03m), MinimumDrawdownRates.None);
+        var projection = _engine.Calculate(Plan(150_000m), _today, rates, TestEntities.StrategyRates(Plan(150_000m), 0.03m), MinimumDrawdownRates.None);
         var drawing = projection.Years.Where(y => y.TotalIncome > 0m).ToList();
 
         // Assert
@@ -149,7 +149,7 @@ public class RealDataSanityTests
     public void Calculate_TheRealPlan_SplitsTheIncomeBetweenBothPeople()
     {
         // Act
-        var firstDrawYear = _engine.CalculateWithoutPension(Plan(90_000m), Today, cashReturnRate: 0.03m).Years.ElementAt(21);
+        var firstDrawYear = _engine.CalculateWithoutPension(Plan(90_000m), _today, cashReturnRate: 0.03m).Years.ElementAt(21);
 
         // Assert
         var andy = firstDrawYear.Members.Single(m => m.Name == "Andy");

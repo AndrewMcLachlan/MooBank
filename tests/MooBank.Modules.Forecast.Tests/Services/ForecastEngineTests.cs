@@ -18,14 +18,14 @@ namespace Asm.MooBank.Modules.Forecast.Tests.Services;
 public class ForecastEngineTests
 {
     private readonly TestMocks _mocks;
-    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     /// <summary>
     /// The regression tests' historical data runs January–June 2024, so the accounts must report
     /// data through the last day of June: the training window closes on the last <em>complete</em>
     /// month, and a window anchored on today would exclude all of it.
     /// </summary>
-    private static readonly DateOnly TrainingDataThrough = new(2024, 6, 30);
+    private static readonly DateOnly _trainingDataThrough = new(2024, 6, 30);
 
     public ForecastEngineTests()
     {
@@ -711,7 +711,7 @@ public class ForecastEngineTests
             StartingBalanceAmount = startingBalance,
             AccountScopeMode = accountScopeMode,
             CurrencyCode = "AUD",
-            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, JsonOptions),
+            OutgoingStrategySerialized = JsonSerializer.Serialize(outgoingStrategy, _jsonOptions),
             CreatedUtc = DateTime.UtcNow,
             UpdatedUtc = DateTime.UtcNow,
         };
@@ -1171,7 +1171,7 @@ public class ForecastEngineTests
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, _trainingDataThrough) });
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
@@ -1244,7 +1244,7 @@ public class ForecastEngineTests
             lookbackMonths: 12,
             incomeCorrelatedSettings: new IncomeCorrelatedSettings { MinDataPoints = 6 });
 
-        var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
+        var mockAccount = HistoricalAccount(accountId, _trainingDataThrough);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1309,7 +1309,7 @@ public class ForecastEngineTests
             monthlyIncome: 5000m,
             lookbackMonths: 12);
 
-        var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
+        var mockAccount = HistoricalAccount(accountId, _trainingDataThrough);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1375,7 +1375,7 @@ public class ForecastEngineTests
             monthlyIncome: 5000m,
             lookbackMonths: 12);
 
-        var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
+        var mockAccount = HistoricalAccount(accountId, _trainingDataThrough);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1454,7 +1454,7 @@ public class ForecastEngineTests
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, _trainingDataThrough) });
 
         _mocks.ReportReaderMock
             .Setup(r => r.GetCreditDebitTotalsForAccounts(
@@ -1523,8 +1523,8 @@ public class ForecastEngineTests
             monthlyIncome: 6000m,
             lookbackMonths: 6);
 
-        var account1 = HistoricalAccount(accountId1, TrainingDataThrough, balance: 15000m, name: "Transaction Account");
-        var account2 = HistoricalAccount(accountId2, TrainingDataThrough, balance: 5000m, name: "Credit Card");
+        var account1 = HistoricalAccount(accountId1, _trainingDataThrough, balance: 15000m, name: "Transaction Account");
+        var account2 = HistoricalAccount(accountId2, _trainingDataThrough, balance: 5000m, name: "Credit Card");
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1623,7 +1623,7 @@ public class ForecastEngineTests
             monthlyIncome: 5000m,
             lookbackMonths: 12);
 
-        var mockAccount = HistoricalAccount(accountId, TrainingDataThrough);
+        var mockAccount = HistoricalAccount(accountId, _trainingDataThrough);
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
@@ -1704,7 +1704,7 @@ public class ForecastEngineTests
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, _trainingDataThrough) });
 
         SetupEmptyReportMocks();
 
@@ -1844,7 +1844,7 @@ public class ForecastEngineTests
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(transactionAccountId, TrainingDataThrough), savings });
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(transactionAccountId, _trainingDataThrough), savings });
 
         SetupEmptyReportMocks();
 
@@ -1920,7 +1920,7 @@ public class ForecastEngineTests
 
         _mocks.InstrumentRepositoryMock
             .Setup(r => r.Get(It.IsAny<IEnumerable<Guid>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, TrainingDataThrough) });
+            .ReturnsAsync(new List<DomainInstrument> { HistoricalAccount(accountId, _trainingDataThrough) });
 
         SetupEmptyReportMocks();
 

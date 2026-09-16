@@ -17,7 +17,7 @@ namespace Asm.MooBank.Modules.Budgets.Tests.Support;
 
 internal static class TestEntities
 {
-    private static readonly Faker Faker = new();
+    private static readonly Faker _faker = new();
 
     public static DomainBudget CreateBudget(
         Guid? id = null,
@@ -201,7 +201,7 @@ internal static class TestEntities
         var accountId = id ?? Guid.NewGuid();
         return new LogicalAccount(accountId, [])
         {
-            Name = name ?? Faker.Company.CompanyName(),
+            Name = name ?? _faker.Company.CompanyName(),
             IncludeInBudget = includeInBudget,
         };
     }

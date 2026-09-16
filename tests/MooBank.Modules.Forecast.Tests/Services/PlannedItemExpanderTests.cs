@@ -18,8 +18,8 @@ namespace Asm.MooBank.Modules.Forecast.Tests.Services;
 [Trait("Category", "Unit")]
 public class PlannedItemExpanderTests
 {
-    private static readonly DateOnly PlanStart = new(2024, 12, 1);
-    private static readonly DateOnly PlanEnd = new(2033, 12, 1);
+    private static readonly DateOnly _planStart = new(2024, 12, 1);
+    private static readonly DateOnly _planEnd = new(2033, 12, 1);
 
     private static DomainPlannedItem Monthly(decimal amount, DateOnly anchor, DateOnly? until = null) =>
         new(Guid.NewGuid())
@@ -64,7 +64,7 @@ public class PlannedItemExpanderTests
     {
         var salary = Monthly(12_960m, new DateOnly(2025, 9, 30));
 
-        var allocations = PlannedItemExpander.Allocate(salary, PlanStart, PlanEnd);
+        var allocations = PlannedItemExpander.Allocate(salary, _planStart, _planEnd);
 
         Assert.Equal(12_960m, Month(allocations, 2033, 12));
         Assert.Equal(12_960m, Month(allocations, 2033, 11));
@@ -87,7 +87,7 @@ public class PlannedItemExpanderTests
         var salary = Monthly(1_000m, new DateOnly(2025, 1, 30));
 
         var occurrences = PlannedItemExpander
-            .GenerateScheduleOccurrences(salary, PlanStart, new DateOnly(2025, 12, 31))
+            .GenerateScheduleOccurrences(salary, _planStart, new DateOnly(2025, 12, 31))
             .ToList();
 
         Assert.Equal(new DateOnly(2025, 2, 28), occurrences[1]); // February has no 30th
@@ -110,8 +110,8 @@ public class PlannedItemExpanderTests
         var xander = Yearly("Xander School Fees", 21_000m, new DateOnly(2025, 2, 4), new DateOnly(2029, 2, 28));
         var felix = Yearly("Felix School Fees", 22_000m, new DateOnly(2027, 2, 4), new DateOnly(2033, 1, 16));
 
-        var xanders = PlannedItemExpander.Allocate(xander, PlanStart, PlanEnd);
-        var felixs = PlannedItemExpander.Allocate(felix, PlanStart, PlanEnd);
+        var xanders = PlannedItemExpander.Allocate(xander, _planStart, _planEnd);
+        var felixs = PlannedItemExpander.Allocate(felix, _planStart, _planEnd);
 
         Assert.Equal(21_000m, Month(xanders, 2025, 2));
         Assert.Equal(21_000m, Month(xanders, 2026, 2));
@@ -136,7 +136,7 @@ public class PlannedItemExpanderTests
     {
         var contract = Monthly(3_000m, new DateOnly(2025, 1, 15), until: new DateOnly(2025, 3, 1));
 
-        var allocations = PlannedItemExpander.Allocate(contract, PlanStart, PlanEnd);
+        var allocations = PlannedItemExpander.Allocate(contract, _planStart, _planEnd);
 
         Assert.Equal(3_000m, Month(allocations, 2025, 1));
         Assert.Equal(3_000m, Month(allocations, 2025, 2));

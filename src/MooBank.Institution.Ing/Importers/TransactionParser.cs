@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 using Asm.MooBank.Institution.Ing.Models;
 
@@ -6,7 +6,7 @@ namespace Asm.MooBank.Institution.Ing.Importers;
 
 internal partial class TransactionParser
 {
-    private static readonly string[] PurchaseDateFormats = ["dd MMM yyyy", "dd/MM/yyyy", "yyyy-MM-dd"];
+    private static readonly string[] _purchaseDateFormats = ["dd MMM yyyy", "dd/MM/yyyy", "yyyy-MM-dd"];
     private const string PurchaseDateTimeFormat = "dd MMM yyyy h:mmtt";
 
     [GeneratedRegex("^(.+) - Visa (?:Purchase|Refund|Purchase Correction) - Receipt (\\d{1,6}) *In (.*) Date (.+) Card \\d{6}xxxxxx(\\d{4})")]
@@ -217,7 +217,7 @@ internal partial class TransactionParser
     /// in an unexpected format, so that a single malformed description does not abort an import.
     /// </summary>
     private static DateTime? ParsePurchaseDate(string value) =>
-        DateTime.TryParseExact(value.Trim(), PurchaseDateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result) ? result : null;
+        DateTime.TryParseExact(value.Trim(), _purchaseDateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result) ? result : null;
 
     /// <summary>
     /// Parses a purchase date and time, returning <see langword="null"/> rather than throwing when the
