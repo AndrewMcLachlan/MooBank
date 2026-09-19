@@ -20,7 +20,6 @@ using Asm.MooBank.Infrastructure;
 using Asm.MooBank.Infrastructure.Importers;
 using Asm.MooBank.Infrastructure.Interceptors;
 using Asm.MooBank.Infrastructure.Repositories;
-using Asm.MooBank.Security;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
