@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿#pragma warning disable CS8618
 using System.Reflection;
 using Asm.MooBank.Domain.Entities.Asset;
 using Asm.MooBank.Domain.Entities.Budget;
@@ -55,63 +55,63 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         }
     }
 
-    public virtual DbSet<BudgetLine> BudgetLines { get; set; }
+    public DbSet<BudgetLine> BudgetLines { get; set; }
 
-    public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
+    public DbSet<ExchangeRate> ExchangeRates { get; set; }
 
-    public virtual DbSet<Group> Groups { get; set; }
+    public DbSet<Group> Groups { get; set; }
 
-    public virtual DbSet<ImporterType> ImporterTypes { get; set; }
+    public DbSet<ImporterType> ImporterTypes { get; set; }
 
-    public virtual DbSet<InstrumentOwner> InstrumentOwners { get; set; }
+    public DbSet<InstrumentOwner> InstrumentOwners { get; set; }
 
-    public virtual DbSet<TransactionTagTotal> TransactionTagTotals { get; set; }
+    public DbSet<TransactionTagTotal> TransactionTagTotals { get; set; }
 
-    public virtual DbSet<MonthlyTagTotal> MonthlyTagTotals { get; set; }
+    public DbSet<MonthlyTagTotal> MonthlyTagTotals { get; set; }
 
-    public virtual DbSet<CreditDebitTotal> CreditDebitTotals { get; set; }
+    public DbSet<CreditDebitTotal> CreditDebitTotals { get; set; }
 
-    public virtual DbSet<CreditDebitAverage> CreditDebitAverages { get; set; }
+    public DbSet<CreditDebitAverage> CreditDebitAverages { get; set; }
 
-    public virtual DbSet<TagAverage> TopTagAverages { get; set; }
+    public DbSet<TagAverage> TopTagAverages { get; set; }
 
-    public virtual DbSet<MonthlyBalance> MonthlyBalances { get; set; }
+    public DbSet<MonthlyBalance> MonthlyBalances { get; set; }
 
-    public virtual DbSet<MonthlyCreditDebitTotal> MonthlyCreditDebitTotals { get; set; }
+    public DbSet<MonthlyCreditDebitTotal> MonthlyCreditDebitTotals { get; set; }
 
-    public virtual DbSet<AccountCreditDebitTotal> AccountCreditDebitTotals { get; set; }
+    public DbSet<AccountCreditDebitTotal> AccountCreditDebitTotals { get; set; }
 
-    public virtual DbSet<AccountMonthlyBalance> AccountMonthlyBalances { get; set; }
+    public DbSet<AccountMonthlyBalance> AccountMonthlyBalances { get; set; }
 
-    public virtual DbSet<AccountMonthlyCreditDebitTotal> AccountMonthlyCreditDebitTotals { get; set; }
+    public DbSet<AccountMonthlyCreditDebitTotal> AccountMonthlyCreditDebitTotals { get; set; }
 
-    public virtual DbSet<StockPriceHistory> StockPriceHistory { get; set; }
+    public DbSet<StockPriceHistory> StockPriceHistory { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public DbSet<User> Users { get; set; }
 
-    public virtual DbSet<CpiChange> CpiChanges { get; set; }
+    public DbSet<CpiChange> CpiChanges { get; set; }
 
-    public virtual DbSet<PensionRate> PensionRates { get; set; }
+    public DbSet<PensionRate> PensionRates { get; set; }
 
-    public virtual DbSet<GrowthStrategyRate> GrowthStrategyRates { get; set; }
+    public DbSet<GrowthStrategyRate> GrowthStrategyRates { get; set; }
 
-    public virtual DbSet<MinimumDrawdownRate> MinimumDrawdownRates { get; set; }
+    public DbSet<MinimumDrawdownRate> MinimumDrawdownRates { get; set; }
 
-    public virtual DbSet<ForecastPlan> ForecastPlans { get; set; }
+    public DbSet<ForecastPlan> ForecastPlans { get; set; }
 
-    public virtual DbSet<ForecastPlanAccount> ForecastPlanAccounts { get; set; }
+    public DbSet<ForecastPlanAccount> ForecastPlanAccounts { get; set; }
 
-    public virtual DbSet<ForecastPlannedItem> ForecastPlannedItems { get; set; }
+    public DbSet<ForecastPlannedItem> ForecastPlannedItems { get; set; }
 
-    public virtual DbSet<PlannedItemFixedDate> PlannedItemFixedDates { get; set; }
+    public DbSet<PlannedItemFixedDate> PlannedItemFixedDates { get; set; }
 
-    public virtual DbSet<PlannedItemSchedule> PlannedItemSchedules { get; set; }
+    public DbSet<PlannedItemSchedule> PlannedItemSchedules { get; set; }
 
-    public virtual DbSet<RetirementPlan> RetirementPlans { get; set; }
+    public DbSet<RetirementPlan> RetirementPlans { get; set; }
 
-    public virtual DbSet<RetirementPlanMember> RetirementPlanMembers { get; set; }
+    public DbSet<RetirementPlanMember> RetirementPlanMembers { get; set; }
 
-    public virtual DbSet<RetirementPlanMemberAccount> RetirementPlanMemberAccounts { get; set; }
+    public DbSet<RetirementPlanMemberAccount> RetirementPlanMemberAccounts { get; set; }
 
     // Importer (and other) assemblies contribute their EF configurations to the shared model via this
     // list, which OnModelCreating applies. Registration is order-sensitive: every assembly must be
@@ -164,3 +164,4 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
         modelBuilder.HasDbFunction(typeof(TransactionSplit).GetMethod(nameof(TransactionSplit.TransactionSplitNetAmount), [typeof(Guid), typeof(Guid), typeof(decimal)])!);
     }
 }
+#pragma warning restore CS8618
