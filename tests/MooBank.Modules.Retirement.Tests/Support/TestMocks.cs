@@ -41,7 +41,7 @@ internal class TestMocks
     private RetirementPlan? AddedPlan =>
         RetirementRepositoryMock.Invocations
             .Where(invocation => invocation.Method.Name == nameof(IRetirementRepository.Add))
-            .Select(invocation => (RetirementPlan)invocation.Arguments[0])
+            .Select(invocation => invocation?.Arguments[0] as RetirementPlan)
             .LastOrDefault();
 
     public Mock<IRetirementProjectionEngine> ProjectionEngineMock { get; }
