@@ -12,9 +12,9 @@ namespace Asm.MooBank.Security.Authorisation;
 /// Fail-closed on absence: an id with no tag behind it is refused rather than ignored, so a
 /// mistyped or deleted id cannot be silently dropped from the caller's set.
 /// </remarks>
-internal class TagFamilyResourceAuthorisationHandler(IAuthorisationReader authorisationReader, User user) : AuthorizationHandler<TagFamilyRequirement, IReadOnlyCollection<int>>
+internal class TagFamilyResourceAuthorisationHandler(IAuthorisationReader authorisationReader, User user) : AuthorizationHandler<TagFamilyResourceRequirement, IReadOnlyCollection<int>>
 {
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, TagFamilyRequirement requirement, IReadOnlyCollection<int> tagIds)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, TagFamilyResourceRequirement requirement, IReadOnlyCollection<int> tagIds)
     {
         if (tagIds.Count == 0)
         {

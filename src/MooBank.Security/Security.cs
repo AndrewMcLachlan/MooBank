@@ -35,11 +35,11 @@ public class Security(IAuthorizationService authorizationService, IPrincipalProv
 
     public async Task AssertTagPermission(IReadOnlyCollection<int> tagIds)
     {
-        var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, tagIds, new TagFamilyRequirement());
+        var authResult = await authorizationService.AuthorizeAsync(principalProvider.Principal!, tagIds, new TagFamilyResourceRequirement());
 
         if (!authResult.Succeeded)
         {
-            audit.AuthorizationDenied(user, "Tag", String.Join(", ", tagIds), nameof(TagFamilyRequirement));
+            audit.AuthorizationDenied(user, "Tag", String.Join(", ", tagIds), nameof(TagFamilyResourceRequirement));
             throw new NotAuthorisedException("Not authorised to use one or more of these tags.");
         }
     }
