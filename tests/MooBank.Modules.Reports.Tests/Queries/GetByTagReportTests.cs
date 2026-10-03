@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Domain.Entities.TagRelationships;
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Reports.Models;
@@ -800,6 +800,86 @@ public class GetByTagReportTests
     }
 
     #region Helper Methods
+
+    /// <summary>
+    /// Given a tag marked exclude-from-reporting
+    /// When the by-tag report is produced
+    /// Then spending attributed to that tag is left out
+    /// </summary>
+    [Fact]
+    public async Task Handle_TagExcludedFromReporting_OmitsThatTag()
+    {
+        // Arrange
+        var groceries = CreateTag(1, "Groceries");
+        var transfer = CreateExcludedTag(2, "Transfer");
+
+        var transactions = new[]
+        {
+            CreateTransaction(_testAccountId, -100m, DateTime.Today.AddDays(-5), TransactionType.Debit, [groceries]),
+            CreateTransaction(_testAccountId, -500m, DateTime.Today.AddDays(-3), TransactionType.Debit, [transfer]),
+        };
+
+        var handler = CreateHandler(CreateTransactionQueryable(transactions));
+
+        var query = new GetByTagReport
+        {
+            AccountId = _testAccountId,
+            Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+            End = DateOnly.FromDateTime(DateTime.Today),
+            ReportType = TestEntities.CreateDebitReportType(),
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.DoesNotContain(result.Tags, t => t.TagName == "Transfer");
+        Assert.Contains(result.Tags, t => t.TagName == "Groceries" && t.GrossAmount == 100m);
+    }
+
+    /// <summary>
+    /// Given one transaction split between an excluded tag and an ordinary one
+    /// When the by-tag report is produced
+    /// Then only the excluded split is dropped
+    /// </summary>
+    [Fact]
+    public async Task Handle_SplitAcrossExcludedAndIncludedTags_DropsOnlyTheExcludedSplit()
+    {
+        // Arrange
+        var groceries = CreateTag(1, "Groceries");
+        var transfer = CreateExcludedTag(2, "Transfer");
+
+        var transaction = CreateTransactionWithMultipleSplits(
+            _testAccountId,
+            -150m,
+            DateTime.Today.AddDays(-4),
+            TransactionType.Debit,
+            [(50m, new[] { groceries }), (100m, new[] { transfer })]);
+
+        var handler = CreateHandler(CreateTransactionQueryable([transaction]));
+
+        var query = new GetByTagReport
+        {
+            AccountId = _testAccountId,
+            Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+            End = DateOnly.FromDateTime(DateTime.Today),
+            ReportType = TestEntities.CreateDebitReportType(),
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.DoesNotContain(result.Tags, t => t.TagName == "Transfer");
+        Assert.Contains(result.Tags, t => t.TagName == "Groceries" && t.GrossAmount == 50m);
+    }
+
+    private static DomainTag CreateExcludedTag(int id, string name)
+    {
+        var tag = CreateTag(id, name);
+        tag.Settings.ExcludeFromReporting = true;
+        return tag;
+    }
 
     private static GetByTagReportHandler CreateHandler(IQueryable<DomainTransaction> transactions, IEnumerable<TagRelationship>? tagRelationships = null) =>
         new(transactions, QueryableHelper.CreateAsyncQueryable(tagRelationships ?? []));

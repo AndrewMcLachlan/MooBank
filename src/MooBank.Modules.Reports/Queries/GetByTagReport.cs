@@ -20,9 +20,12 @@ internal class GetByTagReportHandler(IQueryable<Transaction> transactions, IQuer
 
         // Attribute each split's net amount to that split's tags, so a transaction split
         // across multiple tags only contributes each split's amount to the matching tag.
+        // A tag marked exclude-from-reporting drops its own split's share and nothing else,
+        // so the remaining splits of a part-excluded transaction are still reported.
         var perTagAmounts = loaded
             .SelectMany(t => t.Splits.SelectMany(s => s.Tags.Select(tag =>
-                (Tag: tag, Amount: t.TransactionType == TransactionType.Debit ? -s.GetNetAmount() : s.GetNetAmount()))));
+                (Tag: tag, Amount: t.TransactionType == TransactionType.Debit ? -s.GetNetAmount() : s.GetNetAmount()))))
+            .Where(ta => !ta.Tag.Settings.ExcludeFromReporting);
 
         if (request.ParentTagId != null)
         {
