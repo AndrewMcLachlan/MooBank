@@ -1,7 +1,8 @@
-#nullable enable
+﻿#nullable enable
 using Asm.MooBank.Models;
 using Asm.MooBank.Modules.Reports.Queries;
 using Asm.MooBank.Modules.Reports.Tests.Support;
+using DomainTag = Asm.MooBank.Domain.Entities.Tag.Tag;
 using DomainTransaction = Asm.MooBank.Domain.Entities.Transactions.Transaction;
 using DomainTransactionSplit = Asm.MooBank.Domain.Entities.Transactions.TransactionSplit;
 
@@ -367,6 +368,114 @@ public class GetInOutTrendReportTests
     }
 
     #region Helper Methods
+
+    /// <summary>
+    /// Given a transaction wholly tagged with an excluded tag
+    /// When the in/out trend is produced
+    /// Then it contributes to neither income nor expenses
+    /// </summary>
+    [Fact]
+    public async Task Handle_TransactionTaggedExcluded_LeavesTheTotals()
+    {
+        // Arrange
+        var transfer = CreateTag(1, "Transfer", excludeFromReporting: true);
+        var groceries = CreateTag(2, "Groceries");
+        var when = DateTime.Today.AddDays(-5);
+
+        var handler = new GetInOutTrendReportHandler(CreateTransactionQueryable(
+        [
+            CreateTaggedTransaction(-100m, when, TransactionType.Debit, [groceries]),
+            CreateTaggedTransaction(-500m, when, TransactionType.Debit, [transfer]),
+        ]));
+
+        var query = new GetInOutTrendReport
+        {
+            AccountId = _testAccountId,
+            Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+            End = DateOnly.FromDateTime(DateTime.Today),
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(-100m, result.Expenses.Sum(e => e.GrossAmount));
+    }
+
+    /// <summary>
+    /// Given a transaction split between an excluded tag and an ordinary one
+    /// When the in/out trend is produced
+    /// Then only the excluded split's share is dropped
+    /// </summary>
+    [Fact]
+    public async Task Handle_SplitPartlyExcluded_KeepsTheReportedShare()
+    {
+        // Arrange
+        var transfer = CreateTag(1, "Transfer", excludeFromReporting: true);
+        var groceries = CreateTag(2, "Groceries");
+
+        var handler = new GetInOutTrendReportHandler(CreateTransactionQueryable(
+        [
+            CreateTransactionWithSplits(-150m, DateTime.Today.AddDays(-4), TransactionType.Debit,
+                [(50m, new[] { groceries }), (100m, new[] { transfer })]),
+        ]));
+
+        var query = new GetInOutTrendReport
+        {
+            AccountId = _testAccountId,
+            Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+            End = DateOnly.FromDateTime(DateTime.Today),
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(-50m, result.Expenses.Sum(e => e.GrossAmount));
+    }
+
+    private static DomainTag CreateTag(int id, string name, bool excludeFromReporting = false)
+    {
+        var tag = new DomainTag(id) { Name = name, FamilyId = Guid.NewGuid() };
+        tag.Settings.ExcludeFromReporting = excludeFromReporting;
+        return tag;
+    }
+
+    private static DomainTransaction CreateTaggedTransaction(decimal amount, DateTime transactionTime, TransactionType transactionType, IEnumerable<DomainTag> tags) =>
+        CreateTransactionWithSplits(amount, transactionTime, transactionType, [(Math.Abs(amount), tags)]);
+
+    private static DomainTransaction CreateTransactionWithSplits(
+        decimal amount,
+        DateTime transactionTime,
+        TransactionType transactionType,
+        IEnumerable<(decimal Amount, IEnumerable<DomainTag> Tags)> splits)
+    {
+        var transactionId = Guid.NewGuid();
+        var transaction = new DomainTransaction(transactionId)
+        {
+            AccountId = _testAccountId,
+            Amount = amount,
+            TransactionTime = transactionTime,
+            TransactionType = transactionType,
+            Source = "Test",
+            ExcludeFromReporting = false,
+        };
+
+        var splitsField = typeof(DomainTransaction).GetField("_splits", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var splitsList = (List<DomainTransactionSplit>)splitsField!.GetValue(transaction)!;
+
+        foreach (var (splitAmount, tags) in splits)
+        {
+            splitsList.Add(new DomainTransactionSplit(Guid.NewGuid())
+            {
+                TransactionId = transactionId,
+                Amount = splitAmount,
+                Tags = [.. tags],
+            });
+        }
+
+        return transaction;
+    }
 
     private static DomainTransaction CreateTransaction(
         Guid accountId,
