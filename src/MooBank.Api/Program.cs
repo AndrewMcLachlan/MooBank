@@ -48,6 +48,9 @@ void AddServices(WebApplicationBuilder builder)
 
     services.AddAsmExceptionHandler();
 
+    // Off outside Development, where a binding failure is an empty 400 that never reaches the exception handler.
+    services.Configure<RouteHandlerOptions>(options => options.ThrowOnBadRequest = true);
+
     services.AddMooBankDbContext(builder.Environment, builder.Configuration);
 
     services.AddHttpContextAccessor();
