@@ -434,6 +434,37 @@ public class GetInOutTrendReportTests
         Assert.Equal(-50m, result.Expenses.Sum(e => e.GrossAmount));
     }
 
+    /// <summary>
+    /// Given income on a split tagged with an excluded tag and an ordinary one
+    /// When the in/out trend is produced
+    /// Then the split is reported, because one of its tags still wants it
+    /// </summary>
+    [Fact]
+    public async Task Handle_SplitTaggedExcludedAndIncluded_IsReported()
+    {
+        // Arrange
+        var andy = CreateTag(1, "Andy", excludeFromReporting: true);
+        var willow = CreateTag(2, "Willow");
+
+        var handler = new GetInOutTrendReportHandler(CreateTransactionQueryable(
+        [
+            CreateTaggedTransaction(200m, DateTime.Today.AddDays(-4), TransactionType.Credit, [andy, willow]),
+        ]));
+
+        var query = new GetInOutTrendReport
+        {
+            AccountId = _testAccountId,
+            Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+            End = DateOnly.FromDateTime(DateTime.Today),
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(200m, result.Income.Sum(i => i.GrossAmount));
+    }
+
     private static DomainTag CreateTag(int id, string name, bool excludeFromReporting = false)
     {
         var tag = new DomainTag(id) { Name = name, FamilyId = Guid.NewGuid() };

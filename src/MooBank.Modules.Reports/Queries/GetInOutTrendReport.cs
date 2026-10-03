@@ -40,7 +40,8 @@ internal class GetInOutTrendReportHandler(IQueryable<Domain.Entities.Transaction
 
     /// <summary>
     /// <see cref="Domain.Entities.Transactions.Transaction.NetAmount"/> less the splits whose tags
-    /// are excluded from reporting, so a transfer leaves the totals rather than inflating both sides.
+    /// are all excluded from reporting, so a transfer leaves the totals rather than inflating both
+    /// sides. One reportable tag keeps the whole split in.
     /// </summary>
     /// <remarks>
     /// A transaction with no split left to report contributes nothing at all: its offsets go with
@@ -49,7 +50,7 @@ internal class GetInOutTrendReportHandler(IQueryable<Domain.Entities.Transaction
     private static decimal ReportedNetAmount(Domain.Entities.Transactions.Transaction transaction)
     {
         var reported = transaction.Splits
-            .Where(s => !s.Tags.Any(tag => tag.Settings.ExcludeFromReporting))
+            .Where(s => !s.Tags.Any() || s.Tags.Any(tag => !tag.Settings.ExcludeFromReporting))
             .ToList();
 
         if (reported.Count == 0) return 0m;
