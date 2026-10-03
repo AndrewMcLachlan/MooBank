@@ -41,8 +41,10 @@ internal class GetUserSpendingByTagHandler(IQueryable<LogicalAccount> accounts, 
         // Attribute each split's net amount to that split's tags, so a transaction split
         // across multiple tags only contributes each split's amount to the matching tag.
         var perTag = loaded
-            .SelectMany(t => t.Splits.SelectMany(s => s.Tags.Select(tag =>
-                (tag.Id, tag.Name, Amount: t.TransactionType == TransactionType.Debit ? -s.GetNetAmount() : s.GetNetAmount()))))
+            .SelectMany(t => t.Splits.SelectMany(s => s.Tags
+                .Where(tag => !tag.Settings.ExcludeFromReporting)
+                .Select(tag =>
+                    (tag.Id, tag.Name, Amount: t.TransactionType == TransactionType.Debit ? -s.GetNetAmount() : s.GetNetAmount()))))
             .GroupBy(x => new { x.Id, x.Name })
             .Select(g => new TagValue
             {
