@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { Period } from "models/dateFns";
 import { formatISODate } from "utils/dateFns";
-import type { transactionTypeFilter } from "models/transactions";
+import { toTransactionTypeFilter, type transactionTypeFilter } from "models/transactions";
 import { useTransactionSearch } from "./useTransactionSearch";
 
 export const useFilterPanel = () => {
@@ -34,7 +34,7 @@ export const useFilterPanel = () => {
     const [filterTags, setFilterTagsState] = useState<number[]>(fromUrl.tags ?? storedFilterTags);
     const [filterTagged, setFilterTaggedState] = useState<boolean>(fromUrl.tagged ?? (fromUrl.hasWidgetFilter ? false : storedFilterTagged));
     const [filterNetZero, setFilterNetZeroState] = useState<boolean>(fromUrl.netZero ?? storedFilterNetZero);
-    const [filterType, setFilterTypeState] = useState<transactionTypeFilter>(fromUrl.type ?? storedFilterType);
+    const [filterType, setFilterTypeState] = useState<transactionTypeFilter>(fromUrl.type ?? toTransactionTypeFilter(storedFilterType));
 
     const [period, setPeriod] = useState<Period>({ startDate: null, endDate: null });
 
