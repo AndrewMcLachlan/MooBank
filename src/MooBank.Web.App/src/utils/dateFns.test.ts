@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+﻿import { describe, it, expect, afterEach, vi } from "vitest";
 import {
     formatISODate,
     formatDisplayDate,
@@ -7,6 +7,7 @@ import {
     isMonthSelected,
     numberOfMonths,
     subtractYear,
+    thisYear,
     isDateParam,
     toDateParam,
     startOfDayISO,
@@ -72,6 +73,52 @@ describe("numberOfMonths", () => {
         expect(numberOfMonths(0b101)).toBe(2);
         expect(numberOfMonths(0)).toBe(0);
         expect(numberOfMonths(0xFFF)).toBe(12);
+    });
+});
+
+describe("thisYear", () => {
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    const at = (year: number, month: number, day: number) => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date(year, month, day));
+    };
+
+    it("runs from January to the end of the last finished month", () => {
+        at(2026, 9, 3); // 3 October
+
+        const period = thisYear();
+
+        expect(formatISODate(period.startDate)).toBe("2026-01-01");
+        expect(formatISODate(period.endDate)).toBe("2026-09-30");
+    });
+
+    // The whole point: "Same Period Last Year" is this period shifted back a year, so an end still
+    // in the future would compare a part-year against a full twelve months.
+    it("lines up with the same period a year earlier", () => {
+        at(2026, 9, 3);
+
+        const previous = subtractYear(thisYear());
+
+        expect(formatISODate(previous.startDate)).toBe("2025-01-01");
+        expect(formatISODate(previous.endDate)).toBe("2025-09-30");
+    });
+
+    it("does not run past today", () => {
+        at(2026, 9, 3);
+
+        expect(thisYear().endDate.getTime()).toBeLessThan(Date.now());
+    });
+
+    it("covers January itself when no month has finished", () => {
+        at(2026, 0, 14);
+
+        const period = thisYear();
+
+        expect(formatISODate(period.startDate)).toBe("2026-01-01");
+        expect(formatISODate(period.endDate)).toBe("2026-01-31");
     });
 });
 
