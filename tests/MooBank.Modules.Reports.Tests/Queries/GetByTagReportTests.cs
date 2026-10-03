@@ -874,6 +874,41 @@ public class GetByTagReportTests
         Assert.Contains(result.Tags, t => t.TagName == "Groceries" && t.GrossAmount == 50m);
     }
 
+    /// <summary>
+    /// Given a split tagged with an excluded tag and an ordinary one
+    /// When the by-tag report is produced
+    /// Then the ordinary tag keeps the split's full amount
+    /// </summary>
+    [Fact]
+    public async Task Handle_SplitTaggedExcludedAndIncluded_KeepsTheIncludedTag()
+    {
+        // Arrange
+        var andy = CreateExcludedTag(1, "Andy");
+        var willow = CreateTag(2, "Willow");
+
+        var transactions = new[]
+        {
+            CreateTransaction(_testAccountId, 200m, DateTime.Today.AddDays(-4), TransactionType.Credit, [andy, willow]),
+        };
+
+        var handler = CreateHandler(CreateTransactionQueryable(transactions));
+
+        var query = new GetByTagReport
+        {
+            AccountId = _testAccountId,
+            Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+            End = DateOnly.FromDateTime(DateTime.Today),
+            ReportType = TestEntities.CreateCreditReportType(),
+        };
+
+        // Act
+        var result = await handler.Handle(query, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.DoesNotContain(result.Tags, t => t.TagName == "Andy");
+        Assert.Contains(result.Tags, t => t.TagName == "Willow" && t.GrossAmount == 200m);
+    }
+
     private static DomainTag CreateExcludedTag(int id, string name)
     {
         var tag = CreateTag(id, name);
