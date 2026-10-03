@@ -23,7 +23,21 @@ export const previousMonth = (): Period => ({ startDate: startOfMonth(addMonths(
 export const last3Months = (): Period => ({ startDate: startOfMonth(addMonths(new Date(), -3)), endDate: endOfMonth(addMonths(new Date(), -1)) });
 export const last6Months = (): Period => ({ startDate: startOfMonth(addMonths(new Date(), -6)), endDate: endOfMonth(addMonths(new Date(), -1)) });
 export const last12Months = (): Period => ({ startDate: startOfMonth(addMonths(new Date(), -12)), endDate: endOfMonth(addMonths(new Date(), -1)) });
-export const thisYear = (): Period => ({ startDate: startOfYear(new Date()), endDate: endOfYear(new Date()) });
+/**
+ * Year to date: January through the last month that has finished.
+ *
+ * Not the calendar year. "Same Period Last Year" is this period shifted back a year, so an end
+ * date still in the future compares a part-year — the server clamps its end to today — against a
+ * full twelve months of last year, and the comparison reads as a collapse.
+ */
+export const thisYear = (): Period => {
+    const now = new Date();
+    const lastCompleteMonth = endOfMonth(addMonths(now, -1));
+    // In January nothing has finished yet, so the year to date is January itself.
+    const firstMonth = endOfMonth(startOfYear(now));
+
+    return { startDate: startOfYear(now), endDate: lastCompleteMonth > firstMonth ? lastCompleteMonth : firstMonth };
+};
 export const lastYear = (): Period => ({ startDate: startOfYear(addYears(new Date(), -1)), endDate: endOfYear(addYears(new Date(), -1)) });
 export const allTime = (): Period => ({ startDate: startOfYear(addYears(new Date(), -50)), endDate: endOfYear(new Date()) });
 
