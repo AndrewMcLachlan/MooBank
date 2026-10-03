@@ -1,4 +1,4 @@
-CREATE PROCEDURE dbo.GetCreditDebitTotalsForAccounts
+﻿CREATE PROCEDURE dbo.GetCreditDebitTotalsForAccounts
     @AccountIds dbo.GuidList READONLY,
     @StartDate date,
     @EndDate date
@@ -9,9 +9,19 @@ BEGIN
     SELECT @EndDate = LEAST(@EndDate, CAST(GETDATE() as DATE));
 
     -- Use TransactionSplitNetAmounts view to aggregate per transaction
+    -- A split whose tag is excluded from reporting contributes nothing, so a transfer
+    -- leaves the totals instead of inflating both sides, while the other splits of a
+    -- part-tagged transaction stay. Mirrors #EligibleTags in GetTransactionTotalsByTag.
     WITH SplitNet AS (
-        SELECT TransactionId, NetAmount
-        FROM dbo.TransactionSplitNetAmounts
+        SELECT sn.TransactionId, sn.NetAmount
+        FROM dbo.TransactionSplitNetAmounts sn
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM dbo.TransactionSplitTag tst
+            JOIN dbo.TagSettings ts ON ts.TagId = tst.TagId
+            WHERE tst.TransactionSplitId = sn.Id
+              AND ts.ExcludeFromReporting = 1
+        )
     )
     SELECT
         t.AccountId,
