@@ -14,7 +14,7 @@ const mocks = vi.hoisted(() => ({
         filterTagged: false,
         filterNetZero: false,
         filterTags: [1] as number[],
-        filterType: "Expense",
+        filterType: "Debit",
     },
 }));
 
@@ -54,7 +54,7 @@ beforeEach(() => {
         filterTagged: false,
         filterNetZero: false,
         filterTags: [1],
-        filterType: "Expense",
+        filterType: "Debit",
     };
 });
 
@@ -96,6 +96,14 @@ describe("TransactionsFilterBar", () => {
         mocks.filter = { filterDescription: "", filterTagged: false, filterNetZero: false, filterTags: [], filterType: "" };
         render(<TransactionsFilterBar />);
         expect(screen.queryByRole("button", { name: "Clear" })).not.toBeInTheDocument();
+    });
+
+    it.each([["Income", "Credit"], ["Expense", "Debit"]])("filters %s as %s", async (label, type) => {
+        const user = userEvent.setup();
+        render(<TransactionsFilterBar />);
+        await user.click(screen.getByRole("button", { name: /filters/i }));
+        await user.selectOptions(screen.getByRole("combobox", { name: "Filter by income or expense" }), label);
+        expect(mocks.setFilterType).toHaveBeenLastCalledWith(type);
     });
 
     it("opens the sheet from the Filters button", async () => {

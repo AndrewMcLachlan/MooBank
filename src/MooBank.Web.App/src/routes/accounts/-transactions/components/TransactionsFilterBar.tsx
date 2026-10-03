@@ -4,7 +4,7 @@ import { Drawer, FilterBar, FilterChip, Input } from "@andrewmclachlan/moo-ds";
 import { TagSelector } from "components";
 import { DateRangeSelector } from "components/DateRangeSelector";
 import { useTags } from "hooks/useTags";
-import type { transactionTypeFilter } from "models/transactions";
+import { transactionTypeFilterLabels, type transactionTypeFilter } from "models/transactions";
 
 import { useFilterPanel } from "../hooks/useFilterPanel";
 
@@ -48,7 +48,7 @@ export const TransactionsFilterBar: React.FC = () => {
                     <FilterChip key={`tag-${id}`} onRemove={() => setFilterTags(filterTags.filter(t => t !== id))}>{tagName(id)}</FilterChip>
                 ))}
                 {filterType && (
-                    <FilterChip key="type" onRemove={() => setFilterType("" as transactionTypeFilter)}>{filterType}</FilterChip>
+                    <FilterChip key="type" onRemove={() => setFilterType("" as transactionTypeFilter)}>{transactionTypeFilterLabels[filterType]}</FilterChip>
                 )}
                 {filterTagged && (
                     <FilterChip key="untagged" onRemove={() => setFilterTagged(false)}>Untagged</FilterChip>
@@ -65,8 +65,8 @@ export const TransactionsFilterBar: React.FC = () => {
                     <TagSelector id="filter-tags" onChange={setFilterTags} multiSelect value={filterTags} />
                     <Input.Select aria-label="Filter by income or expense" id="filter-type" value={filterType} onChange={(e) => setFilterType(e.currentTarget.value as transactionTypeFilter)}>
                         <option value="">All</option>
-                        <option value="Income">Income</option>
-                        <option value="Expense">Expense</option>
+                        <option value="Credit">{transactionTypeFilterLabels.Credit}</option>
+                        <option value="Debit">{transactionTypeFilterLabels.Debit}</option>
                     </Input.Select>
                     <Input.Switch id="filter-tagged" label="Only untagged" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
                     <Input.Switch id="filter-netzero" label="Exclude fully offset" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
