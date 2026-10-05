@@ -55,6 +55,16 @@
         min-width: 75px;
     }
 
+    @media (max-width: 767px) {
+        th.row-action {
+            min-width: 0;
+        }
+
+        .row-action {
+            white-space: nowrap;
+        }
+    }
+
     /*#region Headings*/
     legend {
         display: none;
