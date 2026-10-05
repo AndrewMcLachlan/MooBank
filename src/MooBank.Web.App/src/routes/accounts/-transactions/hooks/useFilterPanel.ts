@@ -2,8 +2,8 @@ import { useLocalStorage } from "@andrewmclachlan/moo-ds";
 import { useEffect, useMemo, useState } from "react";
 
 import type { Period } from "models/dateFns";
-import { formatISODate } from "utils/dateFns";
 import { toTransactionTypeFilter, type transactionTypeFilter } from "models/transactions";
+import { periodSearch } from "../transactionSearch";
 import { useTransactionSearch } from "./useTransactionSearch";
 
 export const useFilterPanel = () => {
@@ -48,8 +48,9 @@ export const useFilterPanel = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Push the resolved filter to the route search params (formerly a Redux dispatch). setFilter
-    // returns to page 1 whenever the filter changes. The query itself is debounced in
+    // Push the resolved filter to the route search params. setFilter returns to page 1 only when the
+    // filter actually changes, so re-seeding on mount keeps the page from the URL. The period stays
+    // out until the date range selector reports one. The query itself is debounced in
     // useTransactionSearch, so typing doesn't fire a request per keystroke.
     useEffect(() => {
         setFilter({
@@ -58,8 +59,7 @@ export const useFilterPanel = () => {
             netZero: filterNetZero || undefined,
             tags: filterTags?.length ? filterTags : undefined,
             type: filterType || undefined,
-            start: period?.startDate && formatISODate(period.startDate),
-            end: period?.endDate && formatISODate(period.endDate),
+            ...periodSearch(period),
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [period, filterDescription, filterTagged, filterNetZero, filterTags, filterType]);

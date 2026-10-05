@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Tab, Tabs } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
+import { validatePageSearch } from "utils/gridSearch";
 
 import { IconButton, Section, Skeleton } from "@andrewmclachlan/moo-ds";
 
@@ -12,7 +13,16 @@ import { UtilityTypeBillsTab } from "./-components/UtilityTypeBillsTab";
 import { BillsPage } from "./-components/BillsPage";
 import { AddBill } from "./-components/AddBill";
 
+export interface BillsSearch {
+    type?: UtilityType;
+    page?: number;
+}
+
 export const Route = createFileRoute("/bills/")({
+    validateSearch: (search: Record<string, unknown>): BillsSearch => {
+        const type = UtilityTypes.find(t => t === search.type);
+        return { ...(type ? { type } : {}), ...validatePageSearch(search) };
+    },
     component: BillAccountSummaries,
 });
 
@@ -36,17 +46,15 @@ function BillAccountSummaries() {
     const navigate = useNavigate();
     const { data: summaries, isLoading } = useBillAccountSummaries();
 
-    const availableTypes = summaries?.map(s => s.utilityType) ?? [];
-    const [activeTab, setActiveTab] = useState<UtilityType | undefined>(
-        availableTypes.length > 0 ? availableTypes[0] : undefined
-    );
+    const { type } = Route.useSearch();
     const [showAddBill, setShowAddBill] = useState(false);
 
-    React.useEffect(() => {
-        if (!activeTab && availableTypes.length > 0) {
-            setActiveTab(availableTypes[0]);
-        }
-    }, [availableTypes, activeTab]);
+    const availableTypes = summaries?.map(s => s.utilityType) ?? [];
+    const tabs = UtilityTypes.filter(t => availableTypes.includes(t));
+    const activeTab = tabs.includes(type) ? type : tabs[0];
+
+    const selectTab = (key: UtilityType) =>
+        navigate({ to: Route.fullPath, search: { type: key === tabs[0] ? undefined : key } as any });
 
     return (
         <BillsPage
@@ -64,10 +72,10 @@ function BillAccountSummaries() {
                     <IconButton badge onClick={() => navigate({ to: "/bills/accounts/create" })} icon="plus">Add Account</IconButton>
                 </Section>
             ) : (
-                <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k as UtilityType)} >
-                        {UtilityTypes.filter(type => availableTypes.includes(type)).map(type => (
-                            <Tab key={type} eventKey={type} title={type}>
-                                <UtilityTypeBillsTab utilityType={type} />
+                <Tabs activeKey={activeTab} onSelect={(k) => selectTab(k as UtilityType)} >
+                        {tabs.map(t => (
+                            <Tab key={t} eventKey={t} title={t}>
+                                <UtilityTypeBillsTab utilityType={t} />
                             </Tab>
                         ))}
                 </Tabs>

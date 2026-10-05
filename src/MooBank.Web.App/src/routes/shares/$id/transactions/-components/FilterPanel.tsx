@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { DateRangeSelector } from "components";
 
 import type { Period } from "models/dateFns";
-import { formatISODate } from "utils/dateFns";
+import { periodSearch } from "routes/accounts/-transactions/transactionSearch";
 import { useStockTransactionSearch } from "../-hooks/useStockTransactionSearch";
 
 export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
@@ -20,7 +20,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = (props) => {
 
     // The query is debounced in useStockTransactionSearch, so typing doesn't fire a request per keystroke.
     useEffect(() => {
-        setFilter({ description: filterDescription || undefined, start: period?.startDate && formatISODate(period.startDate), end: period?.endDate && formatISODate(period.endDate) });
+        setFilter({ description: filterDescription || undefined, ...periodSearch(period) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [period, filterDescription]);
 

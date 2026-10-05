@@ -34,8 +34,7 @@ function Profile() {
     }
 
     const editUserCard = (index: number, card: UserCard) => {
-        const cards = getValues("cards");
-        cards[index] = card;
+        const cards = getValues("cards").map((c, i) => i === index ? card : c);
         setValue("cards", cards.sort((a, b) => a.name?.localeCompare(b.name)), { shouldDirty: true });
     }
 
