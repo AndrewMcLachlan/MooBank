@@ -64,7 +64,7 @@ function TransactionTags() {
             setPagedTags(Array.from({ length: pageSize }).map((): any => undefined));
             return;
         }
-        setPagedTags(filteredTags.sort(sortTags(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
+        setPagedTags([...filteredTags].sort(sortTags(sortDirection)).slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize));
     }, [filteredTags, sortDirection, pageNumber, pageSize]);
 
     useEffect(() => {
