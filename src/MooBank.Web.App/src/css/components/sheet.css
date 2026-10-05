@@ -5,7 +5,8 @@
     --sheet-max-height: 90dvh;
     --sheet-radius: 0.875rem;
 
-    overflow: hidden;
+    /* must not scroll: focusing into a dialog mid-slide would scroll it and throw it off position */
+    overflow: clip;
     scrollbar-gutter: auto;
 
     .modal-dialog {
@@ -83,11 +84,29 @@
     }
 }
 
+.modal.sheet.sheet-page.show .modal-dialog {
+    transition: opacity 0.2s ease-out, translate 0.2s ease-out;
+
+    @starting-style {
+        opacity: 0;
+        translate: 0 1rem;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .modal.sheet.show .modal-dialog {
         transition: none;
 
         @starting-style {
+            translate: none;
+        }
+    }
+
+    .modal.sheet.sheet-page.show .modal-dialog {
+        transition: opacity 0.2s ease-out;
+
+        @starting-style {
+            opacity: 0;
             translate: none;
         }
     }
