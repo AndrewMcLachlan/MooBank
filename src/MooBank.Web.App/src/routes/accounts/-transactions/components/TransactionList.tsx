@@ -4,6 +4,7 @@ import { getNumberOfPages, Pagination, PaginationControls, PageSize, SectionTabl
 
 import { useAccount } from "components";
 import type { Transaction } from "api/types.gen";
+import { usePageInRange } from "hooks/useGridSearch";
 import { useTransactions } from "routes/accounts/-hooks/useTransactions";
 import { useTransactionSearch } from "../hooks/useTransactionSearch";
 import { TransactionDetails } from "../details/TransactionDetails";
@@ -24,6 +25,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
     const numberOfPages = getNumberOfPages(totalTransactions, pageSize);
+    usePageInRange(pageNumber, numberOfPages, !!transactionsQuery.data);
 
     const rowClick = (transaction: Transaction) => {
         setSelectedTransaction(transaction);
