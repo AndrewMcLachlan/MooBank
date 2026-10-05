@@ -3,6 +3,7 @@
    title downward — it isn't pinned to the top. Top-align the header so it stays put in both states. */
 main.dashboard .section > .section-header {
     align-self: start;
+    text-align: start;
 }
 
 /* must match moo-ds's single-column breakpoint for the dashboard grid */
