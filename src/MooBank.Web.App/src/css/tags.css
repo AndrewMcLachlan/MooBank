@@ -1,0 +1,82 @@
+@media (max-width: 767px) {
+
+    table.transaction-tags {
+        display: block;
+
+        > thead,
+        > tbody,
+        > tfoot {
+            display: block;
+        }
+
+        tr {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+        }
+
+        > thead th:nth-child(2),
+        > thead th:nth-child(3) {
+            display: none;
+        }
+
+        > thead th:first-child {
+            width: auto;
+        }
+
+        > tbody td {
+            height: auto;
+            border-bottom-width: 0;
+        }
+
+        > tbody td:first-child {
+            font-weight: 600;
+        }
+
+        > tbody td:nth-child(2),
+        > tbody td:nth-child(3) {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-height: 2.5rem;
+            padding-block: 0.25rem;
+        }
+
+        > tbody td:nth-child(2) > *,
+        > tbody td:nth-child(3) > * {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        > tbody td:nth-child(3) {
+            border-bottom-width: var(--border-width, 1px);
+            padding-bottom: 0.5rem;
+        }
+
+        > tbody td:last-child {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        > tbody td:nth-child(2)::before,
+        > tbody td:nth-child(3)::before {
+            flex: 0 0 5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--body-colour-dim);
+        }
+
+        > tbody td:nth-child(2)::before {
+            content: "Sub-tags";
+        }
+
+        > tbody td:nth-child(3)::before {
+            content: "Parents";
+        }
+
+        > tfoot td {
+            grid-column: 1 / -1;
+        }
+    }
+}

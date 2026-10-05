@@ -13,6 +13,7 @@ import { useTags } from "hooks/useTags";
 import { useGridPageSize, useGridSearch, usePageInRange, useSearchTerm } from "hooks/useGridSearch";
 import { validateGridSearch, type GridSearchDefaults } from "utils/gridSearch";
 import { TagsPage } from "./-components/TagsPage";
+import { useAddSubTag } from "./-hooks/useAddSubTag";
 
 const tagsGridDefaults: GridSearchDefaults = { sortField: "name", sortDirection: "Ascending", sortFields: ["name"] };
 
@@ -28,12 +29,14 @@ function TransactionTags() {
     const { data: allTags, isLoading } = useTags();
 
     const createTransactionTag = useCreateTag();
+    const addSubTag = useAddSubTag();
 
     const { search: { search = "" }, page: pageNumber, sortDirection, setPage, setSort, setFilter } = useGridSearch(tagsGridDefaults);
-    const [pageSize, setPageSize] = useGridPageSize("tags-page-size", 20);
+    const [pageSize, setPageSize] = useGridPageSize("tags-page-size", 20)
     const [searchTerm, setSearchTerm] = useSearchTerm(search, (term) => setFilter({ search: term || undefined }));
 
     const [newTag, setNewTag] = useState(blankTag);
+    const [newParents, setNewParents] = useState<Tag[]>([]);
     const [tagsList, setTagsList] = useState<Tag[]>([]);
     const [pagedTags, setPagedTags] = useState<Tag[] | undefined[]>(Array.from({ length: pageSize }).map((): any => undefined));
 
@@ -69,12 +72,26 @@ function TransactionTags() {
 
     useEffect(() => {
         if (!allTags) return;
-        setTagsList(allTags.filter((t) => !newTag.tags.some((tt) => t.id === tt.id)));
-    }, [newTag.tags, allTags]);
+        setTagsList(allTags.filter((t) => !newTag.tags.some((tt) => t.id === tt.id) && !newParents.some((p) => t.id === p.id)));
+    }, [newTag.tags, newParents, allTags]);
 
-    const createTag = () => {
-        createTransactionTag.mutate(newTag);
+    const parentsList = useMemo(() =>
+        allTags?.filter((t) => !newParents.some((p) => t.id === p.id) && !newTag.tags.some((tt) => t.id === tt.id)) ?? [],
+    [newTag.tags, newParents, allTags]);
+
+    const createTag = async () => {
+        const tag = newTag;
+        const parents = newParents;
         setNewTag(blankTag);
+        setNewParents([]);
+
+        if (parents.length === 0) {
+            createTransactionTag.mutate(tag);
+            return;
+        }
+
+        const created = await createTransactionTag.mutateAsync(tag);
+        parents.forEach((parent) => addSubTag.mutate({ path: { id: parent.id, subTagId: created.id } }));
     }
 
     const nameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +114,15 @@ function TransactionTags() {
         setNewTag(newTag);
     }
 
+    const addParent = (tag: Tag) => {
+        if (!tag.id) return;
+        setNewParents((current) => current.concat([tag]));
+    }
+
+    const removeParent = (tag: Tag) => {
+        setNewParents((current) => current.filter((p) => p.id !== tag.id));
+    }
+
     const keyUp: React.KeyboardEventHandler<HTMLTableCellElement> = (e) => {
         if (e.key === "Enter") {
             createTag();
@@ -112,7 +138,8 @@ function TransactionTags() {
                 <thead>
                     <tr>
                         <SortableTh className={`column-15 sortable ${sortDirection.toLowerCase()}`} sortField="name" sortDirection={sortDirection} onSort={() => setSort("name", changeSortDirection(sortDirection))} field="name">Name</SortableTh>
-                        <th>Tags</th>
+                        <th className="column-40">Sub-tags</th>
+                        <th className="column-40">Parents</th>
                         <PaginationTh pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
                     </tr>
                 </thead>
@@ -120,6 +147,7 @@ function TransactionTags() {
                     <tr>
                         <td><input type="text" placeholder="Tag name" value={newTag.name} onChange={nameChange} className="form-control" /></td>
                         <TagPanel as="td" selectedItems={newTag.tags} items={tagsList} onAdd={addTag} onCreate={createTag} onRemove={removeTag} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
+                        <TagPanel as="td" selectedItems={newParents} items={parentsList} onAdd={addParent} onRemove={removeParent} allowCreate={false} alwaysShowEditPanel={true} onKeyUp={keyUp} />
                         <td className="row-action column-5"><span onClick={createTag}><SaveIcon /></span></td>
                     </tr>
                     {pagedTags.map((t, i) => <TransactionTagRow key={t?.id ?? `empty-${i}`} tag={t} onEdit={(tag) => setEditingTagId(tag.id)} />)}
@@ -128,7 +156,7 @@ function TransactionTags() {
                     <tfoot>
                         <tr>
                             <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalTags} tags)</td>
-                            <td colSpan={2}>
+                            <td colSpan={3}>
                                 <PaginationControls>
                                     <PageSize value={pageSize} onChange={setPageSize} />
                                     <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { TagPanel } from "components";
 import type { TagPanelProps } from "components";
@@ -8,6 +8,7 @@ import { useAddSubTag } from "../-hooks/useAddSubTag";
 import { useCreateTag } from "hooks/useCreateTag";
 import { useRemoveSubTag } from "../-hooks/useRemoveSubTag";
 import { useTags } from "hooks/useTags";
+import { getRelatableTags } from "../-utils/tagRelationships";
 
 export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransactionTagPanelProps> = ({tag, ...rest}) => {
 
@@ -15,12 +16,9 @@ export const TransactionTagTransactionTagPanel: React.FC<TransactionTagTransacti
 
     const {data: fullTagsList} = useTags();
 
-    const [tagsList, setTagsList] = useState<Tag[]>([]);
-
-    useEffect(() => {
-        if (!fullTagsList) return;
-        setTagsList(fullTagsList.filter((t) => t.id !== tag.id && tagRow.tags && !tagRow.tags.some((tt) => t.id === tt.id)));
-    }, [tagRow.tags, fullTagsList]);
+    const tagsList = useMemo(() =>
+        getRelatableTags(fullTagsList ?? [], tag.id).filter((t) => !tagRow.tags?.some((tt) => t.id === tt.id)),
+    [tagRow.tags, fullTagsList, tag.id]);
 
     return (
         <TagPanel {...rest} selectedItems={tagRow.tags} items={tagsList} onAdd={tagRow.addTag} onRemove={tagRow.removeTag} onCreate={tagRow.createTag} allowCreate={true} />

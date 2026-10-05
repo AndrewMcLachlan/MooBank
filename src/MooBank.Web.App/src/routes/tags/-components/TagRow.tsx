@@ -5,6 +5,7 @@ import { EditColumn, Icon, LoadingTableRow, useUpdatingState } from "@andrewmcla
 import { useDeleteTag } from "../-hooks/useDeleteTag";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
+import { TagParentPanel } from "./TagParentPanel";
 import { DeleteIcon } from "@andrewmclachlan/moo-ds";
 import { colourRowProps } from "components";
 
@@ -13,7 +14,7 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
 
     const { tag, ...tagRow } = useTagRowEvents(props);
 
-    if (!tag) return <LoadingTableRow cols={3} />;
+    if (!tag) return <LoadingTableRow cols={4} />;
 
     return (
         <tr {...colourRowProps(tag.colour)}>
@@ -21,6 +22,7 @@ export const TransactionTagRow: React.FC<TransactionTagRowProps> = (props) => {
                 {tag.name}
             </EditColumn>
             <TransactionTagTransactionTagPanel as="td" tag={tag} />
+            <TagParentPanel as="td" tag={tag} />
             <td className="row-action">
                 <span onClick={() => props.onEdit?.(tag)}><Icon className="clickable" icon="pen-to-square" title="Edit Details" /></span>
                 <span onClick={tagRow.deleteTag}><DeleteIcon /></span>

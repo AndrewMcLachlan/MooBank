@@ -12,7 +12,10 @@ export const useDeleteTag = () => {
         onSuccess: (_data, variables) => {
             let allTags = queryClient.getQueryData<Tag[]>(getTagsQueryKey());
             if (!allTags) return;
-            allTags = allTags.filter(r => r.id !== variables.path!.id);
+            const deletedId = variables.path!.id;
+            allTags = allTags
+                .filter(r => r.id !== deletedId)
+                .map(r => r.tags.some(child => child.id === deletedId) ? { ...r, tags: r.tags.filter(child => child.id !== deletedId) } : r);
             allTags = allTags.sort((t1, t2) => t1.name.localeCompare(t2.name));
             queryClient.setQueryData<Tag[]>(getTagsQueryKey(), allTags);
         }
