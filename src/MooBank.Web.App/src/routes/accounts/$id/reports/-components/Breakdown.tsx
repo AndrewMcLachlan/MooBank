@@ -84,18 +84,13 @@ export const Breakdown: React.FC<BreakdownProps> = ({ accountId, tagId, period, 
         },
     }), [legendPosition]);
 
-    // The chart's shape is known before its data is, so hold the space with a
-    // skeleton rather than a spinner. Returning early also keeps an empty
-    // <Doughnut> from being painted underneath the placeholder while it loads.
-    if (report.isLoading) return <Skeleton.Chart variant="doughnut" count={3} />;
-
-    // Withheld until the container has been measured, so the chart is created once with its legend
-    // already in place. Creating it at the default position and moving the legend afterwards is a
-    // real options change, and Chart.js animates it. The div carries the ref in both branches and
-    // holds its place in the tree, so switching between them does not restart the measurement.
+    // Withheld until the data has loaded and the container has been measured, so the chart is created
+    // once with its legend already in place. Moving the legend afterwards is a real options change,
+    // and Chart.js animates it. The skeleton must stay inside the container: it sizes itself to the
+    // container's height, and without one it grows to the full width.
     return (
         <div ref={containerRef} className="doughnut-container">
-            {containerWidth === null
+            {report.isLoading || containerWidth === null
                 ? <Skeleton.Chart variant="doughnut" count={3} />
                 : <Doughnut id="bytag" ref={chartRef} data={dataset} options={options} />}
         </div>
