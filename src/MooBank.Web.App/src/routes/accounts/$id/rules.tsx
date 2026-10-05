@@ -85,7 +85,7 @@ function Rules() {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalRules} tags)</td>
+                        <td colSpan={1} className="page-totals">Page {pageNumber} of {numberOfPages} ({totalRules} rules)</td>
                         <td colSpan={3}>
                             <PaginationControls>
                                 <PageSize value={pageSize} onChange={setPageSize} />
