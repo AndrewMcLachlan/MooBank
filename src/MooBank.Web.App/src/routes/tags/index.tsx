@@ -1,19 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { TransactionTagRow } from "./-components/TagRow";
 import { TransactionTagDetails } from "./-components/TagDetails";
 
-import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, PaginationTh, SaveIcon, SearchBox, Section, SectionTable, SortableTh, useLocalStorage } from "@andrewmclachlan/moo-ds";
-import type { SortDirection } from "@andrewmclachlan/moo-ds";
+import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, PaginationTh, SaveIcon, SearchBox, Section, SectionTable, SortableTh } from "@andrewmclachlan/moo-ds";
 import { TagPanel } from "components";
 import type { Tag } from "api/types.gen";
 import { sortTags } from "utils/tags";
 import { useCreateTag } from "hooks/useCreateTag";
 import { useTags } from "hooks/useTags";
+import { useGridPageSize, useGridSearch, usePageInRange, useSearchTerm } from "hooks/useGridSearch";
+import { validateGridSearch, type GridSearchDefaults } from "utils/gridSearch";
 import { TagsPage } from "./-components/TagsPage";
 
+const tagsGridDefaults: GridSearchDefaults = { sortField: "name", sortDirection: "Ascending", sortFields: ["name"] };
+
 export const Route = createFileRoute("/tags/")({
+    validateSearch: (search: Record<string, unknown>) => validateGridSearch(search, tagsGridDefaults),
     component: TransactionTags,
 });
 
@@ -25,39 +29,32 @@ function TransactionTags() {
 
     const createTransactionTag = useCreateTag();
 
-    const [pageNumber, setPageNumber] = useState<number>(1);
-    const [pageSize, setPageSize] = useLocalStorage<number>("tags-page-size", 20);
+    const { search: { search = "" }, page: pageNumber, sortDirection, setPage, setSort, setFilter } = useGridSearch(tagsGridDefaults);
+    const [pageSize, setPageSize] = useGridPageSize("tags-page-size", 20);
+    const [searchTerm, setSearchTerm] = useSearchTerm(search, (term) => setFilter({ search: term || undefined }));
 
     const [newTag, setNewTag] = useState(blankTag);
     const [tagsList, setTagsList] = useState<Tag[]>([]);
-    const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
     const [pagedTags, setPagedTags] = useState<Tag[] | undefined[]>(Array.from({ length: pageSize }).map((): any => undefined));
 
-    const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
-    const [search, setSearch] = useState("");
     const [editingTagId, setEditingTagId] = useState<number | null>(null);
+
+    const filteredTags = useMemo(() => {
+        const term = search.toLocaleLowerCase();
+        if (term === "") return allTags ?? [];
+
+        const matchingTags = allTags?.filter(t => t?.name.toLocaleLowerCase().includes(term)) ?? [];
+        const matchingSubTags = allTags?.filter(t => !matchingTags.some(t2 => t2.id === t.id) && t?.tags.some(t2 => matchingTags.some(t3 => t3.id === t2.id))) ?? [];
+        return matchingTags.concat(matchingSubTags);
+    }, [allTags, search]);
 
     const numberOfPages = getNumberOfPages(filteredTags.length, pageSize);
     const totalTags = filteredTags.length;
-    const pageChange = (_current: number, newPage: number) => setPageNumber(newPage);
+    const pageChange = (_current: number, newPage: number) => setPage(newPage);
 
     const editingTag = editingTagId !== null ? allTags?.find(t => t.id === editingTagId) : undefined;
 
-    useEffect(() => {
-        setPageNumber(1);
-    }, [search]);
-
-    useEffect(() => {
-        const searchTerm = search.toLocaleLowerCase();
-        if (searchTerm === "") {
-            setFilteredTags(allTags ?? []);
-            return;
-        }
-
-        const matchingTags = allTags?.filter(t => t?.name.toLocaleLowerCase().includes(searchTerm)) ?? [];
-        const matchingSubTags = allTags?.filter(t => !matchingTags.some(t2 => t2.id === t.id) && t?.tags.some(t2 => matchingTags.some(t3 => t3.id === t2.id)));
-        setFilteredTags(matchingTags.concat(matchingSubTags));
-    }, [JSON.stringify(allTags), search]);
+    usePageInRange(pageNumber, numberOfPages, !!allTags);
 
     useEffect(() => {
         // Gate on "no data yet" rather than isLoading: while a persisted query rehydrates from
@@ -109,12 +106,12 @@ function TransactionTags() {
     return (
         <TagsPage>
             <Section>
-                <SearchBox value={search} onChange={(v: string) => setSearch(v)} />
+                <SearchBox value={searchTerm} onChange={setSearchTerm} />
             </Section>
             <SectionTable striped className="transaction-tags">
                 <thead>
                     <tr>
-                        <SortableTh className={`column-15 sortable ${sortDirection.toLowerCase()}`} sortField="name" sortDirection={sortDirection} onSort={() => setSortDirection(changeSortDirection(sortDirection))} field="name">Name</SortableTh>
+                        <SortableTh className={`column-15 sortable ${sortDirection.toLowerCase()}`} sortField="name" sortDirection={sortDirection} onSort={() => setSort("name", changeSortDirection(sortDirection))} field="name">Name</SortableTh>
                         <th>Tags</th>
                         <PaginationTh pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
                     </tr>
