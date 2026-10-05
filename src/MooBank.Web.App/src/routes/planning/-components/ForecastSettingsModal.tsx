@@ -46,6 +46,7 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
 
     const handleSave = (data: ForecastSettingsFormValues) => {
         update(plan.id, {
+            ...plan,
             name: data.name,
             startDate: data.startDate,
             endDate: data.endDate,
