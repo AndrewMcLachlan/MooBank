@@ -164,6 +164,13 @@
         min-block-size: 0;
     }
 
+    .report.doughnut .doughnut-container {
+        block-size: calc(100vh - 415px);
+        min-block-size: 20rem;
+        max-inline-size: calc((100vh - 415px) * 1.5);
+        margin-inline: auto;
+    }
+
     .net-worth.key-value {
         font-size: 1.2em;
 
