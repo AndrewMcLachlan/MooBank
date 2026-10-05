@@ -85,7 +85,7 @@
 }
 
 .modal.sheet.sheet-page.show .modal-dialog {
-    transition: opacity 0.2s ease-out, translate 0.2s ease-out;
+    transition: opacity 0.35s ease-out, translate 0.35s ease-out;
 
     @starting-style {
         opacity: 0;
@@ -103,7 +103,7 @@
     }
 
     .modal.sheet.sheet-page.show .modal-dialog {
-        transition: opacity 0.2s ease-out;
+        transition: opacity 0.35s ease-out;
 
         @starting-style {
             opacity: 0;

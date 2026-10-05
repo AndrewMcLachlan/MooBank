@@ -5,6 +5,10 @@
         width: 450px;
     }
 
+    .modal-title {
+        font-weight: bold;
+    }
+
     :is(.offcanvas-body, .modal-body) {
         display: flex;
         gap: 1rem;
