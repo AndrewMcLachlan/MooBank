@@ -279,4 +279,45 @@ public class UpdatePlanTests
         // Assert
         Assert.True(existingPlan.UpdatedUtc > originalTime);
     }
+
+    [Theory]
+    [InlineData(null, "AUD")]
+    [InlineData("USD", "USD")]
+    public async Task Handle_CurrencyCode_KeepsExistingWhenOmitted(string? requested, string expected)
+    {
+        // Arrange
+        var planId = Guid.NewGuid();
+        var existingPlan = TestEntities.CreateForecastPlan(id: planId, familyId: _mocks.User.FamilyId, currencyCode: "AUD");
+
+        _mocks.ForecastRepositoryMock
+            .Setup(r => r.Get(planId, It.IsAny<ForecastPlanDetailsSpecification>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingPlan);
+
+        var handler = new UpdatePlanHandler(
+            _mocks.ForecastRepositoryMock.Object,
+            _mocks.UnitOfWorkMock.Object);
+
+        var updateModel = new ForecastPlan
+        {
+            Id = planId,
+            Name = "Test Plan",
+            StartDate = existingPlan.StartDate,
+            EndDate = existingPlan.EndDate,
+            AccountScopeMode = existingPlan.AccountScopeMode,
+            StartingBalanceMode = existingPlan.StartingBalanceMode,
+            CurrencyCode = requested,
+            IsArchived = false,
+            CreatedUtc = DateTime.UtcNow,
+            UpdatedUtc = DateTime.UtcNow,
+            AccountIds = [],
+            PlannedItems = [],
+        };
+        var command = new UpdatePlan(planId, updateModel);
+
+        // Act
+        await handler.Handle(command, TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(expected, existingPlan.CurrencyCode);
+    }
 }

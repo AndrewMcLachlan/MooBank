@@ -23,7 +23,7 @@ internal class UpdatePlanHandler(IForecastRepository forecastRepository, IUnitOf
         entity.AccountScopeMode = request.Plan.AccountScopeMode;
         entity.StartingBalanceMode = request.Plan.StartingBalanceMode;
         entity.StartingBalanceAmount = request.Plan.StartingBalanceAmount;
-        entity.CurrencyCode = request.Plan.CurrencyCode;
+        entity.CurrencyCode = request.Plan.CurrencyCode ?? entity.CurrencyCode;
         entity.OutgoingStrategySerialized = request.Plan.OutgoingStrategy != null ? JsonSerializer.Serialize(request.Plan.OutgoingStrategy, _jsonOptions) : null;
         entity.AssumptionsSerialized = request.Plan.Assumptions != null ? JsonSerializer.Serialize(request.Plan.Assumptions, _jsonOptions) : null;
         entity.UpdatedUtc = DateTime.UtcNow;
