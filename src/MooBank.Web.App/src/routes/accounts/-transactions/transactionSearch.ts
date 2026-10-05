@@ -1,6 +1,6 @@
 import type { SortDirection } from "@andrewmclachlan/moo-ds";
 
-import type { TransactionsFilter, transactionTypeFilter } from "models/transactions";
+import { toTransactionTypeFilter, type TransactionsFilter, type transactionTypeFilter } from "models/transactions";
 import { getDateRange } from "hooks/dateRange";
 import { endOfDayISO, formatISODate, startOfDayISO, toDateParam } from "utils/dateFns";
 
@@ -54,7 +54,8 @@ export const validateTransactionSearch = (search: Record<string, unknown>): Tran
     if (isTruthy(search.tagged) || isTruthy(search.untagged)) result.tagged = true;
     if (isTruthy(search.netZero) || isTruthy(search.netzero)) result.netZero = true;
 
-    if (search.type === "Debit" || search.type === "Credit") result.type = search.type;
+    const type = toTransactionTypeFilter(search.type);
+    if (type) result.type = type;
 
     const tags = parseTags(search.tags ?? search.tag);
     if (tags) result.tags = tags;
@@ -101,7 +102,7 @@ export const resolveTransactionSearch = (rawSearch: Record<string, unknown>): Tr
         : (search.tagged ?? (hasWidgetFilter ? undefined : readStored("filter-tagged", false) || undefined));
 
     const netZero = search.netZero ?? (readStored("filter-netzero", false) || undefined);
-    const type = search.type ?? (readStored<transactionTypeFilter>("filter-type", "") || undefined);
+    const type = search.type ?? (toTransactionTypeFilter(readStored<unknown>("filter-type", "")) || undefined);
     const description = hasWidgetFilter ? undefined : (readStored("filter-description", "") || undefined);
 
     const period = getDateRange();

@@ -2,6 +2,14 @@ import type { TransactionSplit } from "api/types.gen";
 
 export type transactionTypeFilter = "" | "Debit" | "Credit";
 
+export const toTransactionTypeFilter = (value: unknown): transactionTypeFilter =>
+    value === "Debit" || value === "Credit" ? value : "";
+
+export const transactionTypeFilterLabels: Record<Exclude<transactionTypeFilter, "">, string> = {
+    Credit: "Income",
+    Debit: "Expense",
+};
+
 // The resolved set of transaction-list filters. Sourced from the route search params
 // (see routes/accounts/-transactions/transactionSearch.ts); replaces the former Redux slice state.
 export interface TransactionsFilter {

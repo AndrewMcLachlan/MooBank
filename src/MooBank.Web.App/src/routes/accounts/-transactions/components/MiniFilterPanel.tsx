@@ -6,7 +6,7 @@ import { TagSelector } from "components";
 
 import { DateRangeSelector } from "components/DateRangeSelector";
 import { useFilterPanel } from "../hooks/useFilterPanel";
-import type { transactionTypeFilter } from "models/transactions";
+import { transactionTypeFilterLabels, type transactionTypeFilter } from "models/transactions";
 
 export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
 
@@ -17,9 +17,9 @@ export const MiniFilterPanel: React.FC<MiniFilterPanelProps> = (props) => {
             <Input id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Description contains..." />
             <TagSelector id="filter-tags" onChange={setFilterTags} multiSelect value={filterTags} />
             <Input.Select aria-label="Filter by income or expense" id="filter-type" value={filterType} onChange={(e) => setFilterType(e.currentTarget.value as transactionTypeFilter)}>
-                <option id="filter-all">All</option>
-                <option id="filter-income">Income</option>
-                <option id="filter-expense">Expense</option>
+                <option id="filter-all" value="">All</option>
+                <option id="filter-income" value="Credit">{transactionTypeFilterLabels.Credit}</option>
+                <option id="filter-expense" value="Debit">{transactionTypeFilterLabels.Debit}</option>
             </Input.Select>
             <DateRangeSelector onChange={setPeriod} />
             <Input.Switch id="filter-tagged" label="Untagged" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
