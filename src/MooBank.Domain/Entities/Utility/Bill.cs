@@ -27,6 +27,7 @@ public partial class Bill(int id) : KeyedEntity<int>(id)
     public bool? CostsIncludeGST { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    [Column(TypeName = "decimal(12, 4)")]
     public decimal? Cost { get; set; } // Computed column
 
     [ForeignKey("AccountId")]

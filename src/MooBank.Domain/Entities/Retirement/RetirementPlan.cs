@@ -69,6 +69,7 @@ public partial class RetirementPlan(Guid id) : KeyedEntity<Guid>(id)
     /// <summary>
     /// What the household intends to live on each year in retirement, in today's dollars.
     /// </summary>
+    [Precision(18, 2)]
     public decimal TargetRetirementIncome { get; set; }
 
     /// <summary>

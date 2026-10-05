@@ -25,6 +25,7 @@ public class Usage
     /// Negative for export, which the retailer credits.
     /// </summary>
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    [Column(TypeName = "decimal(15, 8)")]
     public decimal? Cost { get; set; }
 
     [ForeignKey("PeriodId")]
