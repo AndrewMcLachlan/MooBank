@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { Skeleton, Widget } from "@andrewmclachlan/moo-ds";
 import { useNavigate } from "@tanstack/react-router";
-import { lastMonth, lastMonthName } from "utils/dateFns";
+import { lastMonth } from "utils/dateFns";
+import { useLastMonthName } from "./-hooks/useLastMonthName";
 import { Breakdown } from "../accounts/$id/reports/-components/Breakdown";
 import { useAccounts } from "hooks/useAccounts";
 import { WidgetError } from "components/WidgetError";
@@ -17,7 +18,7 @@ export const BreakdownWidget: React.FC = () => {
     const account = accounts?.find(a => a.isPrimary === true) ?? accounts?.[0];
 
     const period = useMemo(() => lastMonth(), []);
-    const monthName = lastMonthName();
+    const monthName = useLastMonthName();
 
     const selectedTagChanged = (clickedTag: TagValue) => {
         // period=1 (Last Month) scopes the target page to the dashboard's period.

@@ -7,7 +7,8 @@ import { getYear } from "date-fns/getYear";
 import { Skeleton, Widget } from "@andrewmclachlan/moo-ds";
 import type { ChartData } from "chart.js";
 import { useChartColours } from "utils/chartColours";
-import { lastMonth, lastMonthName } from "utils/dateFns";
+import { lastMonth } from "utils/dateFns";
+import { useLastMonthName } from "./-hooks/useLastMonthName";
 import { Bar } from "react-chartjs-2";
 import { useBudgetReportForMonth } from "./-hooks/useBudgetReportForMonth";
 import { Amount, WidgetError } from "components";
@@ -17,6 +18,7 @@ export const BudgetWidget: React.FC = () => {
     const colours = useChartColours();
 
     const period = useMemo(() => lastMonth(), []);
+    const monthName = useLastMonthName();
 
     const { data: report, isLoading, isError } = useBudgetReportForMonth(period.startDate.getFullYear(), period.startDate.getMonth());
 
@@ -41,7 +43,7 @@ export const BudgetWidget: React.FC = () => {
     const difference = Math.round((((report?.budgetedAmount ?? 0) - Math.abs(report?.actual ?? 0)) / 10.0)) * 10;
 
     return (
-        <Widget header={`Budget - ${lastMonthName()}`} size="single" className="report budget" loading={isLoading} loadingPlaceholder={<Skeleton.Chart variant="horizontal-bar" count={2} />} to={`/budget/report/${period.startDate.getFullYear()}/${period.startDate.getMonth() + 1}`}>
+        <Widget header={`Budget - ${monthName}`} size="single" className="report budget" loading={isLoading} loadingPlaceholder={<Skeleton.Chart variant="horizontal-bar" count={2} />} to={`/budget/report/${period.startDate.getFullYear()}/${period.startDate.getMonth() + 1}`}>
             {isError && <WidgetError />}
             {!isError && report &&
                 <>
