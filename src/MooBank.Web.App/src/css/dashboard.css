@@ -5,6 +5,23 @@ main.dashboard .section > .section-header {
     align-self: start;
 }
 
+/* must match moo-ds's single-column breakpoint for the dashboard grid */
+@container dashboard (max-width: 660px) {
+    main.dashboard .dashboard-grid {
+        grid-auto-rows: auto;
+
+        > div {
+            height: 300px;
+        }
+
+        > div.double {
+            grid-row: auto;
+            height: auto;
+            aspect-ratio: 3 / 4;
+        }
+    }
+}
+
 .widget-error {
     display: flex;
     flex-direction: column;
