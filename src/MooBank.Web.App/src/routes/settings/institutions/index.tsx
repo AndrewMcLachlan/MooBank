@@ -1,13 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { changeSortDirection, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, useLocalStorage, Badge } from "@andrewmclachlan/moo-ds";
-import type { BadgeHue, SortDirection } from "@andrewmclachlan/moo-ds";
+import { changeSortDirection, getNumberOfPages, PageSize, Pagination, PaginationControls, SortablePaginationTh, Section, SectionTable, SortableTh, Badge } from "@andrewmclachlan/moo-ds";
+import type { BadgeHue } from "@andrewmclachlan/moo-ds";
 import { institutionTypeOptions } from "models/institutions";
 import { useNavigate } from "@tanstack/react-router";
+import { useGridPageSize, useGridSearch, usePageInRange, useSearchTerm } from "hooks/useGridSearch";
 import { useInstitutions } from "hooks/useInstitutions";
+import { validateGridSearch, type GridSearchDefaults } from "utils/gridSearch";
 import { SettingsPage } from "../-components/SettingsPage";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+
+const institutionsGridDefaults: GridSearchDefaults = { sortField: "name", sortDirection: "Ascending", sortFields: ["name", "type"] };
 
 export const Route = createFileRoute("/settings/institutions/")({
+    validateSearch: (search: Record<string, unknown>) => validateGridSearch(search, institutionsGridDefaults),
     component: Institutions,
 });
 
@@ -15,6 +20,7 @@ type displayInstitution = {
     id: number;
     name: string;
     type: string;
+    typeLabel: string;
 }
 
 const hueByType: Record<string, BadgeHue> = {
@@ -33,59 +39,55 @@ function Institutions() {
 
     const navigate = useNavigate();
 
-    const [pageNumber, setPageNumber] = useState<number>(1);
-    const [pageSize, setPageSize] = useLocalStorage<number>("institutions-page-size", 50);
-    const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
-    const [search, setSearch] = useState("");
-    const [sortField, setSortField] = useState<keyof displayInstitution>("name");
+    const { search: { search = "" }, page: pageNumber, sortField, sortDirection, setPage, setSort, setFilter } = useGridSearch(institutionsGridDefaults);
+    const [pageSize, setPageSize] = useGridPageSize("institutions-page-size", 50);
+    const [searchTerm, setSearchTerm] = useSearchTerm(search, (term) => setFilter({ search: term || undefined }));
 
-    const [filteredInstitutions, setFilteredInstitutions] = useState<any[]>([]);
+    const matchingInstitutions = useMemo(() => {
+        const term = search.toLocaleLowerCase();
+        const matching = (term === "" ? institutions : institutions?.filter(i => i?.name.toLocaleLowerCase().includes(term))) ?? [];
 
-    const numberOfPages = Math.ceil((institutions?.length ?? 0) / pageSize);
+        return matching.map((i): displayInstitution => ({
+            id: i.id,
+            name: i.name,
+            type: i.institutionType,
+            typeLabel: institutionTypeOptions.find(t => t.value === i.institutionType)?.label,
+        }));
+    }, [institutions, search]);
 
-    useEffect(() => {
-        const searchTerm = search.toLocaleLowerCase();
-        const matchingInstitutions = (searchTerm === "" ? institutions : institutions?.filter(i => i?.name.toLocaleLowerCase().includes(searchTerm))) ?? [];
+    const pagedInstitutions = useMemo(() => {
+        const field = sortField as keyof displayInstitution;
+        const sorted = [...matchingInstitutions].sort((a, b) => sortDirection === "Ascending"
+            ? String(a[field]).localeCompare(String(b[field]))
+            : String(b[field]).localeCompare(String(a[field])));
 
-        const transformed = matchingInstitutions.map((i) => {
-            return {
-                id: i.id,
-                name: i.name,
-                type: i.institutionType,
-                typeLabel: institutionTypeOptions.find(t => t.value === i.institutionType)?.label
-            } as displayInstitution
-        });
+        return sorted.slice((pageNumber - 1) * pageSize, pageNumber * pageSize);
+    }, [matchingInstitutions, sortField, sortDirection, pageNumber, pageSize]);
 
-        transformed.sort((a, b) => {
-            if (sortDirection === "Ascending") {
-                return (a[sortField] as string).localeCompare(b[sortField] as string);
-            }
-            return (b[sortField] as string).localeCompare(a[sortField] as string);
-        });
+    const numberOfPages = getNumberOfPages(matchingInstitutions.length, pageSize);
 
-        const pagedInstitutions = transformed.slice((pageNumber - 1) * pageSize, ((pageNumber - 1) * pageSize) + pageSize);
+    usePageInRange(pageNumber, numberOfPages, !!institutions);
 
-        setFilteredInstitutions(pagedInstitutions);
-    }, [JSON.stringify(institutions), search, pageSize, pageNumber, sortDirection]);
+    const sort = (field: string) => setSort(field, changeSortDirection(sortDirection));
 
     return (
         <SettingsPage title="Institutions" breadcrumbs={[{ text: "Institutions", route: "/settings/institutions" }]} actions={[{ id: "add", label: "Add Institution", icon: "plus", variant: "primary", group: "write", to: "/settings/institutions/add" }]}>
             <Section>
-                <input className="form-control" type="text" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <input className="form-control" type="text" placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
             </Section>
             <SectionTable striped hover>
                 <thead>
                     <tr>
-                        <SortableTh field="name" onSort={(field) => { setSortField(field as keyof displayInstitution); setSortDirection(changeSortDirection(sortDirection)) }} sortField={sortField} sortDirection={sortDirection}>Name</SortableTh>
+                        <SortableTh field="name" onSort={sort} sortField={sortField} sortDirection={sortDirection}>Name</SortableTh>
                         <SortablePaginationTh
-                            field="type" sortField={sortField} sortDirection={sortDirection} onSort={(field) => { setSortField(field as keyof displayInstitution); setSortDirection(changeSortDirection(sortDirection)) }}
-                            pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_, newPage) => setPageNumber(newPage)}>
+                            field="type" sortField={sortField} sortDirection={sortDirection} onSort={sort}
+                            pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_, newPage) => setPage(newPage)}>
                             Type
                         </SortablePaginationTh>
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredInstitutions && filteredInstitutions.map((f) => (
+                    {pagedInstitutions.map((f) => (
                         <tr key={f.id} className="clickable" onClick={() => navigate({ to: `/settings/institutions/${f.id}` })}>
                             <td>{f.name}</td>
                             <td><Badge pill muted bg={hueByType[f.type]}>{f.typeLabel}</Badge></td>
@@ -97,7 +99,7 @@ function Institutions() {
                         <td colSpan={2}>
                             <PaginationControls>
                                 <PageSize value={pageSize} onChange={setPageSize} />
-                                <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_, newPage) => setPageNumber(newPage)} />
+                                <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_, newPage) => setPage(newPage)} />
                             </PaginationControls>
                         </td>
                     </tr>

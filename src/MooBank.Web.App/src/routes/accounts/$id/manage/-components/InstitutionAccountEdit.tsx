@@ -1,7 +1,8 @@
 import { Form } from "@andrewmclachlan/moo-ds";
 import { InstitutionSelector, useAccount } from "components";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import type { InstitutionAccount, LogicalAccount } from "api/types.gen";
-import { Button, Modal } from "@andrewmclachlan/moo-ds";
+import { Button } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { useUpdateInstitutionAccount } from "../../../-hooks/useUpdateInstitutionAccount";
 
@@ -26,12 +27,12 @@ export const InstitutionAccountEdit: React.FC<InstitutionAccountEditProps> = ({ 
     }
 
     return (
-        <Modal show={show} onHide={onHide} size="lg" title={institutionAccount ? "Edit Institution Account" : "Add Institution Account"} >
+        <ResponsiveDialog show={show} onHide={onHide} size="lg" title={institutionAccount ? "Edit Institution Account" : "Add Institution Account"} >
             <Form form={form} onSubmit={handleSubmit}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{institutionAccount ? "Edit Institution Account" : "Add Institution Account"}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+                <ResponsiveDialog.Header closeButton>
+                    <ResponsiveDialog.Title>{institutionAccount ? "Edit Institution Account" : "Add Institution Account"}</ResponsiveDialog.Title>
+                </ResponsiveDialog.Header>
+                <ResponsiveDialog.Body>
                     <Form.Group groupId="name">
                         <Form.Label>Name</Form.Label>
                         <Form.Input type="text" required maxLength={255} />
@@ -40,13 +41,13 @@ export const InstitutionAccountEdit: React.FC<InstitutionAccountEditProps> = ({ 
                         <Form.Label>Institution</Form.Label>
                         <InstitutionSelector accountType={account?.accountType} />
                     </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
+                </ResponsiveDialog.Body>
+                <ResponsiveDialog.Footer>
                     <Button variant="outline-primary" onClick={onHide}>Close</Button>
                     <Button type="submit" variant="primary" disabled={updateInstitutionAccount.isPending}>Save</Button>
-                </Modal.Footer>
+                </ResponsiveDialog.Footer>
             </Form>
-        </Modal >
+        </ResponsiveDialog >
     );
 };
 

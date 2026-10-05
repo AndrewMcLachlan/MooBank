@@ -2,13 +2,14 @@ import type { SortDirection } from "@andrewmclachlan/moo-ds";
 
 import { toTransactionTypeFilter, type TransactionsFilter, type transactionTypeFilter } from "models/transactions";
 import { getDateRange } from "hooks/dateRange";
+import type { Period } from "models/dateFns";
 import { endOfDayISO, formatISODate, startOfDayISO, toDateParam } from "utils/dateFns";
+import { parsePage, parsePageSize, parseSortDirection, type GridSearch } from "utils/gridSearch";
 
-// Typed, URL-driven state for the transaction list. Replaces the former Redux slice: filter,
-// sort and page live in the route search params so the view is shareable/bookmarkable. pageSize
-// is a persisted preference (localStorage) rather than URL state.
-export interface TransactionSearch {
-    page?: number;
+// Typed, URL-driven state for the transaction list: filter, sort, page and page size live in the
+// route search params so the view is shareable/bookmarkable. Without a pageSize param, the
+// persisted preference (localStorage) applies.
+export interface TransactionSearch extends Omit<GridSearch, "search"> {
     description?: string;
     /** Show only untagged transactions (was filterTagged). */
     tagged?: boolean;
@@ -18,10 +19,10 @@ export interface TransactionSearch {
     tags?: number[];
     start?: string;
     end?: string;
-    sortField?: string;
-    sortDirection?: SortDirection;
 }
 
+export const transactionsPageSizeKey = "transactions-page-size";
+export const defaultTransactionsPageSize = 50;
 export const defaultSortField = "TransactionTime";
 export const defaultSortDirection: SortDirection = "Descending";
 
@@ -46,8 +47,11 @@ const parseTags = (value: unknown): number[] | undefined => {
 export const validateTransactionSearch = (search: Record<string, unknown>): TransactionSearch => {
     const result: TransactionSearch = {};
 
-    const page = Number(search.page);
-    if (Number.isFinite(page) && page > 1) result.page = page;
+    const page = parsePage(search.page);
+    if (page) result.page = page;
+
+    const pageSize = parsePageSize(search.pageSize);
+    if (pageSize) result.pageSize = pageSize;
 
     if (typeof search.description === "string" && search.description) result.description = search.description;
 
@@ -63,8 +67,10 @@ export const validateTransactionSearch = (search: Record<string, unknown>): Tran
     if (typeof search.start === "string" && search.start) result.start = toDateParam(search.start);
     if (typeof search.end === "string" && search.end) result.end = toDateParam(search.end);
 
-    if (typeof search.sortField === "string" && search.sortField) result.sortField = search.sortField;
-    if (search.sortDirection === "Ascending" || search.sortDirection === "Descending") result.sortDirection = search.sortDirection;
+    if (typeof search.sortField === "string" && search.sortField && search.sortField !== defaultSortField) result.sortField = search.sortField;
+
+    const sortDirection = parseSortDirection(search.sortDirection);
+    if (sortDirection && sortDirection !== defaultSortDirection) result.sortDirection = sortDirection;
 
     return result;
 };
@@ -81,7 +87,8 @@ const readStored = <T>(key: string, fallback: T): T => {
 };
 
 // The persisted page-size preference (localStorage), matching useTransactionSearch's default.
-export const getStoredPageSize = (): number => readStored<number>("transactions-page-size", 50);
+export const getStoredPageSize = (): number =>
+    parsePageSize(readStored<number>(transactionsPageSizeKey, defaultTransactionsPageSize)) ?? defaultTransactionsPageSize;
 
 // Fills a validated search with the same defaults the filter panel seeds from — persisted
 // localStorage filters, and the default period (getDateRange: URL ?period → the stored date range →
@@ -118,6 +125,12 @@ export const resolveTransactionSearch = (rawSearch: Record<string, unknown>): Tr
         end: search.end ?? formatISODate(period.endDate),
     };
 };
+
+// The start/end params for a period, or none while the period is still unknown.
+export const periodSearch = (period: Period): Pick<TransactionSearch, "start" | "end"> =>
+    period?.startDate && period?.endDate
+        ? { start: formatISODate(period.startDate), end: formatISODate(period.endDate) }
+        : {};
 
 // Projects the URL search state onto the filter shape consumed by the transaction query hooks.
 export const searchToFilter = (search: TransactionSearch): TransactionsFilter => ({

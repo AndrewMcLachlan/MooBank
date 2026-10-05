@@ -5,6 +5,7 @@ import { getNumberOfPages, Pagination, useLocalStorage } from "@andrewmclachlan/
 
 import type { Bill, UtilityType, Account } from "api/types.gen";
 import type { BillFilter } from "../-hooks/types";
+import { useGridSearch, usePageInRange } from "hooks/useGridSearch";
 import { useBillsByUtilityType } from "../-hooks/useBillsByUtilityType";
 import { useBillAccountsByType } from "../-hooks/useBillAccountsByType";
 import { BillDetails } from "./BillDetails";
@@ -21,14 +22,15 @@ export interface UtilityTypeBillsTabProps {
     utilityType: UtilityType;
 }
 
+const pageSize = 20;
+
 const getDefaultFilter = (): BillFilter => ({
     startDate: format(subYears(new Date(), 2), "yyyy-MM-dd"),
     endDate: format(new Date(), "yyyy-MM-dd"),
 });
 
 export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilityType }) => {
-    const [pageNumber, setPageNumber] = useState<number>(1);
-    const [pageSize] = useState<number>(20);
+    const { page: pageNumber, setPage, resetPage } = useGridSearch();
     const [filter, setFilter] = useLocalStorage<BillFilter>("bills-filter", getDefaultFilter());
     const [showDetails, setShowDetails] = useState(false);
     const [selectedBill, setSelectedBill] = useState<Bill | undefined>(undefined);
@@ -40,6 +42,7 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
     const { data: pagedBills } = useBillsByUtilityType(utilityType, pageNumber, pageSize, filter);
 
     const numberOfPages = pagedBills ? getNumberOfPages(pagedBills.total, pageSize) : 0;
+    usePageInRange(pageNumber, numberOfPages, !!pagedBills);
 
     // Built from the accounts, which carry how often they are billed. The two bill-relative periods
     // carry no dates: they go to the server by name and it answers from the bills.
@@ -59,7 +62,7 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
 
     const handleFilterChange = (newFilter: BillFilter) => {
         setFilter(newFilter);
-        setPageNumber(1);
+        resetPage();
     };
 
     return (
@@ -111,14 +114,14 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                 {pagedBills && pagedBills.total > 0 && (
                     <tfoot>
                         <tr>
-                            <td colSpan={4} className="page-totals">
+                            <td colSpan={2} className="page-totals">
                                 Page {pageNumber} of {numberOfPages} ({pagedBills.total} bills)
                             </td>
-                            <td>
+                            <td colSpan={3}>
                                 <Pagination
                                     pageNumber={pageNumber}
                                     numberOfPages={numberOfPages}
-                                    onChange={(_current, newPage) => setPageNumber(newPage)}
+                                    onChange={(_current, newPage) => setPage(newPage)}
                                 />
                             </td>
                         </tr>

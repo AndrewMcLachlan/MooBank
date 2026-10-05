@@ -4,7 +4,7 @@ import { parseISO } from "date-fns/parseISO";
 import type { Transaction, TransactionSplit } from "api/types.gen";
 import { getSplitTotal, isDebit } from "utils/transactions";
 import React, { useState } from "react";
-import { Button, Col, Modal, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
+import { Button, Col, OverlayTrigger, Popover, Row } from "@andrewmclachlan/moo-ds";
 
 import { ExtraInfo } from "./ExtraInfo";
 import { TransactionSplits } from "./TransactionSplits";
@@ -13,6 +13,7 @@ import { useUpdateTransaction } from "routes/accounts/-hooks/useUpdateTransactio
 import { useDeleteTransaction } from "routes/accounts/-hooks/useDeleteTransaction";
 import { Amount } from "components/Amount";
 import { useAccount } from "components";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import { DeleteTransaction } from "../components/DeleteTransaction";
 
 export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => {
@@ -48,11 +49,11 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
     const invalidSplits = notEquals(getSplitTotal(splits), Math.abs(transaction.amount));
 
     return (
-        <Modal show={props.show} onHide={props.onHide} size="xl" className="transaction-details">
-            <Modal.Header closeButton>
-                <Modal.Title>Transaction</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ResponsiveDialog phone="page" show={props.show} onHide={props.onHide} size="xl" className="transaction-details">
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>Transaction</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
+            <ResponsiveDialog.Body>
                 <section className="transaction-info row">
                     <section>
                         <div>Amount</div>
@@ -96,8 +97,8 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     <h4>Tags{isDebit(props.transaction.transactionType) && <> &amp; Refunds</>}</h4>
                     <TransactionSplits transaction={transaction} onChange={setSplits} />
                 </section>
-            </Modal.Body>
-            <Modal.Footer>
+            </ResponsiveDialog.Body>
+            <ResponsiveDialog.Footer>
                 {canDelete && <Button variant="danger" onClick={() => setShowDelete(true)}>Delete</Button>}
                 <Button variant="outline-primary" onClick={props.onHide}>Close</Button>
                 {invalidSplits &&
@@ -106,7 +107,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     </OverlayTrigger>
                 }
                 {!invalidSplits && <Button variant="primary" disabled={updateTransaction.isPending} onClick={() => { onSave(excludeFromReporting, notes, splits) }}>Save</Button>}
-            </Modal.Footer>
+            </ResponsiveDialog.Footer>
             {canDelete &&
                 <DeleteTransaction
                     transaction={transaction}
@@ -116,7 +117,7 @@ export const TransactionDetails: React.FC<TransactionDetailsProps> = (props) => 
                     isDeleting={deleteTransaction.isPending}
                 />
             }
-        </Modal >
+        </ResponsiveDialog >
     );
 }
 

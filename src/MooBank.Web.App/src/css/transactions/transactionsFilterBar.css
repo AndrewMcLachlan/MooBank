@@ -1,18 +1,18 @@
-.tx-filter-sheet .offcanvas-body {
+.tx-filter-sheet .modal-body {
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
-    padding-bottom: 1rem;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
 /* A finger, not a pointer -- but a switch draws itself from its own box, so
    stretching the control turns it into a blob. The row carries the height
    instead. */
-.tx-filter-sheet .offcanvas-body :is(input:not(.form-check-input), select, button) {
+.tx-filter-sheet .modal-body :is(input:not(.form-check-input), select, button) {
     min-height: var(--touch-target);
 }
 
-.tx-filter-sheet .offcanvas-body .form-check {
+.tx-filter-sheet .modal-body .form-check {
     display: flex;
     align-items: center;
     min-height: var(--touch-target);

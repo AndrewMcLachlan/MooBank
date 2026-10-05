@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Form, Modal } from "@andrewmclachlan/moo-ds";
+import { Form } from "@andrewmclachlan/moo-ds";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 
@@ -52,10 +53,10 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
     };
 
     return (
-        <Modal show={show} onHide={handleClose} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>Add Bill</Modal.Title>
-            </Modal.Header>
+        <ResponsiveDialog phone="page" show={show} onHide={handleClose} size="lg">
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>Add Bill</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
             <BillForm
                     form={form}
                     chargeTypes={chargeTypes ?? []}
@@ -76,6 +77,6 @@ export const AddBill: React.FC<AddBillProps> = ({ accountId, show, onHide }) => 
                         </div>
                     )}
             />
-        </Modal>
+        </ResponsiveDialog>
     );
 };

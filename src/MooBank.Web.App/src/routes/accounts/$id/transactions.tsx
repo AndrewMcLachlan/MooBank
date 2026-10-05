@@ -25,7 +25,7 @@ export const Route = createFileRoute("/accounts/$id/transactions")({
             queryClient,
             params.id,
             searchToFilter(resolved),
-            getStoredPageSize(),
+            resolved.pageSize ?? getStoredPageSize(),
             resolved.page ?? 1,
             resolved.sortField ?? defaultSortField,
             resolved.sortDirection ?? defaultSortDirection,

@@ -4,6 +4,7 @@ import React from "react";
 import { Table } from "@andrewmclachlan/moo-ds";
 
 import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
+import { usePageInRange } from "hooks/useGridSearch";
 import { useStockTransactions } from "routes/shares/-hooks/useStockTransactions";
 import { useStockHolding } from "../../../-components/StockHoldingProvider";
 import { useStockTransactionSearch } from "../-hooks/useStockTransactionSearch";
@@ -21,6 +22,7 @@ export const StockTransactionList: React.FC<TransactionListProps> = () => {
     const totalTransactions = transactionsQuery.data?.total ?? 0;
 
     const numberOfPages = getNumberOfPages(totalTransactions, pageSize);
+    usePageInRange(pageNumber, numberOfPages, !!transactionsQuery.data);
 
     return (
         <Table striped bordered={false} borderless className="transactions">

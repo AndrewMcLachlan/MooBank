@@ -56,6 +56,16 @@
         min-width: 75px;
     }
 
+    @media (max-width: 767px) {
+        th.row-action {
+            min-width: 0;
+        }
+
+        .row-action {
+            white-space: nowrap;
+        }
+    }
+
     /*#region Headings*/
     legend {
         display: none;
@@ -153,6 +163,13 @@
         inline-size: 100%;
         flex: 1;
         min-block-size: 0;
+    }
+
+    .report.doughnut .doughnut-container {
+        block-size: calc(100vh - 415px);
+        min-block-size: 20rem;
+        max-inline-size: calc((100vh - 415px) * 1.5);
+        margin-inline: auto;
     }
 
     .net-worth.key-value {
