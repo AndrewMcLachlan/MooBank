@@ -66,6 +66,12 @@ describe("resolveTransactionSearch", () => {
         expect(result.description).toBe("coffee");
     });
 
+    it("ignores a stored transaction type the API cannot bind", () => {
+        store("filter-type", "Income");
+
+        expect(resolveTransactionSearch({}).type).toBeUndefined();
+    });
+
     it("lets explicit URL/widget params win over stored filters", () => {
         store("filter-tag", [5]);
         store("filter-type", "Debit");

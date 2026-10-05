@@ -46,7 +46,7 @@ public class GetUserSpendingByTagTests
         ]);
 
         // Act
-        var result = await handler.Handle(new GetUserSpendingByTag(), TestContext.Current.CancellationToken);
+        var result = await handler.Handle(CreateQuery(), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.DoesNotContain(result.Tags, t => t.TagName == "Transfer");
@@ -72,12 +72,18 @@ public class GetUserSpendingByTagTests
         ]);
 
         // Act
-        var result = await handler.Handle(new GetUserSpendingByTag(), TestContext.Current.CancellationToken);
+        var result = await handler.Handle(CreateQuery(), TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains(result.Tags, t => t.TagName == "Groceries" && t.GrossAmount == 100m);
         Assert.Contains(result.Tags, t => t.TagName == "Utilities" && t.GrossAmount == 75m);
     }
+
+    private static GetUserSpendingByTag CreateQuery() => new()
+    {
+        Start = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)),
+        End = DateOnly.FromDateTime(DateTime.Today),
+    };
 
     private static GetUserSpendingByTagHandler CreateHandler(IEnumerable<DomainTransaction> transactions) =>
         new(QueryableHelper.CreateAsyncQueryable([CreateAccount()]),
