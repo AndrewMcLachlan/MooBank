@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, use } from "react";
 import { Modal, useIsAtLeast } from "@andrewmclachlan/moo-ds";
 import type { ModalHeaderProps, ModalProps } from "@andrewmclachlan/moo-ds";
 
@@ -36,7 +36,7 @@ const ResponsiveDialogComponent: React.FC<React.PropsWithChildren<ResponsiveDial
 ResponsiveDialogComponent.displayName = "ResponsiveDialog";
 
 const ResponsiveDialogHeader: React.FC<React.PropsWithChildren<ModalHeaderProps>> = ({ onHide, ...rest }) => {
-    const dialogOnHide = useContext(HideContext);
+    const dialogOnHide = use(HideContext);
     return <Modal.Header {...rest} onHide={onHide ?? dialogOnHide} />;
 };
 
