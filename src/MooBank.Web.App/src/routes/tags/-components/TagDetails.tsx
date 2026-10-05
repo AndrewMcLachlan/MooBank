@@ -4,6 +4,7 @@ import type { Tag } from "api/types.gen";
 import { Button, Input, Modal } from "@andrewmclachlan/moo-ds";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
+import { TagParentPanel } from "./TagParentPanel";
 import { onKeyLeave } from "utils/onKeyLeave";
 import { ColourPicker } from "components/ColourPicker";
 
@@ -41,8 +42,10 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
                     <Input.Switch id="smooth" checked={tag.settings?.applySmoothing} onChange={(e) => updateAllowSmoothing(e.currentTarget.checked)} />
                     <label htmlFor="budget-category">Budget Category<Tooltip id="budget-category-tip">When generating a budget, spending from child tags rolls up into this tag</Tooltip></label>
                     <Input.Switch id="budget-category" checked={tag.settings?.budgetCategory} onChange={(e) => updateBudgetCategory(e.currentTarget.checked)} />
-                    <label htmlFor="tags">Tags</label>
+                    <label htmlFor="tags">Sub-tags</label>
                     <TransactionTagTransactionTagPanel as="div" id="tags" tag={tag} alwaysShowEditPanel />
+                    <label htmlFor="parents">Parents</label>
+                    <TagParentPanel as="div" id="parents" tag={tag} alwaysShowEditPanel />
                 </section>
             </Modal.Body>
             <Modal.Footer>
