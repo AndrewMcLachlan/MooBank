@@ -16,8 +16,7 @@ main.dashboard .section > .section-header {
 
         > div.double {
             grid-row: auto;
-            height: auto;
-            aspect-ratio: 3 / 4;
+            height: calc(100cqi * 4 / 3);
         }
     }
 }
