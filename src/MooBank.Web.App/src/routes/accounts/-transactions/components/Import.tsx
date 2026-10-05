@@ -3,8 +3,8 @@ import { Button, Upload } from "@andrewmclachlan/moo-ds";
 import type { FilesAddedEvent } from "@andrewmclachlan/moo-ds";
 import { useImportTransactions } from "routes/accounts/-hooks/useImportTransactions";
 import { useState } from "react";
-import { Modal } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import type { LogicalAccount } from "api/types.gen";
 
 export const Import: React.FC<ImportProps> = ({ show, accountId, onClose }) => {
@@ -37,11 +37,11 @@ export const Import: React.FC<ImportProps> = ({ show, accountId, onClose }) => {
     }
 
     return (
-        <Modal className="import" show={show} onHide={onClose} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>Import Transactions</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ResponsiveDialog className="import" show={show} onHide={onClose} size="lg">
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>Import Transactions</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
+            <ResponsiveDialog.Body>
                 <div>
                     <div className="import-types" hidden={openAccounts.length <= 1}>
                         {openAccounts.map(ia => {
@@ -55,12 +55,12 @@ export const Import: React.FC<ImportProps> = ({ show, accountId, onClose }) => {
                     </div>
                     <Upload onFilesAdded={filesAdded} accept="text/csv" />
                 </div>
-            </Modal.Body>
-            <Modal.Footer>
+            </ResponsiveDialog.Body>
+            <ResponsiveDialog.Footer>
                 <Button variant="outline-primary" onClick={onClose}>Close</Button>
                 <Button variant="primary" onClick={submitClick} disabled={!file}>Import</Button>
-            </Modal.Footer>
-        </Modal >
+            </ResponsiveDialog.Footer>
+        </ResponsiveDialog >
     );
 };
 

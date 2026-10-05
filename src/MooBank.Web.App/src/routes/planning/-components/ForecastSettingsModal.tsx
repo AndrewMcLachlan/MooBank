@@ -1,4 +1,5 @@
-import { Button, Col, ComboBox, Form, Input, Modal, Row } from "@andrewmclachlan/moo-ds";
+import { Button, Col, ComboBox, Form, Input, Row } from "@andrewmclachlan/moo-ds";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import { useForm, useWatch } from "react-hook-form";
 import type { AccountScopeMode, ForecastPlan } from "api/types.gen";
 import { useUpdateForecastPlan } from "../-hooks/useUpdateForecastPlan";
@@ -64,12 +65,12 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
     };
 
     return (
-        <Modal show={show} onHide={handleHide} size="lg" title="Edit Forecast Settings">
+        <ResponsiveDialog phone="page" show={show} onHide={handleHide} size="lg" title="Edit Forecast Settings">
             <Form form={form} onSubmit={handleSave}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit Forecast Settings</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+                <ResponsiveDialog.Header closeButton>
+                    <ResponsiveDialog.Title>Edit Forecast Settings</ResponsiveDialog.Title>
+                </ResponsiveDialog.Header>
+                <ResponsiveDialog.Body>
                     <Form.Group groupId="name">
                         <Form.Label>Plan Name</Form.Label>
                         <Form.Input type="text" />
@@ -128,12 +129,12 @@ export const ForecastSettingsModal: React.FC<ForecastSettingsModalProps> = ({ pl
                             />
                         )}
                     </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
+                </ResponsiveDialog.Body>
+                <ResponsiveDialog.Footer>
                     <Button variant="outline-primary" onClick={handleHide}>Close</Button>
                     <Button type="submit" variant="primary" disabled={isPending}>Save</Button>
-                </Modal.Footer>
+                </ResponsiveDialog.Footer>
             </Form>
-        </Modal>
+        </ResponsiveDialog>
     );
 };

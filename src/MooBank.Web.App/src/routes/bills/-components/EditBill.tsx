@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal } from "@andrewmclachlan/moo-ds";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import { useForm } from "react-hook-form";
 import { parseISO } from "date-fns";
 
@@ -65,10 +65,10 @@ export const EditBill: React.FC<EditBillProps> = ({ accountId, bill, show, onHid
     };
 
     return (
-        <Modal show={show} onHide={onHide} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>{bill.invoiceNumber ? `Edit Bill #${bill.invoiceNumber}` : "Edit Bill"}</Modal.Title>
-            </Modal.Header>
+        <ResponsiveDialog phone="page" show={show} onHide={onHide} size="lg">
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>{bill.invoiceNumber ? `Edit Bill #${bill.invoiceNumber}` : "Edit Bill"}</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
             <BillForm
                     form={form}
                     chargeTypes={chargeTypes ?? []}
@@ -77,6 +77,6 @@ export const EditBill: React.FC<EditBillProps> = ({ accountId, bill, show, onHid
                     onSubmit={handleSubmit}
                     onCancel={onHide}
             />
-        </Modal>
+        </ResponsiveDialog>
     );
 };

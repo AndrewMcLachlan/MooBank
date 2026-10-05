@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Button, Modal, Form } from "@andrewmclachlan/moo-ds";
+import { Button, Form } from "@andrewmclachlan/moo-ds";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns/format";
 
 import { useAccount } from "components";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import type { CreateTransaction } from "models/transactions";
 import { useUpdateBalance } from "routes/accounts/-hooks/useUpdateBalance";
 import { useCreateTransaction } from "routes/accounts/-hooks/useCreateTransaction";
@@ -69,12 +70,12 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
     if (!account) return null;
 
     return (
-        <Modal show={show} onHide={() => onClose()} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>Add Transaction</Modal.Title>
-            </Modal.Header>
+        <ResponsiveDialog show={show} onHide={() => onClose()} size="lg">
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>Add Transaction</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
             <Form form={form} onSubmit={handleSubmit} layout="horizontal">
-                <Modal.Body>
+                <ResponsiveDialog.Body>
                     {allowBalance ? (
                         <div className="balance-choice">
                             <span className="balance-choice-text">Either enter the amount</span>
@@ -104,13 +105,13 @@ export const AddTransaction: React.FC<AddTransactionProps> = ({ show, onClose, o
                         <Form.Label>Reference</Form.Label>
                         <Form.Input type="text" maxLength={150} />
                     </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
+                </ResponsiveDialog.Body>
+                <ResponsiveDialog.Footer>
                     <Button variant="outline-primary" onClick={() => onClose()}>Close</Button>
                     <Button variant="primary" type="submit" disabled={isPending || (!amountFilled && !newBalanceFilled)}>Save</Button>
-                </Modal.Footer>
+                </ResponsiveDialog.Footer>
             </Form>
-        </Modal>
+        </ResponsiveDialog>
     );
 }
 

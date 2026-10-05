@@ -9,6 +9,17 @@
         flex-direction: column;
     }
 
+    &.offcanvas-bottom {
+        width: 100%;
+
+        .offcanvas-header .btn-close {
+            box-sizing: border-box;
+            width: var(--touch-target);
+            height: var(--touch-target);
+            padding: 0;
+        }
+    }
+
     .summary-row {
         display: flex;
         justify-content: space-between;
@@ -86,6 +97,10 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 1rem;
         margin-bottom: 1rem;
+    }
+
+    .sheet & :is(.form-row, .form-row-3) {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     /* The top-level groups are sections; only the innermost groups -- the usages and service

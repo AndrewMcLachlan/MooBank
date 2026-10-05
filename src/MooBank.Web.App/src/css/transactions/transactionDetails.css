@@ -60,3 +60,15 @@
         row-gap: 1.5rem;
     }
 }
+
+@scope(.transaction-details.sheet) {
+
+    .transaction-info {
+        flex-wrap: wrap;
+
+        section {
+            flex-basis: 100%;
+            grid-template-columns: 8rem minmax(0, 1fr);
+        }
+    }
+}

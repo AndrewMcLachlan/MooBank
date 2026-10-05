@@ -12,7 +12,6 @@ export * from "./DateRangeSelector";
 export * from "./InstitutionSelector";
 export * from "./InstrumentPage";
 export * from "./MonthSelector";
-export * from "./ResponsiveDialog";
 export * from "./RouteError";
 export * from "./TransactionSearch";
 export * from "./TransactionListProvider";

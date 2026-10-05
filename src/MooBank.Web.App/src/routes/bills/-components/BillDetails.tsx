@@ -1,7 +1,7 @@
 import React from "react";
 
 import type { Bill, Account } from "api/types.gen";
-import { Drawer } from "@andrewmclachlan/moo-ds";
+import { Drawer, useIsAtLeast } from "@andrewmclachlan/moo-ds";
 import { Section } from "@andrewmclachlan/moo-ds";
 import { getUnit } from "utils/units";
 import { Amount } from "components";
@@ -14,10 +14,12 @@ const formatNumber = (value: number | undefined, decimals = 2) => {
 
 export const BillDetails: React.FC<BillDetailsProps> = ({ account, bill, show, onHide }) => {
 
+    const isPhone = !useIsAtLeast("md");
+
     if (!bill) return null;
 
     return (
-        <Drawer show={show} onHide={onHide} placement="end" className="bill-details">
+        <Drawer show={show} onHide={onHide} placement={isPhone ? "bottom" : "end"} className="bill-details">
             <Drawer.Header closeButton>
 
                 {bill.invoiceNumber ? `Bill #${bill.invoiceNumber}` : "Bill Details"}

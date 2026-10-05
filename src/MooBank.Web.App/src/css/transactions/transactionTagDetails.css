@@ -13,6 +13,10 @@
     }
 }
 
+.sheet .tag-details {
+    grid-template-columns: 9rem minmax(0, 1fr);
+}
+
 .tooltip-icon {
     margin-left: 5px;
 }
