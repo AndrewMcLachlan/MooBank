@@ -4,6 +4,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useIdParams } from "@andrewmclachlan/moo-app";
 import { getNumberOfPages, Pagination } from "@andrewmclachlan/moo-ds";
 import type { Bill } from "api/types.gen";
+import { useGridSearch, usePageInRange } from "hooks/useGridSearch";
+import { validatePageSearch } from "utils/gridSearch";
 import { useBillAccount } from "../../-hooks/useBillAccount";
 import { useBills } from "../../-hooks/useBills";
 
@@ -14,7 +16,10 @@ import { BillRow } from "../../-components/BillRow";
 import { EditBill } from "../../-components/EditBill";
 import { BillsPage } from "../../-components/BillsPage";
 
+const pageSize = 20;
+
 export const Route = createFileRoute("/bills/accounts/$id/")({
+    validateSearch: validatePageSearch,
     component: Bills,
 });
 
@@ -22,8 +27,7 @@ function Bills() {
 
     const id = useIdParams();
 
-    const [pageNumber, setPageNumber] = useState<number>(1);
-    const [pageSize, _setPageSize] = useState<number>(20);
+    const { page: pageNumber, setPage } = useGridSearch();
     const [showDetails, setShowDetails] = useState(false);
     const [showAddBill, setShowAddBill] = useState(false);
     const [editingBill, setEditingBill] = useState<Bill>(undefined);
@@ -32,9 +36,10 @@ function Bills() {
     const { data: billAccount } = useBillAccount(id);
     const pagedBills = useBills(id, pageNumber, pageSize);
 
-    if (!pagedBills?.data) return null;
+    const numberOfPages = getNumberOfPages(pagedBills.data?.total ?? 0, pageSize);
+    usePageInRange(pageNumber, numberOfPages, !!pagedBills.data);
 
-    const numberOfPages = getNumberOfPages(pagedBills.data.total, pageSize);
+    if (!pagedBills?.data) return null;
 
     const rowClick = (bill: Bill) => {
         setSelectedBill(bill);
@@ -65,7 +70,7 @@ function Bills() {
                     <tr>
                         <td colSpan={2} className="page-totals">Page {pageNumber} of {numberOfPages} ({pagedBills.data.total} bills)</td>
                         <td colSpan={2}>
-                            <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => setPageNumber(newPage)} />
+                            <Pagination pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => setPage(newPage)} />
                         </td>
                     </tr>
                 </tfoot>
