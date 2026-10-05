@@ -141,8 +141,8 @@ function TransactionTags() {
                 <thead>
                     <tr>
                         <SortableTh className={`column-15 sortable ${sortDirection.toLowerCase()}`} sortField="name" sortDirection={sortDirection} onSort={() => setSortDirection(changeSortDirection(sortDirection))} field="name">Name</SortableTh>
-                        <th>Sub-tags</th>
-                        <th>Parents</th>
+                        <th className="column-40">Sub-tags</th>
+                        <th className="column-40">Parents</th>
                         <PaginationTh pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={pageChange} />
                     </tr>
                 </thead>
