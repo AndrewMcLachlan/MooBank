@@ -1,10 +1,11 @@
-﻿import { Button, ComboBox, Form, Modal } from "@andrewmclachlan/moo-ds";
+﻿import { Button, ComboBox, Form } from "@andrewmclachlan/moo-ds";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import type { GrowthStrategy, LogicalAccount, RetirementPlan, RetirementProjectionSummary, SimpleRetirementPlan } from "api/types.gen";
 import { useUpdateRetirementPlan } from "../-retirement-hooks/useUpdateRetirementPlan";
 import { useAccounts } from "hooks/useAccounts";
 import { useFamilyMembers } from "../-retirement-hooks/useFamilyMembers";
 import { CurrencyInput } from "components";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import { defaultCurrentAge, defaultRetirementAge, fromPercent, growthStrategies, toPercent } from "../-retirement-utils/retirementDefaults";
 
 interface RetirementSettingsModalProps {
@@ -145,11 +146,11 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
      */
     if (peoplePending) {
         return (
-            <Modal show={show} onHide={onHide} size="lg" title="Edit Retirement Plan">
-                <Modal.Body>
+            <ResponsiveDialog phone="page" show={show} onHide={onHide} size="lg" title="Edit Retirement Plan">
+                <ResponsiveDialog.Body>
                     <p className="retirement-empty">Loading…</p>
-                </Modal.Body>
-            </Modal>
+                </ResponsiveDialog.Body>
+            </ResponsiveDialog>
         );
     }
 
@@ -175,12 +176,12 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
     };
 
     return (
-        <Modal show={show} onHide={handleHide} size="lg" title="Edit Retirement Plan">
+        <ResponsiveDialog phone="page" show={show} onHide={handleHide} size="lg" title="Edit Retirement Plan">
             <Form form={form} onSubmit={handleSave}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit Retirement Plan</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+                <ResponsiveDialog.Header closeButton>
+                    <ResponsiveDialog.Title>Edit Retirement Plan</ResponsiveDialog.Title>
+                </ResponsiveDialog.Header>
+                <ResponsiveDialog.Body>
                     <Form.Group groupId="name">
                         <Form.Label>Plan Name</Form.Label>
                         <Form.Input type="text" />
@@ -317,12 +318,12 @@ export const RetirementSettingsModal: React.FC<RetirementSettingsModalProps> = (
                             Add Person
                         </Button>
                     </fieldset>
-                </Modal.Body>
-                <Modal.Footer>
+                </ResponsiveDialog.Body>
+                <ResponsiveDialog.Footer>
                     <Button variant="outline-primary" onClick={handleHide}>Close</Button>
                     <Button type="submit" variant="primary" disabled={isPending || unchosen}>Save</Button>
-                </Modal.Footer>
+                </ResponsiveDialog.Footer>
             </Form>
-        </Modal>
+        </ResponsiveDialog>
     );
 };

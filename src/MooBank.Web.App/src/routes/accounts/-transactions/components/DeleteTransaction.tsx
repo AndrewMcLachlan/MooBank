@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Modal, Skeleton, formatCurrency } from "@andrewmclachlan/moo-ds";
+import { Button, Skeleton, formatCurrency } from "@andrewmclachlan/moo-ds";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 
 import type { Transaction } from "api/types.gen";
 import { useTransactionDeleteImpact } from "routes/accounts/-hooks/useTransactionDeleteImpact";
@@ -12,11 +13,11 @@ export const DeleteTransaction: React.FC<DeleteTransactionProps> = ({ transactio
     const plannedItems = impact.data?.plannedItems ?? [];
 
     return (
-        <Modal show={show} onHide={onCancel} size="lg" className="delete-transaction">
-            <Modal.Header closeButton>
-                <Modal.Title>Delete Transaction</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ResponsiveDialog show={show} onHide={onCancel} size="lg" className="delete-transaction">
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>Delete Transaction</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
+            <ResponsiveDialog.Body>
                 <p>
                     Delete <strong>{transaction.description}</strong> for {formatCurrency(transaction.amount)}? This cannot be undone.
                 </p>
@@ -43,12 +44,12 @@ export const DeleteTransaction: React.FC<DeleteTransactionProps> = ({ transactio
                         </ul>
                     </section>
                 }
-            </Modal.Body>
-            <Modal.Footer>
+            </ResponsiveDialog.Body>
+            <ResponsiveDialog.Footer>
                 <Button variant="outline-primary" onClick={onCancel}>Cancel</Button>
                 <Button variant="danger" disabled={isDeleting} onClick={onConfirm}>Delete</Button>
-            </Modal.Footer>
-        </Modal>
+            </ResponsiveDialog.Footer>
+        </ResponsiveDialog>
     );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Button, DeleteIcon, Form, Icon, Modal, Section } from "@andrewmclachlan/moo-ds";
+import { Button, DeleteIcon, Form, Icon, Section } from "@andrewmclachlan/moo-ds";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import type { Control, UseFormReturn } from "react-hook-form";
 import { useFieldArray, useWatch } from "react-hook-form";
 
@@ -197,7 +198,7 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
 
     return (
         <Form form={form} onSubmit={onSubmit} className="bill-form">
-            <Modal.Body>
+            <ResponsiveDialog.Body>
                 {header}
                 <div className="form-row">
                     <Form.Group groupId="invoiceNumber">
@@ -260,11 +261,11 @@ export const BillForm: React.FC<BillFormProps> = ({ form, chargeTypes, submitLab
                         </div>
                     ))}
                 </FormSection>
-            </Modal.Body>
-            <Modal.Footer>
+            </ResponsiveDialog.Body>
+            <ResponsiveDialog.Footer>
                 <Button variant="outline-primary" onClick={onCancel}>Cancel</Button>
                 <Button variant="primary" type="submit" disabled={pending}>{submitLabel}</Button>
-            </Modal.Footer>
+            </ResponsiveDialog.Footer>
         </Form>
     );
 };

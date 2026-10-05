@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { setViewportWidth } from "test/matchMedia";
+
 const mocks = vi.hoisted(() => ({
     clear: vi.fn(),
     setFilterTags: vi.fn(),
@@ -108,9 +110,10 @@ describe("TransactionsFilterBar", () => {
 
     it("opens the sheet from the Filters button", async () => {
         const user = userEvent.setup();
+        setViewportWidth(390);
         const { baseElement } = render(<TransactionsFilterBar />);
-        expect(baseElement.querySelector(".offcanvas-bottom.show")).not.toBeInTheDocument();
+        expect(baseElement.querySelector(".tx-filter-sheet.sheet.show")).not.toBeInTheDocument();
         await user.click(screen.getByRole("button", { name: /filters/i }));
-        expect(baseElement.querySelector(".offcanvas-bottom.show")).toBeInTheDocument();
+        expect(baseElement.querySelector(".tx-filter-sheet.sheet.show")).toBeInTheDocument();
     });
 });

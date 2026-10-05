@@ -114,10 +114,10 @@ export const UtilityTypeBillsTab: React.FC<UtilityTypeBillsTabProps> = ({ utilit
                 {pagedBills && pagedBills.total > 0 && (
                     <tfoot>
                         <tr>
-                            <td colSpan={4} className="page-totals">
+                            <td colSpan={2} className="page-totals">
                                 Page {pageNumber} of {numberOfPages} ({pagedBills.total} bills)
                             </td>
-                            <td>
+                            <td colSpan={3}>
                                 <Pagination
                                     pageNumber={pageNumber}
                                     numberOfPages={numberOfPages}

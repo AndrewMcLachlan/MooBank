@@ -1,7 +1,8 @@
 import React from "react";
 import { Tooltip, useUpdatingState } from "@andrewmclachlan/moo-ds";
 import type { Tag } from "api/types.gen";
-import { Button, Input, Modal } from "@andrewmclachlan/moo-ds";
+import { Button, Input } from "@andrewmclachlan/moo-ds";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import { useUpdateTag } from "../-hooks/useUpdateTag";
 import { TransactionTagTransactionTagPanel } from "./TagTagPanel";
 import { onKeyLeave } from "utils/onKeyLeave";
@@ -25,11 +26,11 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
     }
 
     return (
-        <Modal show={props.show} onHide={props.onHide} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>Tag</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ResponsiveDialog show={props.show} onHide={props.onHide} size="lg">
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>Tag</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
+            <ResponsiveDialog.Body>
                 <section className="tag-details">
                     <label htmlFor="name">Name</label>
                     <Input id="name" placeholder="Name" type="text" value={name} onChange={(e) => setName(e.currentTarget.value)} onBlur={(e) => updateName(e.currentTarget.value)} onKeyUp={(e) => onKeyLeave(e, updateName)} />
@@ -44,11 +45,11 @@ export const TransactionTagDetails: React.FC<TransactionTagDetailsProps> = (prop
                     <label htmlFor="tags">Tags</label>
                     <TransactionTagTransactionTagPanel as="div" id="tags" tag={tag} alwaysShowEditPanel />
                 </section>
-            </Modal.Body>
-            <Modal.Footer>
+            </ResponsiveDialog.Body>
+            <ResponsiveDialog.Footer>
                 <Button variant="primary" onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-        </Modal>
+            </ResponsiveDialog.Footer>
+        </ResponsiveDialog>
     );
 }
 

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Drawer, FilterBar, FilterChip, Input } from "@andrewmclachlan/moo-ds";
+import { FilterBar, FilterChip, Input } from "@andrewmclachlan/moo-ds";
 
 import { TagSelector } from "components";
 import { DateRangeSelector } from "components/DateRangeSelector";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import { useTags } from "hooks/useTags";
 import { transactionTypeFilterLabels, type transactionTypeFilter } from "models/transactions";
 
@@ -58,9 +59,9 @@ export const TransactionsFilterBar: React.FC = () => {
                 )}
             </FilterBar>
 
-            <Drawer show={showSheet} onHide={() => setShowSheet(false)} placement="bottom" className="tx-filter-sheet">
-                <Drawer.Header closeButton><h2>Filters</h2></Drawer.Header>
-                <Drawer.Body>
+            <ResponsiveDialog show={showSheet} onHide={() => setShowSheet(false)} className="tx-filter-sheet">
+                <ResponsiveDialog.Header closeButton><ResponsiveDialog.Title as="h2">Filters</ResponsiveDialog.Title></ResponsiveDialog.Header>
+                <ResponsiveDialog.Body>
                     <Input id="filter-desc" type="search" value={filterDescription} onChange={(e) => setFilterDescription(e.currentTarget.value)} placeholder="Description contains..." />
                     <TagSelector id="filter-tags" onChange={setFilterTags} multiSelect value={filterTags} />
                     <Input.Select aria-label="Filter by income or expense" id="filter-type" value={filterType} onChange={(e) => setFilterType(e.currentTarget.value as transactionTypeFilter)}>
@@ -70,8 +71,8 @@ export const TransactionsFilterBar: React.FC = () => {
                     </Input.Select>
                     <Input.Switch id="filter-tagged" label="Only untagged" checked={filterTagged} onChange={(e) => setFilterTagged(e.currentTarget.checked)} />
                     <Input.Switch id="filter-netzero" label="Exclude fully offset" checked={filterNetZero} onChange={(e) => setFilterNetZero(e.currentTarget.checked)} />
-                </Drawer.Body>
-            </Drawer>
+                </ResponsiveDialog.Body>
+            </ResponsiveDialog>
         </>
     );
 };

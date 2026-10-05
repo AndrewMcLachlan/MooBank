@@ -1,8 +1,9 @@
-import { Button, Input, Modal, SpinnerContainer } from "@andrewmclachlan/moo-ds";
+import { Button, Input, SpinnerContainer } from "@andrewmclachlan/moo-ds";
 import { format, parseISO } from "date-fns";
 import { useState } from "react";
 import type { PlannedItem } from "api/types.gen";
 import { Amount } from "components";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import { usePaymentCandidates, useSetPlannedItemPayments } from "../-hooks/usePlannedItemPayments";
 
 interface LinkPaymentsModalProps {
@@ -51,11 +52,11 @@ export const LinkPaymentsModal: React.FC<LinkPaymentsModalProps> = ({ planId, it
     };
 
     return (
-        <Modal show={show} onHide={onHide} size="lg" title={`Link Payments — ${item.name}`}>
-            <Modal.Header closeButton>
-                <Modal.Title>Link Payments — {item.name}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ResponsiveDialog phone="page" show={show} onHide={onHide} size="lg" title={`Link Payments — ${item.name}`}>
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>Link Payments — {item.name}</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
+            <ResponsiveDialog.Body>
                 {isLoading && <SpinnerContainer />}
 
                 {!isLoading && !item.tagId && (
@@ -124,11 +125,11 @@ export const LinkPaymentsModal: React.FC<LinkPaymentsModalProps> = ({ planId, it
                         </table>
                     </>
                 )}
-            </Modal.Body>
-            <Modal.Footer>
+            </ResponsiveDialog.Body>
+            <ResponsiveDialog.Footer>
                 <Button variant="outline-primary" onClick={onHide}>Close</Button>
                 <Button variant="primary" onClick={handleSave} disabled={isPending || isLoading || !item.tagId}>Save</Button>
-            </Modal.Footer>
-        </Modal>
+            </ResponsiveDialog.Footer>
+        </ResponsiveDialog>
     );
 };

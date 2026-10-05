@@ -1,9 +1,15 @@
 /* Bills Module Styles */
 
 .bill-details {
-    width: 450px;
+    &.offcanvas {
+        width: 450px;
+    }
 
-    .offcanvas-body {
+    .modal-title {
+        font-weight: bold;
+    }
+
+    :is(.offcanvas-body, .modal-body) {
         display: flex;
         gap: 1rem;
         flex-direction: column;
@@ -86,6 +92,10 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 1rem;
         margin-bottom: 1rem;
+    }
+
+    .sheet & :is(.form-row, .form-row-3) {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     /* The top-level groups are sections; only the innermost groups -- the usages and service

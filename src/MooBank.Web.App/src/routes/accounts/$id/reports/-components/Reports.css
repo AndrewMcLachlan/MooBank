@@ -33,3 +33,9 @@
 .dashboard .section canvas {
     flex: none;
 }
+
+@container dashboard (max-width: 660px) {
+    .dashboard-grid > .double > .report {
+        padding-bottom: 15px;
+    }
+}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Button, Modal } from "@andrewmclachlan/moo-ds";
+import { Button } from "@andrewmclachlan/moo-ds";
 import { useAccount } from "components";
+import { ResponsiveDialog } from "components/ResponsiveDialog";
 import type { LogicalAccount } from "api/types.gen";
 import { useReprocessTransactions } from "routes/accounts/-hooks/useReprocessTransactions";
 
@@ -25,11 +26,11 @@ export const ReprocessModal: React.FC<ReprocessModalProps> = ({ instrumentId, on
     }
 
     return (
-        <Modal className="import" show onHide={onClose} size="lg">
-            <Modal.Header closeButton>
-                <Modal.Title>Reprocess Imported Transactions</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+        <ResponsiveDialog className="import" show onHide={onClose} size="lg">
+            <ResponsiveDialog.Header closeButton>
+                <ResponsiveDialog.Title>Reprocess Imported Transactions</ResponsiveDialog.Title>
+            </ResponsiveDialog.Header>
+            <ResponsiveDialog.Body>
                 <div>
                     <div className="import-types" hidden={openAccounts.length <= 1}>
                         {openAccounts.map(ia => {
@@ -42,12 +43,12 @@ export const ReprocessModal: React.FC<ReprocessModalProps> = ({ instrumentId, on
                         })}
                     </div>
                 </div>
-            </Modal.Body>
-            <Modal.Footer>
+            </ResponsiveDialog.Body>
+            <ResponsiveDialog.Footer>
                 <Button variant="outline-primary" onClick={onClose}>Close</Button>
                 <Button variant="primary" onClick={submitClick}>Reprocess</Button>
-            </Modal.Footer>
-        </Modal >
+            </ResponsiveDialog.Footer>
+        </ResponsiveDialog >
     );
 };
 
