@@ -1,23 +1,14 @@
 /* Bills Module Styles */
 
 .bill-details {
-    width: 450px;
+    &.offcanvas {
+        width: 450px;
+    }
 
-    .offcanvas-body {
+    :is(.offcanvas-body, .modal-body) {
         display: flex;
         gap: 1rem;
         flex-direction: column;
-    }
-
-    &.offcanvas-bottom {
-        width: 100%;
-
-        .offcanvas-header .btn-close {
-            box-sizing: border-box;
-            width: var(--touch-target);
-            height: var(--touch-target);
-            padding: 0;
-        }
     }
 
     .summary-row {
