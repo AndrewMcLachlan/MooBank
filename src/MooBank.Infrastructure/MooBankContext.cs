@@ -149,16 +149,58 @@ public partial class MooBankContext : DomainDbContext, IReadOnlyDbContext
             .HasQueryFilter("Family", t => t.FamilyId == CurrentFamilyId)
             .HasQueryFilter("SoftDelete", t => !t.Deleted);
 
-        modelBuilder.Entity<TransactionTagTotal>().HasNoKey();
-        modelBuilder.Entity<MonthlyTagTotal>().HasNoKey();
-        modelBuilder.Entity<CreditDebitTotal>().HasNoKey();
-        modelBuilder.Entity<CreditDebitAverage>().HasNoKey();
-        modelBuilder.Entity<TagAverage>().HasNoKey();
-        modelBuilder.Entity<MonthlyBalance>().HasNoKey();
-        modelBuilder.Entity<MonthlyCreditDebitTotal>().HasNoKey();
-        modelBuilder.Entity<AccountCreditDebitTotal>().HasNoKey();
-        modelBuilder.Entity<AccountMonthlyBalance>().HasNoKey();
-        modelBuilder.Entity<AccountMonthlyCreditDebitTotal>().HasNoKey();
+        modelBuilder.Entity<TransactionTagTotal>(e =>
+        {
+            e.HasNoKey();
+            e.Property(t => t.GrossAmount).HasPrecision(38, 4);
+            e.Property(t => t.NetAmount).HasPrecision(38, 4);
+        });
+        modelBuilder.Entity<MonthlyTagTotal>(e =>
+        {
+            e.HasNoKey();
+            e.Property(t => t.GrossAmount).HasPrecision(38, 4);
+            e.Property(t => t.NetAmount).HasPrecision(38, 4);
+        });
+        modelBuilder.Entity<CreditDebitTotal>(e =>
+        {
+            e.HasNoKey();
+            e.Property(t => t.Total).HasPrecision(38, 4);
+        });
+        modelBuilder.Entity<CreditDebitAverage>(e =>
+        {
+            e.HasNoKey();
+            e.Property(a => a.Average).HasPrecision(12, 4);
+        });
+        modelBuilder.Entity<TagAverage>(e =>
+        {
+            e.HasNoKey();
+            e.Property(a => a.Average).HasPrecision(12, 4);
+        });
+        modelBuilder.Entity<MonthlyBalance>(e =>
+        {
+            e.HasNoKey();
+            e.Property(b => b.Balance).HasPrecision(38, 4);
+        });
+        modelBuilder.Entity<MonthlyCreditDebitTotal>(e =>
+        {
+            e.HasNoKey();
+            e.Property(t => t.Total).HasPrecision(38, 4);
+        });
+        modelBuilder.Entity<AccountCreditDebitTotal>(e =>
+        {
+            e.HasNoKey();
+            e.Property(t => t.Total).HasPrecision(38, 4);
+        });
+        modelBuilder.Entity<AccountMonthlyBalance>(e =>
+        {
+            e.HasNoKey();
+            e.Property(b => b.Balance).HasPrecision(38, 4);
+        });
+        modelBuilder.Entity<AccountMonthlyCreditDebitTotal>(e =>
+        {
+            e.HasNoKey();
+            e.Property(t => t.Total).HasPrecision(38, 4);
+        });
 
         modelBuilder.HasDbFunction(typeof(Transaction).GetMethod(nameof(Transaction.TransactionNetAmount), [typeof(TransactionType), typeof(Guid), typeof(decimal)])!);
         modelBuilder.HasDbFunction(typeof(TransactionSplit).GetMethod(nameof(TransactionSplit.TransactionSplitNetAmount), [typeof(Guid), typeof(Guid), typeof(decimal)])!);
