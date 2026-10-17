@@ -46,6 +46,9 @@
     <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="2.2.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
   </ItemGroup>
+  <ItemGroup Label="Pinned Transative Packages">
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+  </ItemGroup>
   <ItemGroup Label="Asm Packages">
     <PackageVersion Include="Asm" Version="5.1.32" />
     <PackageVersion Include="Asm.AspNetCore" Version="5.1.32" />
@@ -57,11 +60,11 @@
     <PackageVersion Include="Asm.ModelContextProtocol" Version="5.1.32" />
     <PackageVersion Include="Asm.Testing.Domain" Version="5.1.32" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="Postie">
     <PackageVersion Include="Postie.AspNetCore" Version="1.0.1" />
     <PackageVersion Include="Postie.Cqrs.AspNetCore" Version="1.0.1" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="Testing Packages">
     <PackageVersion Include="Bogus" Version="35.6.5" />
     <PackageVersion Include="coverlet.collector" Version="10.1.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
