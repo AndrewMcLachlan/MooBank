@@ -7,7 +7,6 @@
     <PackageReference Include="Postie.Cqrs.AspNetCore" />
     <PackageReference Include="Postie.AspNetCore" />
     <PackageReference Include="Asm.AspNetCore.Postie" />
-    <PackageReference Include="FluentValidation" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
   </ItemGroup>

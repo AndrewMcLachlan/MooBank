@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <ItemGroup>
-    <PackageReference Include="Postie.Cqrs.AspNetCore" />
-    <PackageReference Include="Postie.AspNetCore" />
     <PackageReference Include="Asm.AspNetCore.Postie" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="ModelContextProtocol" />
+    <PackageReference Include="Postie.AspNetCore" />
+    <PackageReference Include="Postie.Cqrs.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+
     <InternalsVisibleTo Include="Asm.MooBank.Modules.Transactions.Tests" />
   </ItemGroup>
 
