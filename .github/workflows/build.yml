@@ -182,7 +182,7 @@ jobs:
         merge-multiple: true
 
     - name: ReportGenerator
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.5.11
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.5.12
       with:
         reports: './all-coverage/**/coverage.cobertura.xml'
         targetdir: './coverage-report'
