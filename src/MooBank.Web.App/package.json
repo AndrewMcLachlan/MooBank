@@ -17,7 +17,7 @@
     "@andrewmclachlan/moo-app": "^5.2.368",
     "@andrewmclachlan/moo-ds": "^5.2.368",
     "@andrewmclachlan/moo-icons": "^5.2.368",
-    "@azure/msal-react": "^5.7.3",
+    "@azure/msal-react": "^5.7.4",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -25,12 +25,12 @@
     "@fortawesome/free-solid-svg-icons": "^7.3.0",
     "@fortawesome/react-fontawesome": "^3.5.0",
     "@microsoft/applicationinsights-react-js": "^19.4.2",
-    "@tanstack/react-query": "^5.104.5",
-    "@tanstack/react-query-persist-client": "^5.104.5",
+    "@tanstack/react-query": "^5.105.0",
+    "@tanstack/react-query-persist-client": "^5.105.0",
     "@tanstack/react-router": "^1.170.39",
     "chart.js": "^4.6.1",
     "chartjs-plugin-annotation": "^3.1.0",
-    "chartjs-plugin-trendline": "^3.2.14",
+    "chartjs-plugin-trendline": "^3.3.0",
     "classnames": "^2.5.1",
     "date-fns": "^4.4.0",
     "idb-keyval": "^6.3.0",
@@ -47,7 +47,7 @@
   },
   "optionalDependencies": {
     "@esbuild/linux-arm64": "0.28.2",
-    "@rollup/rollup-linux-arm64-gnu": "4.65.0"
+    "@rollup/rollup-linux-arm64-gnu": "4.67.2"
   },
   "overrides": {
     "react-chartjs-2": {
