@@ -19,6 +19,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
     const { debouncedFilter, page: pageNumber, pageSize, setPageSize, sortField, sortDirection, setPage } = useTransactionSearch();
     const [showDetails, setShowDetails] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction>(undefined);
+    const [detailsOpenCount, setDetailsOpenCount] = useState(0);
 
     const transactionsQuery = useTransactions(account.id, debouncedFilter, pageSize, pageNumber, sortField, sortDirection);
     const transactions = transactionsQuery.data?.results;
@@ -29,8 +30,11 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
 
     const rowClick = (transaction: Transaction) => {
         setSelectedTransaction(transaction);
+        setDetailsOpenCount(c => c + 1);
         setShowDetails(true);
     };
+
+    const detailsTransaction = transactions?.find(t => t.id === selectedTransaction?.id) ?? selectedTransaction;
 
     const PaginationControl = compact ? MiniPagination : Pagination;
 
@@ -38,7 +42,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({compact = false
 
     return (
         <>
-            <TransactionDetails key={selectedTransaction?.id} transaction={selectedTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
+            <TransactionDetails key={detailsOpenCount} transaction={detailsTransaction} show={showDetails} onHide={() => setShowDetails(false)} onSave={() => setShowDetails(false)} />
             <SectionTable className={className}>
                 <TransactionTableHead compact={compact} pageNumber={pageNumber} numberOfPages={numberOfPages} onChange={(_current, newPage) => setPage(newPage)} />
                 <tbody>
