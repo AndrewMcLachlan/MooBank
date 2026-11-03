@@ -5,7 +5,6 @@ using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Ing.Domain;
 using Asm.MooBank.Institution.Ing.Models;
 using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.TransactionType;
 
@@ -26,21 +25,13 @@ internal partial class IngImporter(IUserRepository accountHolderRepository, ITra
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HasHeaderRecord = true,
-            BadDataFound = null,
-        };
-        using var parser = new CsvParser(reader, config);
-
-        // Throw away header row
-        await parser.ReadAsync();
+        using var csv = CsvReader.Create(reader, new CsvReaderOptions { Separator = ',' });
 
         List<string[]> rows = [];
 
-        while (await parser.ReadAsync())
+        while (await csv.ReadAsync(cancellationToken))
         {
-            rows.Add(parser.Record ?? []);
+            rows.Add([.. Enumerable.Range(0, csv.FieldCount).Select(i => csv.GetString(i))]);
         }
 
         // Only load existing raw transactions within the date range of the file, projected to the fields
