@@ -4,7 +4,6 @@ using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.Macquarie.Domain;
 using Asm.MooBank.Institution.Macquarie.Models;
 using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using TransactionType = Asm.MooBank.TransactionType;
 
@@ -17,12 +16,7 @@ internal partial class MacquarieImporter(ITransactionRawRepository transactionRa
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HasHeaderRecord = true,
-        };
-
-        using var csv = new CsvReader(reader, config);
+        using var csv = CsvReader.Create(reader, new CsvReaderOptions { Separator = ',' });
         var records = csv.GetRecords<MacquarieCsvRecord>().ToList();
 
         var rawTransactionEntities = new List<TransactionRaw>();
