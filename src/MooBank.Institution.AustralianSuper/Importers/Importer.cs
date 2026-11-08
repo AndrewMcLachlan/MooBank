@@ -4,7 +4,6 @@ using Asm.MooBank.Importers;
 using Asm.MooBank.Institution.AustralianSuper.Domain;
 using Asm.MooBank.Institution.AustralianSuper.Models;
 using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Asm.MooBank.Institution.AustralianSuper.Importers;
@@ -28,21 +27,13 @@ internal partial class Importer(ITransactionRawRepository transactionRawReposito
     public async Task<MooBank.Models.TransactionImportResult> Import(Guid instrumentId, Guid? institutionAccountId, Stream contents, CancellationToken cancellationToken = default)
     {
         using var reader = new StreamReader(contents);
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HasHeaderRecord = true,
-            BadDataFound = null,
-        };
-        using var parser = new CsvParser(reader, config);
-
-        // Throw away header row
-        await parser.ReadAsync();
+        using var csv = CsvReader.Create(reader, new CsvReaderOptions { Separator = ',' });
 
         List<string[]> rows = [];
 
-        while (await parser.ReadAsync())
+        while (await csv.ReadAsync(cancellationToken))
         {
-            rows.Add(parser.Record ?? []);
+            rows.Add([.. Enumerable.Range(0, csv.FieldCount).Select(i => csv.GetString(i))]);
         }
 
         var checkTransactions = await GetCheckTransactions(instrumentId, rows, cancellationToken);

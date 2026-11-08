@@ -1,50 +1,40 @@
-using CsvHelper.Configuration.Attributes;
+using CsvHelper;
 
 namespace Asm.MooBank.Institution.Macquarie.Importers;
 
-internal class MacquarieCsvRecord
+[CsvRecord]
+internal partial class MacquarieCsvRecord
 {
-    [Index(0)]
-    [Name("Transaction Date")]
+    [CsvColumn("Transaction Date")]
     public string TransactionDate { get; set; } = String.Empty;
 
-    [Index(1)]
-    [Name("Details")]
+    [CsvColumn("Details")]
     public string Details { get; set; } = String.Empty;
 
-    [Index(2)]
-    [Name("Account")]
+    [CsvColumn("Account")]
     public string Account { get; set; } = String.Empty;
 
-    [Index(3)]
-    [Name("Category")]
+    [CsvColumn("Category")]
     public string Category { get; set; } = String.Empty;
 
-    [Index(4)]
-    [Name("Subcategory")]
+    [CsvColumn("Subcategory")]
     public string Subcategory { get; set; } = String.Empty;
 
-    [Index(5)]
-    [Name("Tags")]
+    [CsvColumn("Tags")]
     public string Tags { get; set; } = String.Empty;
 
-    [Index(6)]
-    [Name("Notes")]
+    [CsvColumn("Notes")]
     public string Notes { get; set; } = String.Empty;
 
-    [Index(7)]
-    [Name("Debit")]
+    [CsvColumn("Debit")]
     public string Debit { get; set; } = String.Empty;
 
-    [Index(8)]
-    [Name("Credit")]
+    [CsvColumn("Credit")]
     public string Credit { get; set; } = String.Empty;
 
-    [Index(9)]
-    [Name("Balance")]
+    [CsvColumn("Balance")]
     public string Balance { get; set; } = String.Empty;
 
-    [Index(10)]
-    [Name("Original Description")]
+    [CsvColumn("Original Description")]
     public string OriginalDescription { get; set; } = String.Empty;
 }
