@@ -41,23 +41,23 @@
     <PackageVersion Include="Microsoft.Net.Http.Headers" Version="10.0.14" />
     <PackageVersion Include="Microsoft.OpenApi" Version="2.12.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.13" />
-    <PackageVersion Include="ModelContextProtocol" Version="2.3.0" />
-    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="2.3.0" />
+    <PackageVersion Include="ModelContextProtocol" Version="2.4.0" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="2.4.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.3.1" />
   </ItemGroup>
   <ItemGroup Label="Pinned Transative Packages">
     <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
   </ItemGroup>
   <ItemGroup Label="Asm Packages">
-    <PackageVersion Include="Asm" Version="5.1.61" />
-    <PackageVersion Include="Asm.AspNetCore" Version="5.1.61" />
-    <PackageVersion Include="Asm.AspNetCore.Api" Version="5.1.61" />
-    <PackageVersion Include="Asm.AspNetCore.Postie" Version="5.1.61" />
-    <PackageVersion Include="Asm.Domain" Version="5.1.61" />
-    <PackageVersion Include="Asm.Domain.Infrastructure" Version="5.1.61" />
-    <PackageVersion Include="Asm.Hosting" Version="5.1.61" />
-    <PackageVersion Include="Asm.ModelContextProtocol" Version="5.1.61" />
-    <PackageVersion Include="Asm.Testing.Domain" Version="5.1.61" />
+    <PackageVersion Include="Asm" Version="5.1.65" />
+    <PackageVersion Include="Asm.AspNetCore" Version="5.1.65" />
+    <PackageVersion Include="Asm.AspNetCore.Api" Version="5.1.65" />
+    <PackageVersion Include="Asm.AspNetCore.Postie" Version="5.1.65" />
+    <PackageVersion Include="Asm.Domain" Version="5.1.65" />
+    <PackageVersion Include="Asm.Domain.Infrastructure" Version="5.1.65" />
+    <PackageVersion Include="Asm.Hosting" Version="5.1.65" />
+    <PackageVersion Include="Asm.ModelContextProtocol" Version="5.1.65" />
+    <PackageVersion Include="Asm.Testing.Domain" Version="5.1.65" />
   </ItemGroup>
   <ItemGroup Label="Postie">
     <PackageVersion Include="Postie.AspNetCore" Version="1.0.1" />
@@ -70,7 +70,7 @@
     <PackageVersion Include="Moq" Version="4.21.0" />
     <PackageVersion Include="Reqnroll.Tools.MsBuild.Generation" Version="3.3.3" />
     <PackageVersion Include="Reqnroll.xUnit.v3" Version="3.3.3" />
-    <PackageVersion Include="xunit.v3" Version="4.0.2" />
+    <PackageVersion Include="xunit.v3" Version="4.0.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
   </ItemGroup>
 </Project>
