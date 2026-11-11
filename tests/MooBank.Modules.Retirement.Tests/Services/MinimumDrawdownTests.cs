@@ -61,13 +61,13 @@ public class MinimumDrawdownTests
     /// Then it should be the band the age falls in
     /// </summary>
     [Theory]
-    [InlineData(60, 0.04)]
-    [InlineData(65, 0.05)]
-    [InlineData(74, 0.05)]
-    [InlineData(75, 0.06)]
-    [InlineData(84, 0.07)]
-    [InlineData(95, 0.14)]
-    [InlineData(120, 0.14)]
+    [InlineData(60, "0.04")]
+    [InlineData(65, "0.05")]
+    [InlineData(74, "0.05")]
+    [InlineData(75, "0.06")]
+    [InlineData(84, "0.07")]
+    [InlineData(95, "0.14")]
+    [InlineData(120, "0.14")]
     public void For_AnAge_TakesTheBandItFallsIn(int age, decimal expected) =>
         Assert.Equal(expected, TestEntities.MinimumDrawdown().For(age));
 
