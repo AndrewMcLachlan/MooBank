@@ -8,25 +8,25 @@ namespace Asm.MooBank.Infrastructure.Repositories;
 internal class ReportReader(MooBankContext mooBankContext) : IReportReader
 {
     public async Task<IEnumerable<TransactionTagTotal>> GetTransactionTagTotals(Guid accountId, DateOnly startDate, DateOnly endDate, TransactionFilterType filterType, int? rootTagId = null, CancellationToken cancellationToken = default) =>
-        await mooBankContext.TransactionTagTotals.FromSqlInterpolated($@"EXEC dbo.GetTransactionTotalsByTag {accountId}, {startDate}, {endDate}, {rootTagId}, {(int)filterType}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.TransactionTagTotals.FromSql($@"EXEC dbo.GetTransactionTotalsByTag {accountId}, {startDate}, {endDate}, {rootTagId}, {(int)filterType}").AsNoTracking().ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<MonthlyTagTotal>> GetMonthlyTotalsForTag(Guid accountId, DateOnly startDate, DateOnly endDate, TransactionFilterType filterType, int? tagId = null, CancellationToken cancellationToken = default) =>
-            await mooBankContext.MonthlyTagTotals.FromSqlInterpolated($@"EXEC dbo.GetMonthlyTotalsForTag {accountId}, {startDate}, {endDate}, {tagId}, {(int)filterType}").AsNoTracking().ToListAsync(cancellationToken);
+            await mooBankContext.MonthlyTagTotals.FromSql($@"EXEC dbo.GetMonthlyTotalsForTag {accountId}, {startDate}, {endDate}, {tagId}, {(int)filterType}").AsNoTracking().ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<CreditDebitTotal>> GetCreditDebitTotals(Guid accountId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
-        await mooBankContext.CreditDebitTotals.FromSqlInterpolated($@"EXEC dbo.GetCreditDebitTotals {accountId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.CreditDebitTotals.FromSql($@"EXEC dbo.GetCreditDebitTotals {accountId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<CreditDebitAverage>> GetCreditDebitAverages(Guid accountId, DateOnly startDate, DateOnly endDate, ReportInterval interval, CancellationToken cancellationToken = default) =>
-        await mooBankContext.CreditDebitAverages.FromSqlInterpolated($@"EXEC dbo.GetCreditDebitAverages {accountId}, {startDate}, {endDate}, {interval.ToString()}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.CreditDebitAverages.FromSql($@"EXEC dbo.GetCreditDebitAverages {accountId}, {startDate}, {endDate}, {interval.ToString()}").AsNoTracking().ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<TagAverage>> GetTopTagAverages(Guid accountId, DateOnly startDate, DateOnly endDate, ReportInterval interval, CancellationToken cancellationToken = default) =>
-        await mooBankContext.TopTagAverages.FromSqlInterpolated($@"EXEC dbo.GetTopTagAverages {accountId}, {startDate}, {endDate}, {interval.ToString()}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.TopTagAverages.FromSql($@"EXEC dbo.GetTopTagAverages {accountId}, {startDate}, {endDate}, {interval.ToString()}").AsNoTracking().ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<MonthlyBalance>> GetMonthlyBalances(Guid accountId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
-        await mooBankContext.MonthlyBalances.FromSqlInterpolated($@"EXEC dbo.GetMonthlyBalances {accountId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.MonthlyBalances.FromSql($@"EXEC dbo.GetMonthlyBalances {accountId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<MonthlyBalance>> GetGroupMonthlyBalances(Guid groupId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
-        await mooBankContext.MonthlyBalances.FromSqlInterpolated($@"EXEC dbo.GetGroupMonthlyBalances {groupId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.MonthlyBalances.FromSql($@"EXEC dbo.GetGroupMonthlyBalances {groupId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 
     public async Task<Dictionary<Guid, IEnumerable<CreditDebitTotal>>> GetCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
@@ -71,7 +71,7 @@ internal class ReportReader(MooBankContext mooBankContext) : IReportReader
     }
 
     public async Task<IEnumerable<MonthlyCreditDebitTotal>> GetMonthlyCreditDebitTotals(Guid accountId, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
-        await mooBankContext.MonthlyCreditDebitTotals.FromSqlInterpolated($@"EXEC dbo.GetMonthlyCreditDebitTotals {accountId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.MonthlyCreditDebitTotals.FromSql($@"EXEC dbo.GetMonthlyCreditDebitTotals {accountId}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 
     public async Task<Dictionary<Guid, IEnumerable<MonthlyCreditDebitTotal>>> GetMonthlyCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
@@ -96,13 +96,13 @@ internal class ReportReader(MooBankContext mooBankContext) : IReportReader
     }
 
     private async Task<IEnumerable<AccountCreditDebitTotal>> QueryCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
-        await mooBankContext.AccountCreditDebitTotals.FromSqlInterpolated($@"EXEC dbo.GetCreditDebitTotalsForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.AccountCreditDebitTotals.FromSql($@"EXEC dbo.GetCreditDebitTotalsForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 
     private async Task<IEnumerable<AccountMonthlyBalance>> QueryMonthlyBalancesForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
-        await mooBankContext.AccountMonthlyBalances.FromSqlInterpolated($@"EXEC dbo.GetMonthlyBalancesForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.AccountMonthlyBalances.FromSql($@"EXEC dbo.GetMonthlyBalancesForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 
     private async Task<IEnumerable<AccountMonthlyCreditDebitTotal>> QueryMonthlyCreditDebitTotalsForAccounts(IEnumerable<Guid> accountIds, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default) =>
-        await mooBankContext.AccountMonthlyCreditDebitTotals.FromSqlInterpolated($@"EXEC dbo.GetMonthlyCreditDebitTotalsForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
+        await mooBankContext.AccountMonthlyCreditDebitTotals.FromSql($@"EXEC dbo.GetMonthlyCreditDebitTotalsForAccounts {CreateAccountIdsParameter(accountIds)}, {startDate}, {endDate}").AsNoTracking().ToListAsync(cancellationToken);
 
     private static SqlParameter CreateAccountIdsParameter(IEnumerable<Guid> accountIds)
     {

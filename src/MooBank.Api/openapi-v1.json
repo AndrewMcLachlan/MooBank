@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.1",
+  "openapi": "3.2.0",
   "info": {
     "title": "MooBank API",
     "version": "2026.11.0"
@@ -2884,8 +2884,8 @@
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "Created",
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -2894,8 +2894,8 @@
               }
             }
           },
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
@@ -3431,8 +3431,8 @@
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "Created",
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -3441,8 +3441,8 @@
               }
             }
           },
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
@@ -6673,8 +6673,7 @@
       "BillPeriod": {
         "enum": [
           "Last",
-          "Previous",
-          null
+          "Previous"
         ]
       },
       "BreakdownReport": {
@@ -11014,8 +11013,7 @@
         "enum": [
           "None",
           "Credit",
-          "Debit",
-          null
+          "Debit"
         ]
       },
       "TransactionOffsetBy": {
@@ -11759,8 +11757,7 @@
           "Water",
           "Phone",
           "Internet",
-          "Other",
-          null
+          "Other"
         ]
       },
       "VirtualInstrument": {
@@ -11900,22 +11897,19 @@
       "name": "Forecast"
     },
     {
+      "name": "Group Reports"
+    },
+    {
       "name": "Groups"
+    },
+    {
+      "name": "Import"
     },
     {
       "name": "Institutions"
     },
     {
       "name": "Instruments"
-    },
-    {
-      "name": "Import"
-    },
-    {
-      "name": "Rules"
-    },
-    {
-      "name": "Virtual Instruments"
     },
     {
       "name": "Recurring Transactions"
@@ -11927,22 +11921,25 @@
       "name": "Reports"
     },
     {
-      "name": "Group Reports"
+      "name": "Retirement"
     },
     {
-      "name": "Retirement"
+      "name": "Rules"
     },
     {
       "name": "Stock Holding"
     },
     {
-      "name": "Transactions"
-    },
-    {
       "name": "Tags"
     },
     {
+      "name": "Transactions"
+    },
+    {
       "name": "User"
+    },
+    {
+      "name": "Virtual Instruments"
     }
   ]
 }
