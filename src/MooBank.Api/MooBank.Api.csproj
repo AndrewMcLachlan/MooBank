@@ -36,6 +36,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="Asm.AspNetCore" />
+    <Using Include="Asm.MooBank.Api"/>
+    <Using Include="Asm.MooBank.Models" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MooBank.Abs\MooBank.Abs.csproj" />
     <ProjectReference Include="..\MooBank.Eodhd\MooBank.Eodhd.csproj" />
     <ProjectReference Include="..\MooBank.ExchangeRateApi\MooBank.ExchangeRateApi.csproj" />
