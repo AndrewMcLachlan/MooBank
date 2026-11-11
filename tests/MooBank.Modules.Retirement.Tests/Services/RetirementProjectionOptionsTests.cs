@@ -118,11 +118,11 @@ public class RetirementProjectionOptionsTests
     /// Then the strategy's own rate should be used rather than the plan's
     /// </summary>
     [Theory]
-    [InlineData(GrowthStrategy.Conservative, 0.049)]
-    [InlineData(GrowthStrategy.Balanced, 0.061)]
-    [InlineData(GrowthStrategy.Growth, 0.064)]
-    [InlineData(GrowthStrategy.HighGrowth, 0.068)]
-    [InlineData(GrowthStrategy.Moderate, 0.057)]
+    [InlineData(GrowthStrategy.Conservative, "0.049")]
+    [InlineData(GrowthStrategy.Balanced, "0.061")]
+    [InlineData(GrowthStrategy.Growth, "0.064")]
+    [InlineData(GrowthStrategy.HighGrowth, "0.068")]
+    [InlineData(GrowthStrategy.Moderate, "0.057")]
     public void For_NamedStrategy_UsesTheRecordedRate(GrowthStrategy strategy, decimal expected)
     {
         // Arrange

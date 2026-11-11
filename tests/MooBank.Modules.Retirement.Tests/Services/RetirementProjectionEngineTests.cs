@@ -79,8 +79,8 @@ public class RetirementProjectionEngineTests
     [InlineData(1, 100_000, 120_500)]
     [InlineData(2, 120_500, 143_050)]
     [InlineData(3, 143_050, 167_855)]
-    [InlineData(4, 167_855, 195_140.50)]
-    [InlineData(5, 195_140.50, 225_154.55)]
+    [InlineData(4, 167_855, "195140.50")]
+    [InlineData(5, "195140.50", "225154.55")]
     public void Calculate_EachYear_CompoundsOnTheLast(int yearOffset, decimal expectedOpening, decimal expectedClosing)
     {
         // Arrange

@@ -15,14 +15,14 @@ public class SuperannuationGuaranteeTests
     /// </summary>
     [Theory]
     [Trait("Category", "Unit")]
-    [InlineData(2014, 6, 30, 0.0925)]
-    [InlineData(2014, 7, 1, 0.0950)]
-    [InlineData(2021, 6, 30, 0.0950)]
-    [InlineData(2021, 7, 1, 0.1000)]
-    [InlineData(2022, 7, 1, 0.1050)]
-    [InlineData(2023, 7, 1, 0.1100)]
-    [InlineData(2024, 7, 1, 0.1150)]
-    [InlineData(2025, 7, 1, 0.1200)]
+    [InlineData(2014, 6, 30, "0.0925")]
+    [InlineData(2014, 7, 1, "0.0950")]
+    [InlineData(2021, 6, 30, "0.0950")]
+    [InlineData(2021, 7, 1, "0.1000")]
+    [InlineData(2022, 7, 1, "0.1050")]
+    [InlineData(2023, 7, 1, "0.1100")]
+    [InlineData(2024, 7, 1, "0.1150")]
+    [InlineData(2025, 7, 1, "0.1200")]
     public void RateFor_KnownDate_ReturnsTheLegislatedRate(int year, int month, int day, decimal expected)
     {
         Assert.Equal(expected, SuperannuationGuarantee.RateFor(new DateOnly(year, month, day)));
