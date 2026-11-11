@@ -19,4 +19,12 @@
     <ProjectReference Include="..\MooBank.Security\MooBank.Security.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="Postie.Cqrs.Commands" />
+    <Using Include="Postie.Cqrs.Queries" />
+    <Using Include="Asm.Domain" />
+    <Using Include="Asm.MooBank.Security" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
+  </ItemGroup>
+
 </Project>

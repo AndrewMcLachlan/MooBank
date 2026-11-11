@@ -22,6 +22,7 @@
     <Using Include="Asm.Domain.Infrastructure" />
     <Using Include="Microsoft.EntityFrameworkCore" />
     <Using Include="Microsoft.EntityFrameworkCore.Metadata.Builders" />
+    <Using Include="Asm.MooBank.Domain.Entities" />
   </ItemGroup>
 
 </Project>
