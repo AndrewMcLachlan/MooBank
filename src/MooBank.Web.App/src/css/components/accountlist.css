@@ -195,13 +195,8 @@ table.accounts {
     tbody tr.virtual:has(+ tr.virtual.total) > td {
         border-bottom-color: color-mix(in srgb, var(--border-colour) 80%, light-dark(#000, #fff));
     }
-
-    &.has-colour {
-        border-left: 4px solid var(--group-colour);
-    }
 }
 
-.section-table > header.has-colour {
-    background-color: color-mix(in srgb, var(--group-colour) 12%, transparent);
-    border-left: 4px solid var(--group-colour);
+.section-table.section-accent > header {
+    background-color: color-mix(in srgb, var(--section-accent) 12%, transparent);
 }

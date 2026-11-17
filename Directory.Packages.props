@@ -60,8 +60,8 @@
     <PackageVersion Include="Asm.Testing.Domain" Version="5.1.72" />
   </ItemGroup>
   <ItemGroup Label="Postie">
-    <PackageVersion Include="Postie.AspNetCore" Version="1.0.1" />
-    <PackageVersion Include="Postie.Cqrs.AspNetCore" Version="1.0.1" />
+    <PackageVersion Include="Postie.AspNetCore" Version="1.1.0" />
+    <PackageVersion Include="Postie.Cqrs.AspNetCore" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup Label="Testing Packages">
     <PackageVersion Include="Bogus" Version="35.6.5" />
