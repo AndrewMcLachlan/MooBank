@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 MooBank is a browser-based application designed to enable an individual to manage their personal finances effectively.
 
-See @.claude/PRD.md for detailed product requirements and domain concepts.
+Product requirements and domain concepts are in `.claude/PRD.md`; read it when a task needs product context.
 
 ## Architecture
 
@@ -78,55 +78,13 @@ npm run generate                            # Regenerate API types from OpenAPI 
 npm test                                    # Run Vitest component tests
 ```
 
-## Skills (Slash Commands)
-
-### PIV Loop (Plan → Implement → Validate)
-
-| Command | Description |
-|---------|-------------|
-| `/plan-feature <description>` | Create implementation plan (runs in isolated subagent) |
-| `/execute <plan-file>` | Execute a plan step-by-step |
-| `/validate` | Run full validation suite (build, lint, test) |
-| `/code-review` | Review changed files for bugs and quality |
-| `/code-review-fix <review-file>` | Fix issues found in a code review |
-| `/review-implementation <plan-file>` | Analyze implementation vs plan, suggest process improvements |
-
-### Utilities
-
-| Command | Description |
-|---------|-------------|
-| `/commit` | Create conventional commit |
-| `/test` | Run test suite |
-| `/init-project` | First-time project setup |
-| `/create-prd <filename>` | Generate Product Requirements Document |
-
-## Technology Rules
-
-Path-scoped rules in `.claude/rules/` auto-load when working on matching files:
-
-| Rule | Auto-loads for |
-|------|---------------|
-| `backend/csharp.md` | `src/**/*.cs` |
-| `backend/cqrs.md` | `src/MooBank.Modules*/**` |
-| `backend/entity-framework.md` | `src/MooBank.Infrastructure/**`, `src/MooBank.Domain/**` |
-| `backend/rest-api.md` | `src/MooBank.Api/**`, `src/MooBank.Modules*/Endpoints/**` |
-| `backend/sql-database.md` | `src/MooBank.Database/**` |
-| `frontend/typescript.md` | `src/MooBank.Web.App/**/*.{ts,tsx}` |
-| `testing/backend.md` | `tests/**/*.cs` |
-| `testing/frontend.md` | `tests/e2e/**`, `src/MooBank.Web.App/**/__tests__/**` |
-
 ## Instructions for AI Agents
 
 ### Core Principles
 
-1. **Follow established patterns**: CQRS, DDD, specifications, modules
-2. **Respect folder structure**: Place files in the correct project and folder
-3. **Use ASM library conventions**: Commands, Queries, and their handlers
-4. **Maintain separation of concerns**: Domain → Infrastructure → Api
-5. **Write clear, descriptive names** using domain-driven language
-6. **No warnings**: Ensure code compiles without warnings
-7. **Consider security**: Apply authorization policies where appropriate
-8. **Think full stack**: Consider both API and frontend implications
+1. **Use ASM library conventions**: Commands, Queries, and their handlers
+2. **No warnings**: Ensure code compiles without warnings
+3. **Consider security**: Apply authorization policies where appropriate
 
 ### Coding Standards
 
@@ -137,23 +95,6 @@ Path-scoped rules in `.claude/rules/` auto-load when working on matching files:
 - Document API endpoints with OpenAPI attributes
 - Do not use `.WithOpenApi()` - it is deprecated in .NET 10
 
-### When Making Changes
-
-- Search for similar existing patterns first
-- Check for reusable specifications, commands, or queries
-- Consider impact on both API and frontend
-- Update tests to cover changes
-- Include database changes if needed
-
-### When in Doubt
-
-- Look for similar examples in the codebase
-- Consult ASM library: https://github.com/AndrewMcLachlan/ASM
-- Consult MooApp library: https://github.com/AndrewMcLachlan/MooApp
-- Consult MooDS Storybook: https://storybook.mclachlan.family
-- Ask clarifying questions before making assumptions
-
 ## Additional Resources
 
-- `.claude/PRD.md` - Product requirements and domain overview
 - `.agents/plans/` - Feature implementation plans

@@ -1,12 +1,11 @@
 /* ---- Colour-coded management rows ----
    On the tag and group management screens the row *is* the entity, so its colour is
    shown as an edge on the row rather than as a marker beside the name. The account
-   list already treats a group's colour this way (see accountlist.css), so groups read
-   the same in both places.
+   list shows a group's colour as an edge too (the section accent), so groups read the
+   same in both places.
 
-   Set --row-colour and the has-colour class on the <tr>, matching the convention in
-   accountlist.css. The border goes on the first cell because a border on a <tr> does
-   not render under border-collapse: collapse. */
+   Set --row-colour and the has-colour class on the <tr>. The border goes on the first
+   cell because a border on a <tr> does not render under border-collapse: collapse. */
 
 .colour-row > td:first-child {
     /* Reserved even with no colour set, so rows do not shift sideways as colours are
