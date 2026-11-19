@@ -105,6 +105,25 @@ BEGIN
         WHERE tt.PrimaryTagId = tg.Id AND tt.SecondaryTagId = @RootTagId
     )
     GROUP BY tg.Id, tg.Name
+
+    UNION ALL
+
+    -- 6. The root's own slice: splits tagged with the root itself, which no child accounts for
+    SELECT
+        tg.Id AS TagId,
+        tg.Name AS TagName,
+        CAST(0 AS bit) AS HasChildren,
+        SUM(sta.Amount) AS GrossAmount,
+        SUM(sta.NetAmount) AS NetAmount
+    FROM #SplitTagAmounts sta
+    JOIN #EligibleTags tg ON tg.Id = sta.TagId
+    WHERE tg.Id = @RootTagId
+      AND EXISTS (
+        SELECT 1 FROM dbo.TransactionSplitTag tst
+        WHERE tst.TransactionSplitId = sta.TransactionSplitId AND tst.TagId = @RootTagId
+      )
+    GROUP BY tg.Id, tg.Name
+
     ORDER BY GrossAmount DESC;
 
     DROP TABLE #EligibleTags, #TagAndAncestors, #SplitAncestors, #SplitTagAmounts;
