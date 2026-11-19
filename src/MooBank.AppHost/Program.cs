@@ -25,8 +25,9 @@ if (sqlConfig.Enabled)
 
     mooBankDb = sql.AddDatabase("MooBank");
 
-    //builder.AddSqlProject<Projects.MooBank_Database>("moobank-database-project")
-    //.WithReference(mooBankDb);
+
+    builder.AddSqlProject("moobank-database-project", "../MooBank.Database/MooBank.Database.sqlproj")
+        .WithReference(mooBankDb);
 }
 else
 {
@@ -34,11 +35,14 @@ else
 
     mooBankDb = builder.AddConnectionString("MooBank");
 
-    //builder.AddSqlProject<Projects.MooBank_Database>("moobank-database-project")
-    //.WithReference(mooBankDb);
+    builder.AddSqlProject("moobank-database-project", "../MooBank.Database/MooBank.Database.sqlproj")
+        .WithReference(mooBankDb);
 }
 
-var api = builder.AddProject<Projects.MooBank_Api>("moobank-api", "API Only")
+var api = builder.AddDotnetProject("moobank-api", "../MooBank.Api", options =>
+{
+    options.LaunchProfileName = "API Only";
+})
     .WithReference(mooBankDb)
     .WithHttpHealthCheck("/healthz");
 
