@@ -20,10 +20,10 @@ export const SettingsPage: React.FC<PropsWithChildren<SettingsPageProps>> = ({ c
 const getMenuItems = (navItems: (ReactNode | NavItem)[]) => {
 
     const items: (NavItem | ReactNode)[] = [
-        { route: `/settings/institutions`, text: "Institutions", image: <Sliders />  },
-        { route: `/settings/families`, text: "Families", image: <Users /> },
-        { route: `/settings/pension`, text: "Age Pension", image: <PiggyBank /> },
-        { route: `/settings/returns`, text: "Return Assumptions", image: <PiggyBank /> },
+        { route: `/settings/institutions`, text: "Institutions", icon: Sliders  },
+        { route: `/settings/families`, text: "Families", icon: Users },
+        { route: `/settings/pension`, text: "Age Pension", icon: PiggyBank },
+        { route: `/settings/returns`, text: "Return Assumptions", icon: PiggyBank },
     ];
 
     if (navItems.length > 0) {

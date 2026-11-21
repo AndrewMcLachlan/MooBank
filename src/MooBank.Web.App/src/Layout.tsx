@@ -5,7 +5,6 @@ import React from "react";
 import { Link } from "@tanstack/react-router";
 
 import { MooAppLayout } from "@andrewmclachlan/moo-app";
-import { Icon } from "@andrewmclachlan/moo-ds";
 import type { NavItem } from "@andrewmclachlan/moo-ds";
 import { useIsAuthenticated } from "@azure/msal-react";
 import { useHasRole } from "hooks";
@@ -35,12 +34,12 @@ export default Layout;
 const userMenu: NavItem[] = [
     {
         text: "Profile",
-        image: <Icon icon={Icons.User} />,
+        icon: Icons.User,
         route: "/profile",
     },
     {
         text: "My Family",
-        image: <Icon icon={Icons.Users} />,
+        icon: Icons.Users,
         route: "/family",
     }
 ];
@@ -48,37 +47,37 @@ const userMenu: NavItem[] = [
 const sideMenu = [
     {
         text: "Dashboard",
-        image: <Icons.Dashboard />,
+        icon: Icons.Dashboard,
         route: "/"
     },
     {
         text: "Accounts",
-        image: <Icons.PiggyBank />,
+        icon: Icons.PiggyBank,
         route: "/accounts"
     },
     {
         text: "Bills",
-        image: <Icons.TwoCoins />,
+        icon: Icons.TwoCoins,
         route: "/bills"
     },
     {
         text: "Budget",
-        image: <Icons.Budget />,
+        icon: Icons.Budget,
         route: "/budget"
     },
     {
         text: "Planning",
-        image: <Icons.Trendline />,
+        icon: Icons.Trendline,
         route: "/planning"
     },
     {
         text: "Groups",
-        image: <Icons.Stack />,
+        icon: Icons.Stack,
         route: "/groups"
     },
     {
         text: "Tags",
-        image: <Icons.Tags />,
+        icon: Icons.Tags,
         route: "/tags"
     },
 ];
