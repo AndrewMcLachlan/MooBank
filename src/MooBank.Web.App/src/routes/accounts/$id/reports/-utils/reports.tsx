@@ -1,24 +1,24 @@
-import type { NavItem } from "@andrewmclachlan/moo-ds";
+import type { IconType, NavItem } from "@andrewmclachlan/moo-ds";
 import { BarChart, LeftRightArrow, PieChart, Tags, Trendline } from "@andrewmclachlan/moo-icons";
 import type { ReportKind } from "api/types.gen";
 
 interface ReportDescriptor {
     text: string;
-    image: React.ReactNode;
+    icon: IconType;
     path: string;
 }
 
 const descriptors: Partial<Record<ReportKind, ReportDescriptor>> = {
-    InOut: { text: "Income vs Expenses", image: <LeftRightArrow />, path: "in-out" },
-    TopTags: { text: "Top Tags", image: <BarChart />, path: "all-tag-average" },
-    Breakdown: { text: "Breakdown", image: <PieChart />, path: "breakdown" },
-    TagTrend: { text: "Tag Trend", image: <Trendline />, path: "tag-trend" },
-    AllTags: { text: "All Tags", image: <Tags />, path: "by-tag" },
-    MonthlyBalances: { text: "Monthly Balances", image: <Trendline />, path: "monthly-balances" },
-    SavingsInterest: { text: "Interest Received", image: <Trendline />, path: "savings-interest" },
-    SuperContributions: { text: "Contributions", image: <BarChart />, path: "super-contributions" },
-    SuperReturns: { text: "Annual Returns", image: <Trendline />, path: "super-returns" },
-    PrincipalVsInterest: { text: "Principal vs Interest", image: <BarChart />, path: "principal-vs-interest" },
+    InOut: { text: "Income vs Expenses", icon: LeftRightArrow, path: "in-out" },
+    TopTags: { text: "Top Tags", icon: BarChart, path: "all-tag-average" },
+    Breakdown: { text: "Breakdown", icon: PieChart, path: "breakdown" },
+    TagTrend: { text: "Tag Trend", icon: Trendline, path: "tag-trend" },
+    AllTags: { text: "All Tags", icon: Tags, path: "by-tag" },
+    MonthlyBalances: { text: "Monthly Balances", icon: Trendline, path: "monthly-balances" },
+    SavingsInterest: { text: "Interest Received", icon: Trendline, path: "savings-interest" },
+    SuperContributions: { text: "Contributions", icon: BarChart, path: "super-contributions" },
+    SuperReturns: { text: "Annual Returns", icon: Trendline, path: "super-returns" },
+    PrincipalVsInterest: { text: "Principal vs Interest", icon: BarChart, path: "principal-vs-interest" },
 };
 
 export const getReportNavItems = (accountId: string, availableReports: ReportKind[] | undefined): NavItem[] => {
@@ -28,7 +28,7 @@ export const getReportNavItems = (accountId: string, availableReports: ReportKin
         .filter((d): d is ReportDescriptor => d !== undefined)
         .map(d => ({
             text: d.text,
-            image: d.image,
+            icon: d.icon,
             route: `/accounts/${accountId}/reports/${d.path}`,
         }));
 };

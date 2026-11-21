@@ -20,15 +20,15 @@ export const AccountPage: React.FC<PropsWithChildren<AccountPageProps>> = ({ chi
     const baseRoute = isVirtual ? `/accounts/${(account as VirtualInstrument).parentId}/virtual/${account.id}` : `/accounts/${account.id}`;
 
     const navItems: (NavItem | ReactNode)[] = [
-        { route: `${baseRoute}/transactions`, text: "Transactions", image: <Transaction /> },
+        { route: `${baseRoute}/transactions`, text: "Transactions", icon: Transaction },
     ];
 
     if (!isVirtual) {
-        navItems.push({ route: `${baseRoute}/reports`, text: "Reports", image: <Reports /> });
-        navItems.push({ route: `${baseRoute}/rules`, text: "Rules", image: <Rules /> });
+        navItems.push({ route: `${baseRoute}/reports`, text: "Reports", icon: Reports });
+        navItems.push({ route: `${baseRoute}/rules`, text: "Rules", icon: Rules });
     }
 
-    navItems.push({ route: `${baseRoute}/manage`, text: "Manage", image: <Sliders /> });
+    navItems.push({ route: `${baseRoute}/manage`, text: "Manage", icon: Sliders });
 
     return (
         <InstrumentPage instrument={account} instrumentRoute={baseRoute} instrumentNavItems={navItems} {...props}>
