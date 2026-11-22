@@ -15,9 +15,9 @@ export const StockHoldingPage: React.FC<PropsWithChildren<StockHoldingPageProps>
     if (!stockHolding) return null;
 
     const navItems: (NavItem | ReactNode)[] = [
-        { route: `/shares/${stockHolding.id}/transactions`, text: "Transactions", image: <Transaction /> },
-        { route: `/shares/${stockHolding.id}/reports`, text: "Reports", image: <Reports /> },
-        { route: `/shares/${stockHolding.id}/manage`, text: "Manage", image: <Sliders /> },
+        { route: `/shares/${stockHolding.id}/transactions`, text: "Transactions", icon: Transaction },
+        { route: `/shares/${stockHolding.id}/reports`, text: "Reports", icon: Reports },
+        { route: `/shares/${stockHolding.id}/manage`, text: "Manage", icon: Sliders },
     ];
 
     return (

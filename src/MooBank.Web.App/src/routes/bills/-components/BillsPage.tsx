@@ -18,7 +18,7 @@ export const BillsPage: React.FC<PropsWithChildren<BillsPageProps>> = ({ childre
 const getMenuItems = (navItems: (ReactNode | NavItem)[]) => {
 
     const items: (NavItem | ReactNode)[] = [
-        { route: `/bills/accounts`, text: "Accounts", image: <Users /> },
+        { route: `/bills/accounts`, text: "Accounts", icon: Users },
     ];
 
     if (navItems.length > 0) {

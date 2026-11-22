@@ -31,7 +31,7 @@ const getMenuItems = (account: StockHolding) => {
     if (!account) return [];
 
     const items: NavItem[] = [
-        { route: `/shares/${account.id}/reports/value`, text: "Value Trend", image: <Trendline /> },
+        { route: `/shares/${account.id}/reports/value`, text: "Value Trend", icon: Trendline },
     ];
 
     return items;
