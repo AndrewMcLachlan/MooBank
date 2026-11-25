@@ -6,7 +6,7 @@ using DomainUser = Asm.MooBank.Domain.Entities.User.User;
 namespace Asm.MooBank.Core.Tests.Specifications;
 
 /// <summary>
-/// Unit tests for the <see cref="GetWithCards"/> specification.
+/// Unit tests for the <see cref="GetWithCardsSpecification"/> specification.
 /// Tests verify that the specification correctly includes Cards.
 /// </summary>
 public class GetWithCardsSpecificationTests
@@ -15,7 +15,7 @@ public class GetWithCardsSpecificationTests
 
     /// <summary>
     /// Given a collection of users
-    /// When GetWithCards is applied
+    /// When GetWithCardsSpecification is applied
     /// Then all users should be returned
     /// </summary>
     [Fact]
@@ -30,7 +30,7 @@ public class GetWithCardsSpecificationTests
             CreateUser("user3@test.com"),
         };
 
-        var spec = new GetWithCards();
+        var spec = new GetWithCardsSpecification();
 
         // Act
         var result = spec.Apply(users.AsQueryable());
@@ -41,7 +41,7 @@ public class GetWithCardsSpecificationTests
 
     /// <summary>
     /// Given an empty collection
-    /// When GetWithCards is applied
+    /// When GetWithCardsSpecification is applied
     /// Then an empty collection should be returned
     /// </summary>
     [Fact]
@@ -50,7 +50,7 @@ public class GetWithCardsSpecificationTests
     {
         // Arrange
         var users = new List<DomainUser>();
-        var spec = new GetWithCards();
+        var spec = new GetWithCardsSpecification();
 
         // Act
         var result = spec.Apply(users.AsQueryable());
@@ -61,7 +61,7 @@ public class GetWithCardsSpecificationTests
 
     /// <summary>
     /// Given a single user
-    /// When GetWithCards is applied
+    /// When GetWithCardsSpecification is applied
     /// Then the user should be returned
     /// </summary>
     [Fact]
@@ -74,7 +74,7 @@ public class GetWithCardsSpecificationTests
             CreateUser("single@test.com"),
         };
 
-        var spec = new GetWithCards();
+        var spec = new GetWithCardsSpecification();
 
         // Act
         var result = spec.Apply(users.AsQueryable()).ToList();
@@ -90,7 +90,7 @@ public class GetWithCardsSpecificationTests
 
     /// <summary>
     /// Given users with various email addresses
-    /// When GetWithCards is applied
+    /// When GetWithCardsSpecification is applied
     /// Then email addresses should be preserved
     /// </summary>
     [Fact]
@@ -104,7 +104,7 @@ public class GetWithCardsSpecificationTests
             CreateUser("second@test.com"),
         };
 
-        var spec = new GetWithCards();
+        var spec = new GetWithCardsSpecification();
 
         // Act
         var result = spec.Apply(users.AsQueryable()).ToList();
@@ -116,7 +116,7 @@ public class GetWithCardsSpecificationTests
 
     /// <summary>
     /// Given a queryable with a filter already applied
-    /// When GetWithCards is applied
+    /// When GetWithCardsSpecification is applied
     /// Then the filter should still be effective
     /// </summary>
     [Fact]
@@ -132,7 +132,7 @@ public class GetWithCardsSpecificationTests
         };
 
         var filteredQuery = users.AsQueryable().Where(u => u.EmailAddress == "keep@test.com");
-        var spec = new GetWithCards();
+        var spec = new GetWithCardsSpecification();
 
         // Act
         var result = spec.Apply(filteredQuery).ToList();
@@ -148,7 +148,7 @@ public class GetWithCardsSpecificationTests
 
     /// <summary>
     /// Given a queryable of users
-    /// When GetWithCards is applied
+    /// When GetWithCardsSpecification is applied
     /// Then the result should be queryable
     /// </summary>
     [Fact]
@@ -161,7 +161,7 @@ public class GetWithCardsSpecificationTests
             CreateUser("test@test.com"),
         };
 
-        var spec = new GetWithCards();
+        var spec = new GetWithCardsSpecification();
 
         // Act
         var result = spec.Apply(users.AsQueryable());

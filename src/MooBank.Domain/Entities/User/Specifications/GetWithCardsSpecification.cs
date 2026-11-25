@@ -2,7 +2,7 @@
 
 namespace Asm.MooBank.Domain.Entities.User.Specifications;
 
-public class GetWithCards : ISpecification<User>
+public class GetWithCardsSpecification : ISpecification<User>
 {
     public IQueryable<User> Apply(IQueryable<User> query) =>
         query.Include(q => q.Cards);

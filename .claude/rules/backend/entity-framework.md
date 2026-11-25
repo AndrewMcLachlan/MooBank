@@ -12,12 +12,6 @@ paths:
 - Always use the Unit of Work pattern for transactions
 - Inject `IUnitOfWork` and call `SaveChangesAsync()` to persist changes
 
-### Repositories
-- Repositories should only be used for aggregate roots
-- Use specifications for complex queries
-- Interface defined in `MooBank.Domain/Entities/`
-- Implementation in `MooBank.Infrastructure/Repositories/`
-
 ## IQueryable vs Repository
 
 ### 1. IQueryable<TEntity> - For Read Operations
@@ -69,16 +63,6 @@ internal class UpdatePlanHandler(IForecastRepository forecastRepository, ...) : 
 - **Queries** (read operations) → Use `IQueryable<TEntity>`
 - **Commands** (write operations) → Use `IRepository<TEntity>`
 
-## Specifications
-
-- Used for complex query logic and filtering
-- Implement `ISpecification<T>`
-- Applied via the ASM `.Specify()` extension method
-- Common patterns:
-  - `IncludeXxxSpecification` - Eager loading related entities
-  - `FilterSpecification` - Filtering criteria
-  - `SortSpecification` - Ordering
-
 ## Best Practices
 
 - Inline `.Include()` chains are acceptable in **query handlers**; use specifications for include
@@ -87,4 +71,5 @@ internal class UpdatePlanHandler(IForecastRepository forecastRepository, ...) : 
   extra joins damage performance for every consumer. If a navigation genuinely needs loading for a
   new path, fix it at the consuming site (and confirm first)
 - Avoid N+1 query problems by using `.Include()` or specifications
+- Specification and repository conventions (naming, location) are in `csharp.md`
 - Don't use EF migrations - schema changes go in the Database Project

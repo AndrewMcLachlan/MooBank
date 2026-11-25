@@ -11,7 +11,7 @@ internal class UpdateHandler(IUnitOfWork unitOfWork, IUserRepository repository,
 {
     public async ValueTask<Models.User> Handle(Update command, CancellationToken cancellationToken)
     {
-        var entity = await repository.Get(user.Id, new GetWithCards(), cancellationToken);
+        var entity = await repository.Get(user.Id, new GetWithCardsSpecification(), cancellationToken);
 
         entity.Currency = command.User.Currency;
         entity.PrimaryAccountId = command.User.PrimaryAccountId;

@@ -25,7 +25,7 @@ public class UpdateTests
             currency: "AUD");
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
@@ -55,7 +55,7 @@ public class UpdateTests
             currency: "AUD");
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
@@ -85,7 +85,7 @@ public class UpdateTests
             primaryAccountId: null);
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
@@ -112,7 +112,7 @@ public class UpdateTests
         var existingUser = TestEntities.CreateDomainUser(id: userId);
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
@@ -139,7 +139,7 @@ public class UpdateTests
         var existingUser = TestEntities.CreateDomainUser(id: userId);
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
@@ -168,7 +168,7 @@ public class UpdateTests
         var existingUser = TestEntities.CreateDomainUser(id: userId);
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
@@ -200,7 +200,7 @@ public class UpdateTests
             cards: [existingCard]);
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
@@ -231,7 +231,7 @@ public class UpdateTests
             cards: [existingCard]);
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
@@ -270,7 +270,7 @@ public class UpdateTests
             cards: existingCards);
 
         _mocks.UserRepositoryMock
-            .Setup(r => r.Get(userId, It.IsAny<GetWithCards>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(userId, It.IsAny<GetWithCardsSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingUser);
 
         var handler = new UpdateHandler(
