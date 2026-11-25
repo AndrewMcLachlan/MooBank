@@ -6,8 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 MooBank is a browser-based application designed to enable an individual to manage their personal finances effectively.
 
-Product requirements and domain concepts are in `.claude/PRD.md`; read it when a task needs product context.
-
 ## Architecture
 
 ### Technology Stack
@@ -56,7 +54,6 @@ Note: projects live in `MooBank.*` folders but build as `Asm.MooBank.*` assembli
   - `Asm.AspNetCore.Modules` - Module registration and endpoint mapping
   - `Postie.Cqrs.AspNetCore` / `Postie.AspNetCore` - CQRS endpoint extensions
   - `Asm.Domain` / `Asm.Domain.Infrastructure` - DDD base classes
-- **ReqnRoll** - BDD testing framework
 
 **Frontend:**
 - **MooApp** (https://github.com/AndrewMcLachlan/MooApp) - Custom React packages:
@@ -68,8 +65,8 @@ Note: projects live in `MooBank.*` folders but build as `Asm.MooBank.*` assembli
 ```bash
 # Backend
 dotnet build MooBank.slnx                   # Build solution
-dotnet test tests/                          # Run all tests
-dotnet test --filter /[Category=Unit]       # Unit tests only
+dotnet test MooBank.slnx                           # Run all tests
+dotnet test MooBank.slnx --filter "Category=Unit" # Unit tests only
 
 # Frontend (from src/MooBank.Web.App/)
 npm run build                               # Build (includes tsc type checking)
@@ -93,7 +90,7 @@ npm test                                    # Run Vitest component tests
 - Use TypeScript strictly in the frontend
 - Handle errors with domain exceptions and HTTP exceptions
 - Document API endpoints with OpenAPI attributes
-- Do not use `.WithOpenApi()` - it is deprecated in .NET 10
+- Do not use `.WithOpenApi()` - it is deprecated
 
 ## Additional Resources
 

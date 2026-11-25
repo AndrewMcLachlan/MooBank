@@ -38,7 +38,7 @@ So that <benefit/value>
 
 Use parallel searches and file reads to gather intelligence efficiently:
 
-1. **Read project context** - Read `CLAUDE.md` and `.claude/PRD.md` for architecture and domain understanding
+1. **Read project context** - Read `CLAUDE.md` for architecture and domain understanding
 2. **Find similar implementations** - Search for existing patterns that match the feature's domain
 3. **Map integration points** - Identify existing files that need updates and where new files should go
 4. **Check dependencies** - Catalog external libraries relevant to the feature, check versions
@@ -64,7 +64,7 @@ Only if the feature involves unfamiliar libraries or APIs:
 
 Read the plan template at `.claude/skills/plan-feature/template.md` and use it to structure the output. Fill every section with specific, actionable detail from your research.
 
-**Save the plan to:** `.agents/plans/{kebab-case-feature-name}.md`
+**Save the plan to:** `.agents/plans/{YYYY-MM-DD}-{kebab-case-feature-name}-plan.md`
 
 Create the `.agents/plans/` directory if it doesn't exist.
 

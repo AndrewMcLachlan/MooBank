@@ -1,4 +1,4 @@
-﻿---
+---
 paths:
   - "src/MooBank.Api/**"
   - "src/MooBank.Modules*/Endpoints/**"
@@ -33,7 +33,7 @@ paths:
 - OpenAPI documents are generated at build time via `Microsoft.Extensions.ApiDescription.Server`
 - **Do not add `Swashbuckle.AspNetCore` as it conflicts with build-time generation**
 - Security schemes (OIDC) must handle null configuration gracefully for build-time generation
-- Do not use `.WithOpenApi()` as this is deprecated in .NET 10
+- Do not use `.WithOpenApi()` as it is deprecated
 
 ## Authorization
 

@@ -4,10 +4,10 @@ This file provides guidance for AI agents working on the MooBank React frontend.
 
 ## Technology Stack
 
-- **React 19** with TypeScript
-- **Vite 7** - Build tool
+- **React** with TypeScript
+- **Vite** - Build tool
 - **TanStack Router** - File-based client-side routing (`src/routes/`, generated `src/routeTree.gen.ts` via `@tanstack/router-plugin`)
-- **TanStack Query v5** - Server state management
+- **TanStack Query** - Server state management
 - **React Hook Form** - Form handling
 - **Redux Toolkit** - LEGACY: transaction-list UI state only. Do not add new slices; new UI state goes in router search params or local state.
 - **Chart.js / react-chartjs-2** - Data visualisation

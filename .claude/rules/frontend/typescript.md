@@ -9,11 +9,11 @@ paths:
 
 ## Technology Stack
 
-- **React 19** - UI framework
+- **React** - UI framework
 - **TypeScript** - `strictNullChecks: false` and `noImplicitAny: false` are accepted trade-offs for TanStack Router typing — do not "fix" them
-- **Vite 7** - Build tool and dev server
+- **Vite** - Build tool and dev server
 - **TanStack Router** - File-based routing (`src/routes/`, generated `src/routeTree.gen.ts`)
-- **TanStack Query v5** - Server state management
+- **TanStack Query** - Server state management
 - **MooApp / MooDS** - Application framework and component library (Storybook: https://storybook.mclachlan.family; source: https://github.com/AndrewMcLachlan/MooApp)
 - **MSAL** - Microsoft Authentication Library for Azure AD
 

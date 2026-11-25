@@ -118,7 +118,7 @@ cd src/MooBank.Web.App && npm run build
 ### Level 2: Tests
 
 ```bash
-dotnet test tests/
+dotnet test MooBank.slnx
 cd src/MooBank.Web.App && npm test
 ```
 

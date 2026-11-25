@@ -58,8 +58,11 @@ paths:
 - Implement `ISpecification<T>`
 - Should be composable and reusable
 - Applied to an `IQueryable<T>` via the ASM `.Specify()` extension method
-- Naming convention for new specifications: `XxxDetailsSpecification` for an include bundle
-  (eager-loading a set of navigations), verb-named (e.g. `GetWithMembers`) for a filtered load
+- Naming convention: `XxxSpecification`, where `Xxx` says what it loads or filters
+  (`AccountDetailsSpecification`, `IncludeSplitsSpecification`, `FilterSpecification`). Always keep
+  the `Specification` suffix on new ones
+- Existing specifications are deliberately tuned: never add Includes to one defensively (see
+  `entity-framework.md`)
 
 ### Repositories
 - Interface defined in `MooBank.Domain/Entities/`

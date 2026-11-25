@@ -39,7 +39,7 @@ public class RemoveMemberTests
         }
 
         _mocks.FamilyRepositoryMock
-            .Setup(r => r.Get(_mocks.User.FamilyId, It.IsAny<GetWithMembers>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.Get(_mocks.User.FamilyId, It.IsAny<GetWithMembersSpecification>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(family);
 
         return family;
@@ -103,7 +103,7 @@ public class RemoveMemberTests
 
         // Assert
         _mocks.FamilyRepositoryMock.Verify(
-            r => r.Get(familyId, It.IsAny<GetWithMembers>(), It.IsAny<CancellationToken>()),
+            r => r.Get(familyId, It.IsAny<GetWithMembersSpecification>(), It.IsAny<CancellationToken>()),
             Times.Once);
         _mocks.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }

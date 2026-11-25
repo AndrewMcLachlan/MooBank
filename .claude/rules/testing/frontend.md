@@ -2,7 +2,6 @@
 paths:
   - "src/MooBank.Web.App/**/__tests__/**"
   - "src/MooBank.Web.App/**/*.test.{ts,tsx}"
-  - "tests/e2e/**"
 ---
 
 # Frontend Testing Guidelines
@@ -54,33 +53,4 @@ npm test -- --coverage
 
 # Run specific test file
 npm test -- AmountDisplay
-```
-
-## Playwright E2E Tests
-
-### Location
-```
-tests/e2e/
-```
-
-### What to Test
-- Critical user workflows (happy paths)
-- Authentication flow
-- Core features: account creation, transaction import, tagging, budgeting
-- Error states for important flows
-
-### Test Structure - Use Page Object Pattern
-```
-tests/e2e/
-├── fixtures/           # Shared test data
-├── pages/              # Page objects
-├── tests/              # Test specs
-└── playwright.config.ts
-```
-
-### Running E2E Tests
-```bash
-npx playwright test
-npx playwright test --headed
-npx playwright test --ui
 ```

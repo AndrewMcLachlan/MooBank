@@ -22,7 +22,7 @@ internal class RemoveMemberHandler(
             throw new InvalidOperationException("You cannot remove yourself from the family.");
         }
 
-        var family = await familyRepository.Get(currentUser.FamilyId, new GetWithMembers(), cancellationToken);
+        var family = await familyRepository.Get(currentUser.FamilyId, new GetWithMembersSpecification(), cancellationToken);
 
         var memberToRemove = await userRepository.Get(command.UserId, cancellationToken)
             ?? throw new NotFoundException("User not found.");

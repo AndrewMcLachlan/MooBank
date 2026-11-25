@@ -72,4 +72,4 @@ Provide a summary:
 
 ### Ready for Review
 - Confirm all changes are complete and validated
-- Suggest running `/code-review` and `/commit`
+- Suggest running `/code-review`

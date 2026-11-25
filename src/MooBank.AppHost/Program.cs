@@ -54,6 +54,7 @@ if (sqlConfig.Enabled)
 builder.AddJavaScriptApp("moobank-app", "../MooBank.Web.App", "start")
     .WithReference(api)
     .WaitFor(api)
-    .WithHttpsEndpoint(port: 3005, isProxied: false);
+    .WithHttpsEndpoint(port: 3005, isProxied: false)
+    .WithEndpoint("https", e => e.TargetHost = "moobank.dev.localhost");
 
 builder.Build().Run();

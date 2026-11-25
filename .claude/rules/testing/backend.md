@@ -88,22 +88,22 @@ API integration tests are **specifically for testing authorization policies**. T
 ### What NOT to Test
 - Business logic (use unit tests)
 - Data transformation (use unit tests)
-- Happy-path CRUD operations (use E2E tests)
+- Happy-path CRUD operations
 
 ## Running Tests
 
 ```bash
 # Run all tests
-dotnet test tests/
+dotnet test MooBank.slnx
 
 # Run unit tests only
-dotnet test --filter /[Category=Unit]
+dotnet test MooBank.slnx --filter "Category=Unit"
 
 # Run integration tests only
-dotnet test --filter /[Category=Integration]
+dotnet test MooBank.slnx --filter "Category=Integration"
 
 # Run with coverage
-dotnet test tests/ --collect:"XPlat Code Coverage"
+dotnet test MooBank.slnx --collect:"XPlat Code Coverage"
 ```
 
 ## Test Distribution

@@ -25,5 +25,5 @@ Run full validation to confirm no regressions:
 ```bash
 dotnet build MooBank.slnx --no-restore
 cd src/MooBank.Web.App && npm run build
-dotnet test tests/ --no-build
+dotnet test MooBank.slnx --no-build
 ```
