@@ -131,13 +131,13 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.CROSS_REPO_PACKAGE_TOKEN}}
 
     - name: Test ${{ matrix.test-project.name }}
-      run: dotnet test tests/${{ matrix.test-project.name }}/${{ matrix.test-project.name }}.csproj --filter '(Category=Unit|Category=Integration)&FullyQualifiedName!~Testing' --verbosity normal --collect:"XPlat Code Coverage" --results-directory:./testresults/${{ matrix.test-project.name }} --configuration Release --settings coverlet.runsettings
+      run: dotnet test --project tests/${{ matrix.test-project.name }}/${{ matrix.test-project.name }}.csproj --configuration Release --filter '(Category=Unit|Category=Integration)&FullyQualifiedName!~Testing' --output detailed --coverlet --coverlet-file-prefix ${{ matrix.test-project.name }} --results-directory ./testresults/${{ matrix.test-project.name }}
 
     - name: Upload coverage for ${{ matrix.test-project.name }}
       uses: actions/upload-artifact@v7.0.2
       with:
         name: coverage-${{ matrix.test-project.name }}
-        path: testresults/${{ matrix.test-project.name }}/**/coverage.cobertura.xml
+        path: testresults/${{ matrix.test-project.name }}/**/*coverage.cobertura*.xml
 
   test-frontend:
     runs-on: ubuntu-latest
@@ -184,7 +184,7 @@ jobs:
     - name: ReportGenerator
       uses: danielpalme/ReportGenerator-GitHub-Action@5.6.1
       with:
-        reports: './all-coverage/**/coverage.cobertura.xml'
+        reports: './all-coverage/**/*coverage.cobertura*.xml'
         targetdir: './coverage-report'
         reporttypes: 'MarkdownAssembliesSummary;Cobertura;'
 
