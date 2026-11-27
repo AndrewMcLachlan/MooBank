@@ -94,16 +94,16 @@ API integration tests are **specifically for testing authorization policies**. T
 
 ```bash
 # Run all tests
-dotnet test MooBank.slnx
+dotnet test --solution MooBank.slnx
 
 # Run unit tests only
-dotnet test MooBank.slnx --filter "Category=Unit"
+dotnet test --solution MooBank.slnx --filter "Category=Unit"
 
 # Run integration tests only
-dotnet test MooBank.slnx --filter "Category=Integration"
+dotnet test --solution MooBank.slnx --filter "Category=Integration"
 
 # Run with coverage
-dotnet test MooBank.slnx --collect:"XPlat Code Coverage"
+dotnet test --solution MooBank.slnx --coverlet
 ```
 
 ## Test Distribution

@@ -65,8 +65,8 @@ Note: projects live in `MooBank.*` folders but build as `Asm.MooBank.*` assembli
 ```bash
 # Backend
 dotnet build MooBank.slnx                   # Build solution
-dotnet test MooBank.slnx                           # Run all tests
-dotnet test MooBank.slnx --filter "Category=Unit" # Unit tests only
+dotnet test --solution MooBank.slnx                              # Run all tests
+dotnet test --solution MooBank.slnx --filter "Category=Unit"     # Unit tests only
 
 # Frontend (from src/MooBank.Web.App/)
 npm run build                               # Build (includes tsc type checking)

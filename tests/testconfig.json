@@ -1,0 +1,12 @@
+{
+  "platformOptions": {
+    "Coverlet": {
+      "format": "cobertura",
+      "exclude": "[*.Tests]*",
+      "excludeByFile": "**/bin/**/*,**/obj/**/*,**/Migrations/**/*,**/Program.cs,**/Startup.cs",
+      "excludeByAttribute": "System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute,System.CodeDom.Compiler.GeneratedCodeAttribute,System.Diagnostics.DebuggerNonUserCodeAttribute,System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+      "useSourceLink": true,
+      "deterministicReport": true
+    }
+  }
+}
